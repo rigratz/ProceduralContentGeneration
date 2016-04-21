@@ -18,7 +18,9 @@ Global noiseTest:NoiseTestScene
 'Main Class that initializes the game
 '
 Class Game Extends iApp
+    '
 	'Overloads OnCreate Method from iApp
+	'
 	Method OnCreate()
 		Seed = Millisecs()
 		
@@ -37,237 +39,58 @@ Class Game Extends iApp
 	End Method
 End Class
 
+
 '
 'Scene containing opening menu options for game.
 '
 Class MenuScene Extends iEngine
-  'Overloads OnCreate Method from iEngine
-	Method OnCreate ()
+
+    'Overloads OnCreate Method from iEngine
+    Method OnCreate ()
         Print "Creating Menu"
-  End Method
-  'Overloads OnRender Method from iEngine
-  Method OnRender ()
-    DrawText("Press Enter to generate Cellularly", 200, 200)
-    DrawText("Press Space to generate with Noise", 200, 300)
-  End Method
-  'Overloads OnStart Method from iEngine
-  Method OnStart ()
-    Print "Starting Menu"
-  End Method
-  'Overloads OnStop Method from iEngine
-  Method OnStop ()
-    Print "Stopping Menu"
-  End Method
-  'Overloads OnUpdate Method from iEngine
-  Method OnUpdate ()
+    End Method
     
-   If KeyHit(KEY_ENTER)
-      Print "Switch"
-      iStart gameplay
-   End If
+    
+    'Overloads OnRender Method from iEngine
+    Method OnRender ()
+        DrawText("Press Enter to generate Cellularly", 200, 200)
+        DrawText("Press Space to generate with Noise", 200, 300)
+    End Method
+    
+    
+    'Overloads OnStart Method from iEngine
+    Method OnStart ()
+        Print "Starting Menu"
+    End Method
+    
+    
+    'Overloads OnStop Method from iEngine
+    Method OnStop ()
+        Print "Stopping Menu"
+    End Method
+    
+    
+    'Overloads OnUpdate Method from iEngine
+    Method OnUpdate ()
+    
+        If KeyHit(KEY_ENTER)
+            Print "Switch"
+            iStart gameplay
+        End If
       
-   If KeyHit (KEY_SPACE)
-      Print "Switch to Noise"
-      iStart noiseTest
-   End If
+        If KeyHit (KEY_SPACE)
+            Print "Switch to Noise"
+            iStart noiseTest
+        End If
       
-  End Method
+    End Method
+    
+    
 End Class
 
-' Class NoiseTestScene Extends iEngine
-'     Field noiseMap:Float[][]
-'     Field mapWidth:Int
-'     Field mapHeight:Int
-'     Field playfieldN:iPlayfield
-'     Field backLayer:iLayer
-'     Field playerLayer:iLayer
-'     Field player:Hero
-'     
-'     Method OnCreate ()
-'         Print "Creating Noise Test"
-'         Self.playfieldN=New iPlayfield
-'         Self.playfieldN.AttachLast()
-'         Self.playfieldN.AutoCls(0,0,0)
-'         Self.playfieldN.Width=600
-'         Self.playfieldN.Height=460
-'         Self.playfieldN.Position(0,0)
-'         Self.playfieldN.ZoomPointX(200)
-'         Self.playfieldN.ZoomPointY(128)
-'         
-'         Self.backLayer = New iLayer()
-'         Self.backLayer.AttachLast(playFieldN)
-'         
-'         Self.playerLayer = New iLayer()
-'         Self.player = New Hero()
-'         Self.playerLayer.AttachLast(Self.player)
-'         
-'         
-'         
-'         mapWidth = 600
-'         mapHeight = 460
-'         
-' '         noiseMap = n.generateNoiseMap(mapWidth, mapHeight, 8, 0.4, 0.005)
-'         
-'     End
-' 
-'     Method OnRender ()
-'     	drawNoiseMap(mapWidth, mapHeight)
-'     	  'Debugging Text
-' '     	DrawText("CameraX: " + Self.playfieldN.CameraX, Self.playfieldN.CameraX+10, Self.playfieldN.CameraY+10)
-' '     	DrawText("CameraY: " + Self.playfieldN.CameraY, Self.playfieldN.CameraX+10, Self.playfieldN.CameraY+20)
-' '     	DrawText("MapX: " + Self.playfieldN.CameraX , Self.playfieldN.CameraX+10, Self.playfieldN.CameraY+40)
-' '     	DrawText("MapY: " + Self.playfieldN.CameraY, Self.playfieldN.CameraX+10, Self.playfieldN.CameraY+50)
-' '       DrawText("MapXEnd: " + (Self.playfieldN.CameraX + 120), Self.playfieldN.CameraX+10, Self.playfieldN.CameraY+70)
-' '     	DrawText("MapYEnd: " + (Self.playfieldN.CameraY + 89), Self.playfieldN.CameraX+10, Self.playfieldN.CameraY+80)
-'     End
-' 
-'     Method OnStart ()
-'         Print "Starting Noise Test"
-'         Local n:SimplexNoise = New SimplexNoise()
-'         noiseMap = n.generateOctavedNoiseMap(mapWidth, mapHeight, 6, 0.5, 1)
-'         Local x:Int = noiseMap.Length
-'         Local y:Int = noiseMap[0].Length
-'         Print "X: " + x
-'         Print "Y: " + y
-'         Print "Top Left Corner: " + noiseMap[0][0]
-'         Print "Top Right Corner: " + noiseMap[x-1][0]
-'         Print "Bottom Left Corner: " + noiseMap[0][y-1]
-'         Print "Bottom Right Corner: " + noiseMap[x-1][y-1]
-'         'noiseMap = n.generateNoiseMap(mapWidth, mapHeight)
-'     End
-' 
-'     Method OnStop ()
-'         Print "Stopping Noise Test"
-'     End
-' 
-'     Method OnUpdate ()
-'     	If KeyHit(KEY_ENTER)
-'     		Print "Switch"
-'         iStart gameplay
-' 			End
-' 			If KeyDown(KEY_CONTROL)
-'         
-'             If KeyDown(KEY_A)
-'                 Self.playfieldN.AlphaFade=Self.playfieldN.AlphaFade-0.01
-'                 If Self.playfieldN.AlphaFade < 0 Self.playfieldN.AlphaFade=Self.playfieldN.AlphaFade+1
-'             End If
-'             
-'             If KeyDown(KEY_Z)
-'                 Self.playfieldN.ZoomX=Self.playfieldN.ZoomX-0.01
-'                 Self.playfieldN.ZoomY=Self.playfieldN.ZoomY-0.01
-'             End If
-'         
-'         Else
-'         
-'             If KeyDown(KEY_A)
-'                 Self.playfieldN.AlphaFade=Self.playfieldN.AlphaFade+0.01
-'                 If Self.playfieldN.AlphaFade > 1 Self.playfieldN.AlphaFade=Self.playfieldN.AlphaFade-1
-'             End If
-'             
-'             If KeyDown(KEY_Z)
-'                 Self.playfieldN.ZoomX=Self.playfieldN.ZoomX+0.01
-'                 Self.playfieldN.ZoomY=Self.playfieldN.ZoomY+0.01
-'             End If
-'         
-'         End If
-' 			If KeyDown(KEY_LEFT)
-'             Self.playfieldN.CameraX=Self.playfieldN.CameraX-1
-'         End If
-'     
-'         If KeyDown(KEY_RIGHT)
-'             Self.playfieldN.CameraX=Self.playfieldN.CameraX+1
-'         End If
-'     
-'         If KeyDown(KEY_UP)
-'             Self.playfieldN.CameraY=Self.playfieldN.CameraY-1
-'         End If
-'     
-'         If KeyDown(KEY_DOWN)
-'             Self.playfieldN.CameraY=Self.playfieldN.CameraY+1
-'         End If
-'         checkCameraBounds()
-' 		End
-' 		Method checkCameraBounds()
-' 		
-'         If Self.playfieldN.CameraX < 0
-'           Self.playfieldN.CameraX = 0
-'         End
-'         If Self.playfieldN.CameraY < 0
-'           Self.playfieldN.CameraY = 0
-'         End
-' '         Print "Playfield CameraX: " + Self.playfieldN.CameraX
-' '         Print "Camera End: " + (mapWidth - 30)
-' '         If Self.playfieldN.CameraX + (mapWidth/20) > mapWidth
-' '           Self.playfieldN.CameraX = mapWidth - (mapWidth/20)
-' '         End
-'         If Self.playfieldN.CameraX + (Self.playfieldN.Width/20) > Self.playfieldN.Width
-'           Self.playfieldN.CameraX = Self.playfieldN.Width - (Self.playfieldN.Width/20)
-'         End
-'         If Self.playfieldN.CameraY + (Self.playfieldN.Height/20) > Self.playfieldN.Height
-'           Self.playfieldN.CameraY = Self.playfieldN.Height - (Self.playfieldN.Height/20)
-'         End
-' 		End
-' 		
-' 		
-' 		Method drawNoiseMap(w:Int, h:Int)
-'       Local xOffset:Int = Self.playfieldN.CameraX
-'       Local yOffset:Int = Self.playfieldN.CameraY
-'       Local xTarget:Int = xOffset + 30
-'       Local yTarget:Int = yOffset + 23
-'       Local localTexture:Int = 0
-'       Local counter:Int = 0
-'       
-'       'Print "xoffset: " + xOffset
-'       For Local i:Int = xOffset Until xTarget
-'         For Local j:Int = yOffset Until yTarget
-'           If noiseMap [i][j] < -0.35
-'             'SetColor(0,0,102)
-'             localTexture = 0
-'            Else If noiseMap [i][j] < -0.3
-'             'SetColor(0,0,255)
-'             localTexture = 1
-'            Else If noiseMap [i][j] < -0.2
-'             'SetColor(255,255,0)
-'             localTexture = 2
-'            Else If noiseMap [i][j] < -0.1
-'             'SetColor(51,255,51)
-'             localTexture = 3
-'            Else If noiseMap [i][j] < 0.3
-'             'SetColor(0,153,0)
-'             localTexture = 4
-'            Else If noiseMap [i][j] < 0.5
-'             'SetColor(204,102,0)
-'             localTexture = 5
-'            Else If noiseMap [i][j] < 0.6
-'             'SetColor(224,224,224)
-'             localTexture = 6
-'            Else If noiseMap [i][j] < 1
-'             'SetColor(224,224,224)
-'             localTexture = 7
-' '            Else If noiseMap [i][j] < 0.9
-' '             SetColor(255,255,255)
-'           End
-'           'DrawRect((i-xOffset)*10,(j-yOffset)*10,10,10)
-'           If i = 0 Or i = w-1 Or j = 0 Or j = h-1
-'             localTexture = 8
-'           End
-'           DrawImage(textures, (i-xOffset)*20+xOffset,(j-yOffset)*20+yOffset, localTexture)
-'           
-' '           If Self.playfieldN.CameraX = 570
-' '             counter += 1
-' '           End
-'         End
-'         'Print "i - xOffset = " + (i-xOffset)
-'       End
-'       
-'       'Print "Counter: " + counter
-' '       DrawText("xOffset: " + xOffset, Self.playfieldN.CameraX+10, Self.playfieldN.CameraY+100)
-' '     	DrawText("yOffset: " + yOffset, Self.playfieldN.CameraX+10, Self.playfieldN.CameraY+110)
-' '     	DrawText("xTarget: " + xTarget, Self.playfieldN.CameraX+10, Self.playfieldN.CameraY+120)
-' '     	DrawText("yTarget: " + yTarget, Self.playfieldN.CameraX+10, Self.playfieldN.CameraY+130)
-' 		End
-'     
-' End
+'
+'Scene that currently generates cave and puts a player sprite in it.
+'
 Class GameplayScene Extends iEngine
 	Field p1:Player
 	Field music:Sound
@@ -279,6 +102,7 @@ Class GameplayScene Extends iEngine
 	Field sprite1:iLayerSprite
 	Field sprite2:iLayerSprite
 	
+	'Overloads OnCreate Method from iEngine
 	Method OnCreate ()
         Print "Creating Gameplay"
         Self.playfield=New iPlayfield
@@ -327,36 +151,34 @@ Class GameplayScene Extends iEngine
 		music = LoadSound("tetris.mp3")
 		
         
-    End
-
+    End Method
+    
+    
+    'Overloads OnRender Method from iEngine
     Method OnRender ()
-    	
-    	room.Draw()
-		
-    	#Rem
-    	p1.Draw()
-    	#End
-    	#Rem
-    	SetColor (0,80,0)
-        DrawOval (200-64,128-64,128,128)
-        #End
-        
-    End
+        room.Draw()
+    End Method
 
+    
+    'Overloads OnStart Method from iEngine
     Method OnStart ()
         Print "Starting Gameplay"
-        room = New Level(0, 0, 150, 100, "Drunk")
+        room = New Level(0, 0, 150, 100, "Cellular")
         #Rem
         PlayMusic("tetris.mp3", 1)
         #End
-    End
+    End Method
 
+    
+    'Overloads OnStop Method from iEngine
     Method OnStop ()
         Print "Stopping Gameplay"
-    End
+    End Method
 
+
+    'Overloads OnUpdate Method from iEngine
     Method OnUpdate ()
-    	#Rem
+    	#Rem Use this code for zooming/alpha fading
     	If KeyDown(KEY_CONTROL)
         
             If KeyDown(KEY_A)
@@ -399,24 +221,19 @@ Class GameplayScene Extends iEngine
         If KeyDown(KEY_DOWN)
             Self.playfield.CameraY=Self.playfield.CameraY+4
         End If
-    	#Rem
-        Self.sprite2.rotation=Self.sprite2.rotation+1
-        #End
-        #Rem
-        If sprite1.Frame = 3
-        	sprite1.Frame = 0
-        Else
-        	Self.sprite1.NextFrame()
-        End
-        #End
+    	
         sprite1.AnimationLoop(1, 60)
         Self.sprite1.Show("LOOPING ANIMATION:")
         Self.sprite1.Show("FramePointer="+Self.sprite1.Frame)
         
 		p1.Update()
-    End
-End
+    End Method
+End Class
 
+
+'
+'Main function to start the game.
+'
 Function Main()
 	Local g:Game = New Game
 End

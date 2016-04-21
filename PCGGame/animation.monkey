@@ -1,6 +1,8 @@
 Import mojo
 
-
+'Custom class for handling sprite animations
+'
+'
 Class Animation
 	Field img:Image
 	Field frames:Int
@@ -11,6 +13,9 @@ Class Animation
 	Field elapsed:Int
 	Field lastTime:Int
 	
+	'Constructor for Animation
+	'
+	'Takes an image, number of frames, width/height of frame, and the time between frames
 	Method New(i:Image, f:Int, w:Int, h:Int, ft:Int)
 		Self.img = i
 		Self.frames = f
@@ -21,8 +26,11 @@ Class Animation
 		Self.elapsed = 0
 		Self.frame = 0
 		Self.lastTime = 0
-	End
+	End Method
 	
+	'Method for determining the current animation frame of a spritesheet.
+	'
+	'Returns the current animation frame
 	Method getFrame:Int()
 		elapsed = elapsed + (Millisecs() - lastTime)
 		lastTime = Millisecs()
@@ -32,8 +40,8 @@ Class Animation
 		If toReturn > frames - 1
 			toReturn = 0
 			elapsed = 0
-		End
+		End If
 		
 		Return toReturn
-	End
-End
+	End Method
+End Class

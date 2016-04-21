@@ -1,6 +1,8 @@
 Import mojo
-#Rem
-#End
+
+'Procedurally generated representation of a cave/dungeon.
+'
+'
 Class Level
 	Field layout:String[][]
 	Field width:Int
@@ -10,8 +12,11 @@ Class Level
 	'Location on World Map
 	Field xCoord:Int
 	Field yCoord:Int
-	#Rem
-	#End
+	
+	'Constructor for Level
+	'
+	'Takes in x/y coordinate pair for overworld location, width/height of cave, and a 
+	'string literal stating generation method.
 	Method New(x:Int, y:Int, w:Int, h:Int, type:String)
 		Self.generated = False
 		Self.xCoord = x
@@ -31,14 +36,20 @@ Class Level
 		Else If type = "Drunk"
 			fillCells(Self.layout)
 			drunkWalk(Self.layout)
-		End
+		End If
+		
 		Self.generated = true
 
-	End
+	End Method
 	
+	
+	'Getter method for isGenerated. Should be used to ensure Level object is not
+	'accessed until all generation is finished.
+	'
+	'Returns true is generation has finished.
 	Method isGenerated:Bool()
 		Return generated
-	End
+	End Method
 	
 	#Rem
 			setArray
@@ -52,7 +63,7 @@ Class Level
 		End
 		
 		Return result
-	End
+	End Method
 	#Rem
 			randomlyAssignCells
 			:Randomly sets values for Cellular automata generation's initial state
@@ -68,15 +79,15 @@ Class Level
 					design[i][j] = "X"	
 				Else
 					design[i][j] = "O"
-				End
+				End If
 				If i = 0 Or j = 0 Or i = design.Length - 1 Or j = design[0].Length - 1
 					design[i][j] = "X"
-				End
+				End If
 
 			End
 		End
 		
-	End
+	End Method
 	#Rem
 			generateCellularly
 			:One iteration of a cellular automata generation algorithm
@@ -94,23 +105,23 @@ Class Level
 						result[i][j] = "X"
 					Else
 						result[i][j] = "O"
-					End
+					End If
 				Else If design[i][j] = "O"
 					If adjacentWalls > 4
 						result[i][j] = "X"
 					Else
 						result[i][j] = "O"
-					End
-				End
+					End If
+				End If
 				
 				If i = 0 Or j = 0 Or i = design.Length - 1 Or j = design[0].Length - 1
 					result[i][j] = "X"
-				End
+				End If
 			End
 		End
 		
 		Return result
-	End
+	End Method
 	
 	#Rem
 	#End
@@ -118,31 +129,31 @@ Class Level
 		Local total:Int = 0
 		If i > 0 And design[i-1][j] = "X"
 			total += 1
-		End
+		End If
 		If i < design.Length - 1 And design[i+1][j] = "X"
 			total += 1
-		End
+		End If
 		If j > 0 And design[i][j-1] = "X"
 			total += 1
-		End
+		End If
 		If j < design[0].Length - 1 And design[i][j+1] = "X"
 			total += 1
-		End
+		End If
 		If i > 0 And j < design[0].Length - 1 And design[i-1][j+1] = "X"
 			total += 1
-		End
+		End If
 		If i > 0 And j > 0 And design[i-1][j-1] = "X"
 			total += 1
-		End
+		End If
 		If i < design.Length - 1 And j < design[0].Length - 1 And design[i+1][j+1] = "X"
 			total += 1
-		End
+		End If
 		If i < design.Length - 1 And j > 0 And design[i+1][j-1] = "X"
 			total += 1
-		End
+		End If
 
 		Return total 
-	End
+	End Method
 	#Rem
 	#End
 	Method printLevel(design:String[][])
@@ -158,7 +169,7 @@ Class Level
 
 			Print line
 		End
-	End
+	End Method
 	#Rem
 	#End
 	Method fillCells(design:String[][])
@@ -167,7 +178,7 @@ Class Level
 				design[i][j] = "X"
 			End
 		End
-	End
+	End Method
 	#Rem
 	#End
 	Method drunkWalk(design:String[][])
@@ -187,7 +198,7 @@ Class Level
 		While cleared < target
 			If followBias < 40
 				direction = Rnd(0, 4)
-			End
+			End If
 			If direction = 0 And tempY > 1
 				tempY -= 1
 			Else If direction = 1 And tempY < design[0].Length - 2
@@ -196,15 +207,16 @@ Class Level
 				tempX -= 1
 			Else If direction = 3 And tempX < design.Length - 2
 				tempX += 1
-			End
+			End If
 			
 			If design[tempX][tempY] = "X"
 				design[tempX][tempY] = "O"
 				cleared += 1
-			End
+			End If
 			followBias = Rnd(0, 100)
 		End
-	End
+	End Method
+	
 	#Rem
 	#End
 	Method Draw()
@@ -214,9 +226,9 @@ Class Level
 					SetColor(0,0,0)
 				Else
 					SetColor(255,255,255)
-				End
-				DrawRect(i * 10, j * 10, 10, 10)
+				End If
+				DrawRect(i * 40, j * 40, 40, 40)
 			End
 		End
-	End
-End
+	End Method
+End Class

@@ -2242,23 +2242,23 @@ function c_Game(){
 c_Game.prototype=extend_class(c_iApp);
 c_Game.m_new=function(){
 	push_err();
-	err_info="/Users/BlenderChild/ProcedualGeneration/main.monkey<20>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<20>";
 	c_iApp.m_new.call(this);
-	err_info="/Users/BlenderChild/ProcedualGeneration/main.monkey<20>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<20>";
 	pop_err();
 	return this;
 }
 c_Game.prototype.p_OnCreate=function(){
 	push_err();
-	err_info="/Users/BlenderChild/ProcedualGeneration/main.monkey<23>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<25>";
 	bb_random_Seed=bb_app_Millisecs();
-	err_info="/Users/BlenderChild/ProcedualGeneration/main.monkey<31>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<33>";
 	bb_main_menu=c_MenuScene.m_new.call(new c_MenuScene);
-	err_info="/Users/BlenderChild/ProcedualGeneration/main.monkey<32>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<34>";
 	bb_main_gameplay=c_GameplayScene.m_new.call(new c_GameplayScene);
-	err_info="/Users/BlenderChild/ProcedualGeneration/main.monkey<33>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<35>";
 	bb_main_noiseTest=c_NoiseTestScene.m_new.call(new c_NoiseTestScene);
-	err_info="/Users/BlenderChild/ProcedualGeneration/main.monkey<36>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<38>";
 	bb_app2_iStart3((bb_main_menu),60);
 	pop_err();
 	return 0;
@@ -2409,7 +2409,7 @@ var bb_app__delegate=null;
 var bb_app__game=null;
 function bbMain(){
 	push_err();
-	err_info="/Users/BlenderChild/ProcedualGeneration/main.monkey<421>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<238>";
 	var t_g=c_Game.m_new.call(new c_Game);
 	pop_err();
 	return 0;
@@ -4527,56 +4527,56 @@ function c_MenuScene(){
 c_MenuScene.prototype=extend_class(c_iEngine);
 c_MenuScene.m_new=function(){
 	push_err();
-	err_info="/Users/BlenderChild/ProcedualGeneration/main.monkey<43>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<46>";
 	c_iEngine.m_new.call(this);
-	err_info="/Users/BlenderChild/ProcedualGeneration/main.monkey<43>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<46>";
 	pop_err();
 	return this;
 }
 c_MenuScene.prototype.p_OnCreate=function(){
 	push_err();
-	err_info="/Users/BlenderChild/ProcedualGeneration/main.monkey<46>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<50>";
 	print("Creating Menu");
 	pop_err();
 	return 0;
 }
 c_MenuScene.prototype.p_OnRender=function(){
 	push_err();
-	err_info="/Users/BlenderChild/ProcedualGeneration/main.monkey<50>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<56>";
 	bb_graphics_DrawText("Press Enter to generate Cellularly",200.0,200.0,0.0,0.0);
-	err_info="/Users/BlenderChild/ProcedualGeneration/main.monkey<51>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<57>";
 	bb_graphics_DrawText("Press Space to generate with Noise",200.0,300.0,0.0,0.0);
 	pop_err();
 	return 0;
 }
 c_MenuScene.prototype.p_OnStart=function(){
 	push_err();
-	err_info="/Users/BlenderChild/ProcedualGeneration/main.monkey<55>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<63>";
 	print("Starting Menu");
 	pop_err();
 	return 0;
 }
 c_MenuScene.prototype.p_OnStop=function(){
 	push_err();
-	err_info="/Users/BlenderChild/ProcedualGeneration/main.monkey<59>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<69>";
 	print("Stopping Menu");
 	pop_err();
 	return 0;
 }
 c_MenuScene.prototype.p_OnUpdate=function(){
 	push_err();
-	err_info="/Users/BlenderChild/ProcedualGeneration/main.monkey<64>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<76>";
 	if((bb_input_KeyHit(13))!=0){
-		err_info="/Users/BlenderChild/ProcedualGeneration/main.monkey<65>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<77>";
 		print("Switch");
-		err_info="/Users/BlenderChild/ProcedualGeneration/main.monkey<66>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<78>";
 		bb_app2_iStart2(bb_main_gameplay);
 	}
-	err_info="/Users/BlenderChild/ProcedualGeneration/main.monkey<69>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<81>";
 	if((bb_input_KeyHit(32))!=0){
-		err_info="/Users/BlenderChild/ProcedualGeneration/main.monkey<70>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<82>";
 		print("Switch to Noise");
-		err_info="/Users/BlenderChild/ProcedualGeneration/main.monkey<71>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<83>";
 		bb_app2_iStart2(bb_main_noiseTest);
 	}
 	pop_err();
@@ -4595,105 +4595,105 @@ function c_GameplayScene(){
 c_GameplayScene.prototype=extend_class(c_iEngine);
 c_GameplayScene.m_new=function(){
 	push_err();
-	err_info="/Users/BlenderChild/ProcedualGeneration/main.monkey<271>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<94>";
 	c_iEngine.m_new.call(this);
-	err_info="/Users/BlenderChild/ProcedualGeneration/main.monkey<271>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<94>";
 	pop_err();
 	return this;
 }
 c_GameplayScene.prototype.p_OnCreate=function(){
 	push_err();
-	err_info="/Users/BlenderChild/ProcedualGeneration/main.monkey<283>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<107>";
 	print("Creating Gameplay");
-	err_info="/Users/BlenderChild/ProcedualGeneration/main.monkey<284>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<108>";
 	dbg_object(this).m_playfield=c_iPlayfield.m_new.call(new c_iPlayfield);
-	err_info="/Users/BlenderChild/ProcedualGeneration/main.monkey<285>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<109>";
 	dbg_object(this).m_playfield.p_AttachLast();
-	err_info="/Users/BlenderChild/ProcedualGeneration/main.monkey<286>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<110>";
 	dbg_object(this).m_playfield.p_AutoCls(0,0,0);
-	err_info="/Users/BlenderChild/ProcedualGeneration/main.monkey<287>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<111>";
 	dbg_object(this).m_playfield.p_Width2(600.0);
-	err_info="/Users/BlenderChild/ProcedualGeneration/main.monkey<288>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<112>";
 	dbg_object(this).m_playfield.p_Height2(445.0);
-	err_info="/Users/BlenderChild/ProcedualGeneration/main.monkey<289>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<113>";
 	dbg_object(this).m_playfield.p_Position(16.0,16.0);
-	err_info="/Users/BlenderChild/ProcedualGeneration/main.monkey<290>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<114>";
 	dbg_object(this).m_playfield.p_ZoomPointX2(200.0);
-	err_info="/Users/BlenderChild/ProcedualGeneration/main.monkey<291>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<115>";
 	dbg_object(this).m_playfield.p_ZoomPointY2(128.0);
-	err_info="/Users/BlenderChild/ProcedualGeneration/main.monkey<305>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<129>";
 	dbg_object(this).m_layer=c_iLayer.m_new.call(new c_iLayer);
-	err_info="/Users/BlenderChild/ProcedualGeneration/main.monkey<309>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<133>";
 	var t_img=bb_gfx_iLoadSprite2("char_walk_down.png",69,102,4);
-	err_info="/Users/BlenderChild/ProcedualGeneration/main.monkey<310>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<134>";
 	dbg_object(this).m_layer.p_AttachLast3(dbg_object(this).m_playfield);
-	err_info="/Users/BlenderChild/ProcedualGeneration/main.monkey<314>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<138>";
 	dbg_object(this).m_sprite1=c_iLayerSprite.m_new.call(new c_iLayerSprite);
-	err_info="/Users/BlenderChild/ProcedualGeneration/main.monkey<315>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<139>";
 	dbg_object(this).m_sprite1.p_AttachLast4(dbg_object(this).m_layer);
-	err_info="/Users/BlenderChild/ProcedualGeneration/main.monkey<316>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<140>";
 	dbg_object(this).m_sprite1.p_ImagePointer2(t_img);
-	err_info="/Users/BlenderChild/ProcedualGeneration/main.monkey<317>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<141>";
 	dbg_object(this).m_sprite1.p_Position(300.0,275.0);
-	err_info="/Users/BlenderChild/ProcedualGeneration/main.monkey<325>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<149>";
 	dbg_object(this).m_p1=c_Player.m_new.call(new c_Player,t_img,100,100);
-	err_info="/Users/BlenderChild/ProcedualGeneration/main.monkey<327>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<151>";
 	this.m_music=bb_audio_LoadSound("tetris.mp3");
 	pop_err();
 	return 0;
 }
 c_GameplayScene.prototype.p_OnRender=function(){
 	push_err();
-	err_info="/Users/BlenderChild/ProcedualGeneration/main.monkey<334>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<159>";
 	this.m_room.p_Draw();
 	pop_err();
 	return 0;
 }
 c_GameplayScene.prototype.p_OnStart=function(){
 	push_err();
-	err_info="/Users/BlenderChild/ProcedualGeneration/main.monkey<347>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<165>";
 	print("Starting Gameplay");
-	err_info="/Users/BlenderChild/ProcedualGeneration/main.monkey<348>";
-	this.m_room=c_Level.m_new.call(new c_Level,0,0,150,100,"Drunk");
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<166>";
+	this.m_room=c_Level.m_new.call(new c_Level,0,0,150,100,"Cellular");
 	pop_err();
 	return 0;
 }
 c_GameplayScene.prototype.p_OnStop=function(){
 	push_err();
-	err_info="/Users/BlenderChild/ProcedualGeneration/main.monkey<355>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<175>";
 	print("Stopping Gameplay");
 	pop_err();
 	return 0;
 }
 c_GameplayScene.prototype.p_OnUpdate=function(){
 	push_err();
-	err_info="/Users/BlenderChild/ProcedualGeneration/main.monkey<387>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<209>";
 	if((bb_input_KeyDown(37))!=0){
-		err_info="/Users/BlenderChild/ProcedualGeneration/main.monkey<388>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<210>";
 		dbg_object(this).m_playfield.p_CameraX2(dbg_object(this).m_playfield.p_CameraX()-4.0);
 	}
-	err_info="/Users/BlenderChild/ProcedualGeneration/main.monkey<391>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<213>";
 	if((bb_input_KeyDown(39))!=0){
-		err_info="/Users/BlenderChild/ProcedualGeneration/main.monkey<392>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<214>";
 		dbg_object(this).m_playfield.p_CameraX2(dbg_object(this).m_playfield.p_CameraX()+4.0);
 	}
-	err_info="/Users/BlenderChild/ProcedualGeneration/main.monkey<395>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<217>";
 	if((bb_input_KeyDown(38))!=0){
-		err_info="/Users/BlenderChild/ProcedualGeneration/main.monkey<396>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<218>";
 		dbg_object(this).m_playfield.p_CameraY2(dbg_object(this).m_playfield.p_CameraY()-4.0);
 	}
-	err_info="/Users/BlenderChild/ProcedualGeneration/main.monkey<399>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<221>";
 	if((bb_input_KeyDown(40))!=0){
-		err_info="/Users/BlenderChild/ProcedualGeneration/main.monkey<400>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<222>";
 		dbg_object(this).m_playfield.p_CameraY2(dbg_object(this).m_playfield.p_CameraY()+4.0);
 	}
-	err_info="/Users/BlenderChild/ProcedualGeneration/main.monkey<412>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<225>";
 	this.m_sprite1.p_AnimationLoop(1.0,"60");
-	err_info="/Users/BlenderChild/ProcedualGeneration/main.monkey<413>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<226>";
 	dbg_object(this).m_sprite1.p_Show("LOOPING ANIMATION:");
-	err_info="/Users/BlenderChild/ProcedualGeneration/main.monkey<414>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<227>";
 	dbg_object(this).m_sprite1.p_Show("FramePointer="+String(dbg_object(this).m_sprite1.p_Frame2()));
-	err_info="/Users/BlenderChild/ProcedualGeneration/main.monkey<416>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<229>";
 	this.m_p1.p_Update();
 	pop_err();
 	return 0;
@@ -4714,60 +4714,60 @@ function c_NoiseTestScene(){
 c_NoiseTestScene.prototype=extend_class(c_iEngine);
 c_NoiseTestScene.m_new=function(){
 	push_err();
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<12>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<12>";
 	c_iEngine.m_new.call(this);
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<12>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<12>";
 	pop_err();
 	return this;
 }
 c_NoiseTestScene.prototype.p_OnCreate=function(){
 	push_err();
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<48>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<48>";
 	print("Creating Noise Test");
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<49>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<49>";
 	dbg_object(this).m_playfieldN=c_iPlayfield.m_new.call(new c_iPlayfield);
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<50>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<50>";
 	dbg_object(this).m_playfieldN.p_AttachLast();
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<51>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<51>";
 	dbg_object(this).m_playfieldN.p_AutoCls(0,0,0);
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<52>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<52>";
 	dbg_object(this).m_playfieldN.p_Width2(600.0);
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<53>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<53>";
 	dbg_object(this).m_playfieldN.p_Height2(460.0);
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<54>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<54>";
 	dbg_object(this).m_playfieldN.p_Position(25.0,15.0);
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<55>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<55>";
 	dbg_object(this).m_playfieldN.p_ZoomPointX2(200.0);
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<56>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<56>";
 	dbg_object(this).m_playfieldN.p_ZoomPointY2(128.0);
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<58>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<58>";
 	bb_noisetestscene_textures=bb_gfx_iLoadSprite2("textures20.png",20,20,9);
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<59>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<59>";
 	bb_noisetestscene_enemies=bb_gfx_iLoadSprite2("enemies20.png",20,20,9);
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<66>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<66>";
 	this.m_mapWidth=600;
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<67>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<67>";
 	this.m_mapHeight=460;
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<69>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<69>";
 	this.m_chunks=bb_noisetestscene_setArray(30,23);
 	pop_err();
 	return 0;
 }
 c_NoiseTestScene.prototype.p_drawNoiseMap=function(t_w,t_h){
 	push_err();
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<362>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<362>";
 	var t_xOffset=((dbg_object(this).m_playfieldN.p_CameraX())|0);
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<363>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<363>";
 	var t_yOffset=((dbg_object(this).m_playfieldN.p_CameraY())|0);
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<364>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<364>";
 	var t_xTarget=t_xOffset+30;
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<365>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<365>";
 	var t_yTarget=t_yOffset+23;
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<369>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<369>";
 	for(var t_i=t_xOffset;t_i<t_xTarget;t_i=t_i+1){
-		err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<370>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<370>";
 		for(var t_j=t_yOffset;t_j<t_yTarget;t_j=t_j+1){
-			err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<371>";
+			err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<371>";
 			bb_graphics_DrawImage(bb_noisetestscene_textures,((t_i-t_xOffset)*20+t_xOffset),((t_j-t_yOffset)*20+t_yOffset),dbg_array(dbg_array(this.m_biomes,t_i)[dbg_index],t_j)[dbg_index]);
 		}
 	}
@@ -4776,21 +4776,21 @@ c_NoiseTestScene.prototype.p_drawNoiseMap=function(t_w,t_h){
 }
 c_NoiseTestScene.prototype.p_drawEnemies=function(t_w,t_h){
 	push_err();
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<386>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<386>";
 	var t_xOffset=((dbg_object(this).m_playfieldN.p_CameraX())|0);
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<387>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<387>";
 	var t_yOffset=((dbg_object(this).m_playfieldN.p_CameraY())|0);
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<388>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<388>";
 	var t_xTarget=t_xOffset+30;
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<389>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<389>";
 	var t_yTarget=t_yOffset+23;
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<391>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<391>";
 	for(var t_i=t_xOffset;t_i<t_xTarget;t_i=t_i+1){
-		err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<392>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<392>";
 		for(var t_j=t_yOffset;t_j<t_yTarget;t_j=t_j+1){
-			err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<393>";
+			err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<393>";
 			if(!(dbg_array(dbg_array(this.m_enemyPlacement,t_i)[dbg_index],t_j)[dbg_index]==-1)){
-				err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<394>";
+				err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<394>";
 				bb_graphics_DrawImage(bb_noisetestscene_enemies,((t_i-t_xOffset)*20+t_xOffset),((t_j-t_yOffset)*20+t_yOffset),dbg_array(dbg_array(this.m_enemyPlacement,t_i)[dbg_index],t_j)[dbg_index]);
 			}
 		}
@@ -4800,71 +4800,71 @@ c_NoiseTestScene.prototype.p_drawEnemies=function(t_w,t_h){
 }
 c_NoiseTestScene.prototype.p_OnRender=function(){
 	push_err();
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<75>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<75>";
 	this.p_drawNoiseMap(this.m_mapWidth,this.m_mapHeight);
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<76>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<76>";
 	this.p_drawEnemies(this.m_mapWidth,this.m_mapHeight);
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<78>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<78>";
 	bb_graphics_DrawText("CameraX: "+String(dbg_object(this).m_playfieldN.p_CameraX()),dbg_object(this).m_playfieldN.p_CameraX()+10.0,dbg_object(this).m_playfieldN.p_CameraY()+10.0,0.0,0.0);
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<79>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<79>";
 	bb_graphics_DrawText("CameraY: "+String(dbg_object(this).m_playfieldN.p_CameraY()),dbg_object(this).m_playfieldN.p_CameraX()+10.0,dbg_object(this).m_playfieldN.p_CameraY()+20.0,0.0,0.0);
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<80>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<80>";
 	bb_graphics_DrawText("MapX: "+String(dbg_object(this).m_playfieldN.p_CameraX()),dbg_object(this).m_playfieldN.p_CameraX()+10.0,dbg_object(this).m_playfieldN.p_CameraY()+40.0,0.0,0.0);
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<81>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<81>";
 	bb_graphics_DrawText("MapY: "+String(dbg_object(this).m_playfieldN.p_CameraY()),dbg_object(this).m_playfieldN.p_CameraX()+10.0,dbg_object(this).m_playfieldN.p_CameraY()+50.0,0.0,0.0);
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<82>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<82>";
 	bb_graphics_DrawText("MapXEnd: "+String(dbg_object(this).m_playfieldN.p_CameraX()+120.0),dbg_object(this).m_playfieldN.p_CameraX()+10.0,dbg_object(this).m_playfieldN.p_CameraY()+70.0,0.0,0.0);
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<83>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<83>";
 	bb_graphics_DrawText("MapYEnd: "+String(dbg_object(this).m_playfieldN.p_CameraY()+89.0),dbg_object(this).m_playfieldN.p_CameraX()+10.0,dbg_object(this).m_playfieldN.p_CameraY()+80.0,0.0,0.0);
 	pop_err();
 	return 0;
 }
 c_NoiseTestScene.prototype.p_determineBiomes=function(t_elevation,t_moist,t_width,t_height){
 	push_err();
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<404>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<404>";
 	var t_localBiome=0;
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<406>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<406>";
 	for(var t_i=0;t_i<t_width;t_i=t_i+1){
-		err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<407>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<407>";
 		for(var t_j=0;t_j<t_height;t_j=t_j+1){
-			err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<408>";
+			err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<408>";
 			if(dbg_array(dbg_array(this.m_noiseMap,t_i)[dbg_index],t_j)[dbg_index]<-0.35){
-				err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<409>";
+				err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<409>";
 				t_localBiome=0;
 			}else{
-				err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<410>";
+				err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<410>";
 				if(dbg_array(dbg_array(this.m_noiseMap,t_i)[dbg_index],t_j)[dbg_index]<-0.3){
-					err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<411>";
+					err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<411>";
 					t_localBiome=1;
 				}else{
-					err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<412>";
+					err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<412>";
 					if(dbg_array(dbg_array(this.m_noiseMap,t_i)[dbg_index],t_j)[dbg_index]<-0.2){
-						err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<413>";
+						err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<413>";
 						t_localBiome=2;
 					}else{
-						err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<414>";
+						err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<414>";
 						if(dbg_array(dbg_array(this.m_noiseMap,t_i)[dbg_index],t_j)[dbg_index]<-0.1){
-							err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<415>";
+							err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<415>";
 							t_localBiome=3;
 						}else{
-							err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<416>";
+							err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<416>";
 							if(dbg_array(dbg_array(this.m_noiseMap,t_i)[dbg_index],t_j)[dbg_index]<0.2){
-								err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<417>";
+								err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<417>";
 								t_localBiome=4;
 							}else{
-								err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<418>";
+								err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<418>";
 								if(dbg_array(dbg_array(this.m_noiseMap,t_i)[dbg_index],t_j)[dbg_index]<0.5){
-									err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<419>";
+									err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<419>";
 									t_localBiome=5;
 								}else{
-									err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<420>";
+									err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<420>";
 									if(dbg_array(dbg_array(this.m_noiseMap,t_i)[dbg_index],t_j)[dbg_index]<0.6){
-										err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<421>";
+										err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<421>";
 										t_localBiome=6;
 									}else{
-										err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<422>";
+										err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<422>";
 										if(dbg_array(dbg_array(this.m_noiseMap,t_i)[dbg_index],t_j)[dbg_index]<1.0){
-											err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<423>";
+											err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<423>";
 											t_localBiome=7;
 										}
 									}
@@ -4874,12 +4874,12 @@ c_NoiseTestScene.prototype.p_determineBiomes=function(t_elevation,t_moist,t_widt
 					}
 				}
 			}
-			err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<426>";
+			err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<426>";
 			if(t_i==0 || t_i==t_width-1 || t_j==0 || t_j==t_height-1){
-				err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<427>";
+				err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<427>";
 				t_localBiome=8;
 			}
-			err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<430>";
+			err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<430>";
 			dbg_array(dbg_array(this.m_biomes,t_i)[dbg_index],t_j)[dbg_index]=t_localBiome;
 		}
 	}
@@ -4888,29 +4888,29 @@ c_NoiseTestScene.prototype.p_determineBiomes=function(t_elevation,t_moist,t_widt
 }
 c_NoiseTestScene.prototype.p_makeLake=function(t_centerX,t_centerY){
 	push_err();
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<185>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<185>";
 	var t_lakeWidth=((bb_random_Rnd2(1.0,5.0))|0);
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<186>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<186>";
 	var t_lakeHeight=((bb_random_Rnd2(1.0,5.0))|0);
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<187>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<187>";
 	print("Make a lake at "+String(t_centerX)+", "+String(t_centerY)+", Size: "+String(t_lakeWidth)+"x"+String(t_lakeHeight));
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<188>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<188>";
 	var t_tempX=t_centerX-t_lakeWidth;
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<189>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<189>";
 	var t_tempY=t_centerY-t_lakeHeight;
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<191>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<191>";
 	var t_xTarget=t_tempX+(t_lakeWidth*2+1);
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<192>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<192>";
 	var t_yTarget=t_tempY+(t_lakeHeight*2+1);
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<194>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<194>";
 	dbg_array(dbg_array(this.m_biomes,t_centerX)[dbg_index],t_centerY)[dbg_index]=1;
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<196>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<196>";
 	for(var t_i=t_tempX;t_i<t_xTarget;t_i=t_i+1){
-		err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<197>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<197>";
 		for(var t_j=t_tempY;t_j<t_yTarget;t_j=t_j+1){
-			err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<198>";
+			err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<198>";
 			if(t_i>0 && t_i<this.m_mapWidth-1 && t_j>0 && t_j<this.m_mapHeight-1 && !(dbg_array(dbg_array(this.m_biomes,t_i)[dbg_index],t_j)[dbg_index]==0)){
-				err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<199>";
+				err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<199>";
 				dbg_array(dbg_array(this.m_biomes,t_i)[dbg_index],t_j)[dbg_index]=1;
 			}
 		}
@@ -4920,79 +4920,79 @@ c_NoiseTestScene.prototype.p_makeLake=function(t_centerX,t_centerY){
 }
 c_NoiseTestScene.prototype.p_makeRiver=function(t_startX,t_startY){
 	push_err();
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<133>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<133>";
 	var t_currentX=t_startX;
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<134>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<134>";
 	var t_currentY=t_startY;
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<135>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<135>";
 	var t_localMinX=t_startX;
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<136>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<136>";
 	var t_localMinY=t_startY;
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<137>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<137>";
 	var t_lowestElevation=dbg_array(dbg_array(this.m_noiseMap,t_currentX)[dbg_index],t_currentY)[dbg_index];
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<138>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<138>";
 	var t_riverEnd=false;
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<139>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<139>";
 	var t_riverLength=0;
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<140>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<140>";
 	dbg_array(dbg_array(this.m_biomes,t_currentX)[dbg_index],t_currentY)[dbg_index]=1;
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<142>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<142>";
 	while(t_riverEnd==false && t_riverLength<100){
-		err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<144>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<144>";
 		if(t_currentX>0 && dbg_array(dbg_array(this.m_noiseMap,t_currentX-1)[dbg_index],t_currentY)[dbg_index]<t_lowestElevation){
-			err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<145>";
+			err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<145>";
 			t_localMinX=t_currentX-1;
-			err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<146>";
+			err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<146>";
 			t_localMinY=t_currentY;
-			err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<147>";
+			err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<147>";
 			t_lowestElevation=dbg_array(dbg_array(this.m_noiseMap,t_localMinX)[dbg_index],t_localMinY)[dbg_index];
 		}
-		err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<149>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<149>";
 		if(t_currentX<this.m_mapWidth-2 && dbg_array(dbg_array(this.m_noiseMap,t_currentX+1)[dbg_index],t_currentY)[dbg_index]<t_lowestElevation){
-			err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<150>";
+			err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<150>";
 			t_localMinX=t_currentX+1;
-			err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<151>";
+			err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<151>";
 			t_localMinY=t_currentY;
-			err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<152>";
+			err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<152>";
 			t_lowestElevation=dbg_array(dbg_array(this.m_noiseMap,t_localMinX)[dbg_index],t_localMinY)[dbg_index];
 		}
-		err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<154>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<154>";
 		if(t_currentY>0 && dbg_array(dbg_array(this.m_noiseMap,t_currentX)[dbg_index],t_currentY-1)[dbg_index]<t_lowestElevation){
-			err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<155>";
+			err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<155>";
 			t_localMinX=t_currentX;
-			err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<156>";
+			err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<156>";
 			t_localMinY=t_currentY-1;
-			err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<157>";
+			err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<157>";
 			t_lowestElevation=dbg_array(dbg_array(this.m_noiseMap,t_localMinX)[dbg_index],t_localMinY)[dbg_index];
 		}
-		err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<159>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<159>";
 		if(t_currentY<this.m_mapHeight-2 && dbg_array(dbg_array(this.m_noiseMap,t_currentX)[dbg_index],t_currentY+1)[dbg_index]<t_lowestElevation){
-			err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<160>";
+			err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<160>";
 			t_localMinX=t_currentX;
-			err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<161>";
+			err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<161>";
 			t_localMinY=t_currentY+1;
-			err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<162>";
+			err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<162>";
 			t_lowestElevation=dbg_array(dbg_array(this.m_noiseMap,t_localMinX)[dbg_index],t_localMinY)[dbg_index];
 		}
-		err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<165>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<165>";
 		if(dbg_array(dbg_array(this.m_biomes,t_localMinX)[dbg_index],t_localMinY)[dbg_index]==0){
-			err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<167>";
+			err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<167>";
 			t_riverEnd=true;
 		}else{
-			err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<168>";
+			err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<168>";
 			if(t_localMinX==t_currentX && t_localMinY==t_currentY){
-				err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<169>";
+				err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<169>";
 				this.p_makeLake(t_currentX,t_currentY);
-				err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<170>";
+				err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<170>";
 				t_riverEnd=true;
 			}else{
-				err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<172>";
+				err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<172>";
 				dbg_array(dbg_array(this.m_biomes,t_localMinX)[dbg_index],t_localMinY)[dbg_index]=1;
-				err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<173>";
+				err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<173>";
 				t_currentX=t_localMinX;
-				err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<174>";
+				err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<174>";
 				t_currentY=t_localMinY;
-				err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<175>";
+				err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<175>";
 				t_riverLength+=1;
 			}
 		}
@@ -5002,29 +5002,29 @@ c_NoiseTestScene.prototype.p_makeRiver=function(t_startX,t_startY){
 }
 c_NoiseTestScene.prototype.p_makeRivers=function(t_total){
 	push_err();
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<114>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<114>";
 	var t_rivers=0;
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<115>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<115>";
 	var t_randX=0;
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<116>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<116>";
 	var t_randY=0;
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<117>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<117>";
 	var t_randBiome=0;
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<118>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<118>";
 	while(t_rivers<t_total){
-		err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<119>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<119>";
 		t_randX=((bb_random_Rnd2(0.0,(this.m_mapWidth)))|0);
-		err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<120>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<120>";
 		t_randY=((bb_random_Rnd2(0.0,(this.m_mapHeight)))|0);
-		err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<121>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<121>";
 		t_randBiome=dbg_array(dbg_array(this.m_biomes,t_randX)[dbg_index],t_randY)[dbg_index];
-		err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<122>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<122>";
 		if(t_randBiome==5){
-			err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<123>";
+			err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<123>";
 			this.p_makeRiver(t_randX,t_randY);
-			err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<124>";
+			err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<124>";
 			print("River at "+String(t_randX)+", "+String(t_randY));
-			err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<125>";
+			err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<125>";
 			t_rivers+=1;
 		}
 	}
@@ -5033,25 +5033,25 @@ c_NoiseTestScene.prototype.p_makeRivers=function(t_total){
 }
 c_NoiseTestScene.prototype.p_selectRandomStartPoint=function(){
 	push_err();
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<267>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<267>";
 	var t_x=0;
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<268>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<268>";
 	var t_y=0;
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<269>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<269>";
 	var t_startPointSet=false;
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<271>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<271>";
 	while(!t_startPointSet){
-		err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<272>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<272>";
 		t_x=((bb_random_Rnd2(200.0,400.0))|0);
-		err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<273>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<273>";
 		t_y=((bb_random_Rnd2(130.0,330.0))|0);
-		err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<274>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<274>";
 		if(dbg_array(dbg_array(dbg_object(this).m_biomes,t_x)[dbg_index],t_y)[dbg_index]==3 || dbg_array(dbg_array(dbg_object(this).m_biomes,t_x)[dbg_index],t_y)[dbg_index]==4){
-			err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<275>";
+			err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<275>";
 			dbg_object(this).m_playfieldN.p_CameraX2(t_x);
-			err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<276>";
+			err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<276>";
 			dbg_object(this).m_playfieldN.p_CameraY2(t_y);
-			err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<277>";
+			err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<277>";
 			t_startPointSet=true;
 		}
 	}
@@ -5060,82 +5060,82 @@ c_NoiseTestScene.prototype.p_selectRandomStartPoint=function(){
 }
 c_NoiseTestScene.prototype.p_makeCaves=function(t_total){
 	push_err();
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<209>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<209>";
 	var t_lowX=((dbg_object(this).m_playfieldN.p_CameraX()-50.0)|0);
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<210>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<210>";
 	var t_highX=((dbg_object(this).m_playfieldN.p_CameraX()+100.0)|0);
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<211>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<211>";
 	var t_lowY=((dbg_object(this).m_playfieldN.p_CameraY()-50.0)|0);
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<212>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<212>";
 	var t_highY=((dbg_object(this).m_playfieldN.p_CameraY()+100.0)|0);
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<214>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<214>";
 	var t_randX=0;
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<215>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<215>";
 	var t_randY=0;
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<217>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<217>";
 	var t_cavesMade=0;
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<218>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<218>";
 	var t_isReachable=false;
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<220>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<220>";
 	while(t_cavesMade<t_total){
-		err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<221>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<221>";
 		t_isReachable=false;
-		err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<222>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<222>";
 		t_randX=((bb_random_Rnd2((t_lowX),(t_highX)))|0);
-		err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<223>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<223>";
 		t_randY=((bb_random_Rnd2((t_lowY),(t_highY)))|0);
-		err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<226>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<226>";
 		if(dbg_array(dbg_array(this.m_biomes,t_randX)[dbg_index],t_randY)[dbg_index]==5){
-			err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<229>";
+			err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<229>";
 			if(t_randX>0 && dbg_array(dbg_array(this.m_biomes,t_randX-1)[dbg_index],t_randY)[dbg_index]==4){
-				err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<230>";
+				err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<230>";
 				t_isReachable=true;
 			}
-			err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<232>";
+			err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<232>";
 			if(t_randX<this.m_mapWidth-2 && dbg_array(dbg_array(this.m_biomes,t_randX+1)[dbg_index],t_randY)[dbg_index]==4){
-				err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<233>";
+				err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<233>";
 				t_isReachable=true;
 			}
-			err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<235>";
+			err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<235>";
 			if(t_randX>0 && t_randY>0 && dbg_array(dbg_array(this.m_biomes,t_randX-1)[dbg_index],t_randY-1)[dbg_index]==4){
-				err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<236>";
+				err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<236>";
 				t_isReachable=true;
 			}
-			err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<238>";
+			err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<238>";
 			if(t_randX<this.m_mapWidth-2 && t_randY>0 && dbg_array(dbg_array(this.m_biomes,t_randX+1)[dbg_index],t_randY-1)[dbg_index]==4){
-				err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<239>";
+				err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<239>";
 				t_isReachable=true;
 			}
-			err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<241>";
+			err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<241>";
 			if(t_randY>0 && dbg_array(dbg_array(this.m_biomes,t_randX)[dbg_index],t_randY-1)[dbg_index]==4){
-				err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<242>";
+				err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<242>";
 				t_isReachable=true;
 			}
-			err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<244>";
+			err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<244>";
 			if(t_randY>this.m_mapHeight-2 && dbg_array(dbg_array(this.m_biomes,t_randX)[dbg_index],t_randY+1)[dbg_index]==4){
-				err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<245>";
+				err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<245>";
 				t_isReachable=true;
 			}
-			err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<247>";
+			err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<247>";
 			if(t_randX>0 && t_randY<this.m_mapHeight-2 && dbg_array(dbg_array(this.m_biomes,t_randX-1)[dbg_index],t_randY+1)[dbg_index]==4){
-				err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<248>";
+				err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<248>";
 				t_isReachable=true;
 			}
-			err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<250>";
+			err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<250>";
 			if(t_randX<this.m_mapWidth-2 && t_randY<this.m_mapHeight-2 && dbg_array(dbg_array(this.m_biomes,t_randX+1)[dbg_index],t_randY+1)[dbg_index]==4){
-				err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<251>";
+				err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<251>";
 				t_isReachable=true;
 			}
 		}
-		err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<255>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<255>";
 		if(t_isReachable){
-			err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<256>";
+			err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<256>";
 			print("Cave entrance at "+String(t_randX)+", "+String(t_randY));
-			err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<257>";
+			err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<257>";
 			dbg_array(dbg_array(this.m_biomes,t_randX)[dbg_index],t_randY)[dbg_index]=8;
-			err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<258>";
+			err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<258>";
 			dbg_array(this.m_caves,t_cavesMade)[dbg_index]=c_Level.m_new.call(new c_Level,t_randX,t_randY,150,100,"Cellular");
-			err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<259>";
+			err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<259>";
 			t_cavesMade+=1;
 		}
 	}
@@ -5144,13 +5144,13 @@ c_NoiseTestScene.prototype.p_makeCaves=function(t_total){
 }
 c_NoiseTestScene.prototype.p_determineEnemyType=function(t_enemies,t_habitat){
 	push_err();
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<440>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<440>";
 	for(var t_i=0;t_i<t_enemies.length;t_i=t_i+1){
-		err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<441>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<441>";
 		for(var t_j=0;t_j<dbg_array(t_enemies,0)[dbg_index].length;t_j=t_j+1){
-			err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<442>";
+			err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<442>";
 			if(!(dbg_array(dbg_array(t_enemies,t_i)[dbg_index],t_j)[dbg_index]==-1)){
-				err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<443>";
+				err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<443>";
 				dbg_array(dbg_array(t_enemies,t_i)[dbg_index],t_j)[dbg_index]=dbg_array(dbg_array(t_habitat,t_i)[dbg_index],t_j)[dbg_index];
 			}
 		}
@@ -5160,67 +5160,67 @@ c_NoiseTestScene.prototype.p_determineEnemyType=function(t_enemies,t_habitat){
 }
 c_NoiseTestScene.prototype.p_placeEnemies=function(t_width,t_height){
 	push_err();
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<452>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<452>";
 	dbg_object(this).m_enemyPlacement=bb_noisetestscene_setArray(t_width,t_height);
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<453>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<453>";
 	bb_noisetestscene_randomlyAssignCells(dbg_object(this).m_enemyPlacement,1);
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<454>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<454>";
 	this.p_determineEnemyType(dbg_object(this).m_enemyPlacement,dbg_object(this).m_biomes);
 	pop_err();
 	return 0;
 }
 c_NoiseTestScene.prototype.p_OnStart=function(){
 	push_err();
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<89>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<89>";
 	print("Starting Noise Test");
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<90>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<90>";
 	var t_n=c_SimplexNoise.m_new.call(new c_SimplexNoise);
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<91>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<91>";
 	this.m_noiseMap=t_n.p_generateOctavedNoiseMap(this.m_mapWidth,this.m_mapHeight,5,0.5,1.0);
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<92>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<92>";
 	this.m_moisture=t_n.p_generateNoiseMap(this.m_mapWidth,this.m_mapHeight);
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<93>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<93>";
 	this.m_biomes=bb_noisetestscene_setArray(this.m_mapWidth,this.m_mapHeight);
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<94>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<94>";
 	this.p_determineBiomes(this.m_noiseMap,this.m_moisture,this.m_mapWidth,this.m_mapHeight);
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<95>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<95>";
 	this.p_makeRivers(25);
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<96>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<96>";
 	this.p_selectRandomStartPoint();
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<97>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<97>";
 	this.p_makeCaves(1);
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<98>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<98>";
 	this.p_placeEnemies(this.m_mapWidth,this.m_mapHeight);
 	pop_err();
 	return 0;
 }
 c_NoiseTestScene.prototype.p_OnStop=function(){
 	push_err();
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<285>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<285>";
 	print("Stopping Noise Test");
 	pop_err();
 	return 0;
 }
 c_NoiseTestScene.prototype.p_checkCameraBounds=function(){
 	push_err();
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<339>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<339>";
 	if(dbg_object(this).m_playfieldN.p_CameraX()<0.0){
-		err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<340>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<340>";
 		dbg_object(this).m_playfieldN.p_CameraX2(0.0);
 	}
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<342>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<342>";
 	if(dbg_object(this).m_playfieldN.p_CameraY()<0.0){
-		err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<343>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<343>";
 		dbg_object(this).m_playfieldN.p_CameraY2(0.0);
 	}
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<350>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<350>";
 	if(dbg_object(this).m_playfieldN.p_CameraX()+dbg_object(this).m_playfieldN.p_Width()/20.0>dbg_object(this).m_playfieldN.p_Width()){
-		err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<351>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<351>";
 		dbg_object(this).m_playfieldN.p_CameraX2(dbg_object(this).m_playfieldN.p_Width()-dbg_object(this).m_playfieldN.p_Width()/20.0);
 	}
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<353>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<353>";
 	if(dbg_object(this).m_playfieldN.p_CameraY()+dbg_object(this).m_playfieldN.p_Height()/20.0>dbg_object(this).m_playfieldN.p_Height()){
-		err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<354>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<354>";
 		dbg_object(this).m_playfieldN.p_CameraY2(dbg_object(this).m_playfieldN.p_Height()-dbg_object(this).m_playfieldN.p_Height()/20.0);
 	}
 	pop_err();
@@ -5228,65 +5228,65 @@ c_NoiseTestScene.prototype.p_checkCameraBounds=function(){
 }
 c_NoiseTestScene.prototype.p_OnUpdate=function(){
 	push_err();
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<291>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<291>";
 	if((bb_input_KeyDown(17))!=0){
-		err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<293>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<293>";
 		if((bb_input_KeyDown(65))!=0){
-			err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<294>";
+			err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<294>";
 			dbg_object(this).m_playfieldN.p_AlphaFade2(dbg_object(this).m_playfieldN.p_AlphaFade()-0.01);
-			err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<295>";
+			err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<295>";
 			if(dbg_object(this).m_playfieldN.p_AlphaFade()<0.0){
-				err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<295>";
+				err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<295>";
 				dbg_object(this).m_playfieldN.p_AlphaFade2(dbg_object(this).m_playfieldN.p_AlphaFade()+1.0);
 			}
 		}
-		err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<298>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<298>";
 		if((bb_input_KeyDown(90))!=0){
-			err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<299>";
+			err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<299>";
 			dbg_object(this).m_playfieldN.p_ZoomX2(dbg_object(this).m_playfieldN.p_ZoomX()-0.01);
-			err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<300>";
+			err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<300>";
 			dbg_object(this).m_playfieldN.p_ZoomY2(dbg_object(this).m_playfieldN.p_ZoomY()-0.01);
 		}
 	}else{
-		err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<305>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<305>";
 		if((bb_input_KeyDown(65))!=0){
-			err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<306>";
+			err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<306>";
 			dbg_object(this).m_playfieldN.p_AlphaFade2(dbg_object(this).m_playfieldN.p_AlphaFade()+0.01);
-			err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<307>";
+			err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<307>";
 			if(dbg_object(this).m_playfieldN.p_AlphaFade()>1.0){
-				err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<307>";
+				err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<307>";
 				dbg_object(this).m_playfieldN.p_AlphaFade2(dbg_object(this).m_playfieldN.p_AlphaFade()-1.0);
 			}
 		}
-		err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<310>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<310>";
 		if((bb_input_KeyDown(90))!=0){
-			err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<311>";
+			err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<311>";
 			dbg_object(this).m_playfieldN.p_ZoomX2(dbg_object(this).m_playfieldN.p_ZoomX()+0.01);
-			err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<312>";
+			err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<312>";
 			dbg_object(this).m_playfieldN.p_ZoomY2(dbg_object(this).m_playfieldN.p_ZoomY()+0.01);
 		}
 	}
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<316>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<316>";
 	if((bb_input_KeyDown(37))!=0){
-		err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<317>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<317>";
 		dbg_object(this).m_playfieldN.p_CameraX2(dbg_object(this).m_playfieldN.p_CameraX()-1.0);
 	}
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<320>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<320>";
 	if((bb_input_KeyDown(39))!=0){
-		err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<321>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<321>";
 		dbg_object(this).m_playfieldN.p_CameraX2(dbg_object(this).m_playfieldN.p_CameraX()+1.0);
 	}
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<324>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<324>";
 	if((bb_input_KeyDown(38))!=0){
-		err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<325>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<325>";
 		dbg_object(this).m_playfieldN.p_CameraY2(dbg_object(this).m_playfieldN.p_CameraY()-1.0);
 	}
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<328>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<328>";
 	if((bb_input_KeyDown(40))!=0){
-		err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<329>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<329>";
 		dbg_object(this).m_playfieldN.p_CameraY2(dbg_object(this).m_playfieldN.p_CameraY()+1.0);
 	}
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<331>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<331>";
 	this.p_checkCameraBounds();
 	pop_err();
 	return 0;
@@ -9886,49 +9886,49 @@ function c_Player(){
 }
 c_Player.m_new=function(t_i,t_x,t_y){
 	push_err();
-	err_info="/Users/BlenderChild/ProcedualGeneration/player.monkey<15>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/player.monkey<21>";
 	dbg_object(this).m_image=t_i;
-	err_info="/Users/BlenderChild/ProcedualGeneration/player.monkey<16>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/player.monkey<22>";
 	dbg_object(this).m_x=t_x;
-	err_info="/Users/BlenderChild/ProcedualGeneration/player.monkey<17>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/player.monkey<23>";
 	dbg_object(this).m_y=t_y;
-	err_info="/Users/BlenderChild/ProcedualGeneration/player.monkey<18>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/player.monkey<24>";
 	dbg_object(this).m_xVel=0;
-	err_info="/Users/BlenderChild/ProcedualGeneration/player.monkey<19>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/player.monkey<25>";
 	dbg_object(this).m_yVel=0;
-	err_info="/Users/BlenderChild/ProcedualGeneration/player.monkey<20>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/player.monkey<26>";
 	dbg_object(this).m_downAnim=c_Animation.m_new.call(new c_Animation,t_i,4,69,102,200);
-	err_info="/Users/BlenderChild/ProcedualGeneration/player.monkey<21>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/player.monkey<27>";
 	dbg_object(this).m_currentAnimation=dbg_object(this).m_downAnim;
 	pop_err();
 	return this;
 }
 c_Player.m_new2=function(){
 	push_err();
-	err_info="/Users/BlenderChild/ProcedualGeneration/player.monkey<4>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/player.monkey<7>";
 	pop_err();
 	return this;
 }
 c_Player.prototype.p_HandleControls=function(){
 	push_err();
-	err_info="/Users/BlenderChild/ProcedualGeneration/player.monkey<34>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/player.monkey<52>";
 	if((bb_input_KeyDown(37))!=0){
-		err_info="/Users/BlenderChild/ProcedualGeneration/player.monkey<35>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/player.monkey<53>";
 		this.m_x=this.m_x-4;
 	}
-	err_info="/Users/BlenderChild/ProcedualGeneration/player.monkey<37>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/player.monkey<55>";
 	if((bb_input_KeyDown(39))!=0){
-		err_info="/Users/BlenderChild/ProcedualGeneration/player.monkey<38>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/player.monkey<56>";
 		this.m_x=this.m_x+4;
 	}
-	err_info="/Users/BlenderChild/ProcedualGeneration/player.monkey<40>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/player.monkey<58>";
 	if((bb_input_KeyDown(40))!=0){
-		err_info="/Users/BlenderChild/ProcedualGeneration/player.monkey<41>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/player.monkey<59>";
 		this.m_y=this.m_y+4;
 	}
-	err_info="/Users/BlenderChild/ProcedualGeneration/player.monkey<43>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/player.monkey<61>";
 	if((bb_input_KeyDown(38))!=0){
-		err_info="/Users/BlenderChild/ProcedualGeneration/player.monkey<44>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/player.monkey<62>";
 		this.m_y=this.m_y-4;
 	}
 	pop_err();
@@ -9936,9 +9936,9 @@ c_Player.prototype.p_HandleControls=function(){
 }
 c_Player.prototype.p_Update=function(){
 	push_err();
-	err_info="/Users/BlenderChild/ProcedualGeneration/player.monkey<25>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/player.monkey<35>";
 	this.p_HandleControls();
-	err_info="/Users/BlenderChild/ProcedualGeneration/player.monkey<26>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/player.monkey<36>";
 	this.m_frameNum=this.m_currentAnimation.p_getFrame();
 	pop_err();
 	return 0;
@@ -9956,47 +9956,47 @@ function c_Animation(){
 }
 c_Animation.m_new=function(t_i,t_f,t_w,t_h,t_ft){
 	push_err();
-	err_info="/Users/BlenderChild/ProcedualGeneration/animation.monkey<15>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/animation.monkey<20>";
 	dbg_object(this).m_img=t_i;
-	err_info="/Users/BlenderChild/ProcedualGeneration/animation.monkey<16>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/animation.monkey<21>";
 	dbg_object(this).m_frames=t_f;
-	err_info="/Users/BlenderChild/ProcedualGeneration/animation.monkey<17>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/animation.monkey<22>";
 	dbg_object(this).m_width=t_w;
-	err_info="/Users/BlenderChild/ProcedualGeneration/animation.monkey<18>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/animation.monkey<23>";
 	dbg_object(this).m_height=t_h;
-	err_info="/Users/BlenderChild/ProcedualGeneration/animation.monkey<19>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/animation.monkey<24>";
 	dbg_object(this).m_frameTime=t_ft;
-	err_info="/Users/BlenderChild/ProcedualGeneration/animation.monkey<21>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/animation.monkey<26>";
 	dbg_object(this).m_elapsed=0;
-	err_info="/Users/BlenderChild/ProcedualGeneration/animation.monkey<22>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/animation.monkey<27>";
 	dbg_object(this).m_frame=0;
-	err_info="/Users/BlenderChild/ProcedualGeneration/animation.monkey<23>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/animation.monkey<28>";
 	dbg_object(this).m_lastTime=0;
 	pop_err();
 	return this;
 }
 c_Animation.m_new2=function(){
 	push_err();
-	err_info="/Users/BlenderChild/ProcedualGeneration/animation.monkey<4>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/animation.monkey<6>";
 	pop_err();
 	return this;
 }
 c_Animation.prototype.p_getFrame=function(){
 	push_err();
-	err_info="/Users/BlenderChild/ProcedualGeneration/animation.monkey<27>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/animation.monkey<35>";
 	this.m_elapsed=this.m_elapsed+(bb_app_Millisecs()-this.m_lastTime);
-	err_info="/Users/BlenderChild/ProcedualGeneration/animation.monkey<28>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/animation.monkey<36>";
 	this.m_lastTime=bb_app_Millisecs();
-	err_info="/Users/BlenderChild/ProcedualGeneration/animation.monkey<30>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/animation.monkey<38>";
 	var t_toReturn=((Math.floor((this.m_elapsed/this.m_frameTime)|0))|0);
-	err_info="/Users/BlenderChild/ProcedualGeneration/animation.monkey<32>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/animation.monkey<40>";
 	if(t_toReturn>this.m_frames-1){
-		err_info="/Users/BlenderChild/ProcedualGeneration/animation.monkey<33>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/animation.monkey<41>";
 		t_toReturn=0;
-		err_info="/Users/BlenderChild/ProcedualGeneration/animation.monkey<34>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/animation.monkey<42>";
 		this.m_elapsed=0;
 	}
-	err_info="/Users/BlenderChild/ProcedualGeneration/animation.monkey<37>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/animation.monkey<45>";
 	pop_err();
 	return t_toReturn;
 }
@@ -10043,20 +10043,20 @@ function c_Level(){
 }
 c_Level.prototype.p_Draw=function(){
 	push_err();
-	err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<211>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<223>";
 	for(var t_i=0;t_i<dbg_object(this).m_layout.length;t_i=t_i+1){
-		err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<212>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<224>";
 		for(var t_j=0;t_j<dbg_array(dbg_object(this).m_layout,0)[dbg_index].length;t_j=t_j+1){
-			err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<213>";
+			err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<225>";
 			if(dbg_array(dbg_array(dbg_object(this).m_layout,t_i)[dbg_index],t_j)[dbg_index]=="X"){
-				err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<214>";
+				err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<226>";
 				bb_graphics_SetColor(0.0,0.0,0.0);
 			}else{
-				err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<216>";
+				err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<228>";
 				bb_graphics_SetColor(255.0,255.0,255.0);
 			}
-			err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<218>";
-			bb_graphics_DrawRect((t_i*10),(t_j*10),10.0,10.0);
+			err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<230>";
+			bb_graphics_DrawRect((t_i*40),(t_j*40),40.0,40.0);
 		}
 	}
 	pop_err();
@@ -10064,40 +10064,40 @@ c_Level.prototype.p_Draw=function(){
 }
 c_Level.prototype.p_setArray=function(t_i,t_j){
 	push_err();
-	err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<48>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<59>";
 	var t_result=new_array_array(t_i);
-	err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<50>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<61>";
 	for(var t_index=0;t_index<t_i;t_index=t_index+1){
-		err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<51>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<62>";
 		dbg_array(t_result,t_index)[dbg_index]=new_string_array(t_j);
 	}
-	err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<54>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<65>";
 	pop_err();
 	return t_result;
 }
 c_Level.prototype.p_randomlyAssignCells=function(t_design){
 	push_err();
-	err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<61>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<72>";
 	bb_random_Seed=bb_app_Millisecs();
-	err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<62>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<73>";
 	var t_rand=0;
-	err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<64>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<75>";
 	for(var t_i=0;t_i<t_design.length;t_i=t_i+1){
-		err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<65>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<76>";
 		for(var t_j=0;t_j<dbg_array(t_design,0)[dbg_index].length;t_j=t_j+1){
-			err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<66>";
+			err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<77>";
 			t_rand=((bb_random_Rnd2(0.0,100.0))|0);
-			err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<67>";
+			err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<78>";
 			if(t_rand<45){
-				err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<68>";
+				err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<79>";
 				dbg_array(dbg_array(t_design,t_i)[dbg_index],t_j)[dbg_index]="X";
 			}else{
-				err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<70>";
+				err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<81>";
 				dbg_array(dbg_array(t_design,t_i)[dbg_index],t_j)[dbg_index]="O";
 			}
-			err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<72>";
+			err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<83>";
 			if(t_i==0 || t_j==0 || t_i==t_design.length-1 || t_j==dbg_array(t_design,0)[dbg_index].length-1){
-				err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<73>";
+				err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<84>";
 				dbg_array(dbg_array(t_design,t_i)[dbg_index],t_j)[dbg_index]="X";
 			}
 		}
@@ -10107,105 +10107,105 @@ c_Level.prototype.p_randomlyAssignCells=function(t_design){
 }
 c_Level.prototype.p_checkWalls=function(t_design,t_i,t_j){
 	push_err();
-	err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<118>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<129>";
 	var t_total=0;
-	err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<119>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<130>";
 	if(t_i>0 && dbg_array(dbg_array(t_design,t_i-1)[dbg_index],t_j)[dbg_index]=="X"){
-		err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<120>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<131>";
 		t_total+=1;
 	}
-	err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<122>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<133>";
 	if(t_i<t_design.length-1 && dbg_array(dbg_array(t_design,t_i+1)[dbg_index],t_j)[dbg_index]=="X"){
-		err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<123>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<134>";
 		t_total+=1;
 	}
-	err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<125>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<136>";
 	if(t_j>0 && dbg_array(dbg_array(t_design,t_i)[dbg_index],t_j-1)[dbg_index]=="X"){
-		err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<126>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<137>";
 		t_total+=1;
 	}
-	err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<128>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<139>";
 	if(t_j<dbg_array(t_design,0)[dbg_index].length-1 && dbg_array(dbg_array(t_design,t_i)[dbg_index],t_j+1)[dbg_index]=="X"){
-		err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<129>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<140>";
 		t_total+=1;
 	}
-	err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<131>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<142>";
 	if(t_i>0 && t_j<dbg_array(t_design,0)[dbg_index].length-1 && dbg_array(dbg_array(t_design,t_i-1)[dbg_index],t_j+1)[dbg_index]=="X"){
-		err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<132>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<143>";
 		t_total+=1;
 	}
-	err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<134>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<145>";
 	if(t_i>0 && t_j>0 && dbg_array(dbg_array(t_design,t_i-1)[dbg_index],t_j-1)[dbg_index]=="X"){
-		err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<135>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<146>";
 		t_total+=1;
 	}
-	err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<137>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<148>";
 	if(t_i<t_design.length-1 && t_j<dbg_array(t_design,0)[dbg_index].length-1 && dbg_array(dbg_array(t_design,t_i+1)[dbg_index],t_j+1)[dbg_index]=="X"){
-		err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<138>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<149>";
 		t_total+=1;
 	}
-	err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<140>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<151>";
 	if(t_i<t_design.length-1 && t_j>0 && dbg_array(dbg_array(t_design,t_i+1)[dbg_index],t_j-1)[dbg_index]=="X"){
-		err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<141>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<152>";
 		t_total+=1;
 	}
-	err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<144>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<155>";
 	pop_err();
 	return t_total;
 }
 c_Level.prototype.p_generateCellularly=function(t_design){
 	push_err();
-	err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<85>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<96>";
 	var t_adjacentWalls=0;
-	err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<86>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<97>";
 	var t_result=this.p_setArray(t_design.length,dbg_array(t_design,0)[dbg_index].length);
-	err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<88>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<99>";
 	for(var t_i=0;t_i<t_design.length;t_i=t_i+1){
-		err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<89>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<100>";
 		for(var t_j=0;t_j<dbg_array(t_design,0)[dbg_index].length;t_j=t_j+1){
-			err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<90>";
+			err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<101>";
 			t_adjacentWalls=this.p_checkWalls(t_design,t_i,t_j);
-			err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<92>";
+			err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<103>";
 			if(dbg_array(dbg_array(t_design,t_i)[dbg_index],t_j)[dbg_index]=="X"){
-				err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<93>";
+				err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<104>";
 				if(t_adjacentWalls>3){
-					err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<94>";
+					err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<105>";
 					dbg_array(dbg_array(t_result,t_i)[dbg_index],t_j)[dbg_index]="X";
 				}else{
-					err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<96>";
+					err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<107>";
 					dbg_array(dbg_array(t_result,t_i)[dbg_index],t_j)[dbg_index]="O";
 				}
 			}else{
-				err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<98>";
+				err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<109>";
 				if(dbg_array(dbg_array(t_design,t_i)[dbg_index],t_j)[dbg_index]=="O"){
-					err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<99>";
+					err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<110>";
 					if(t_adjacentWalls>4){
-						err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<100>";
+						err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<111>";
 						dbg_array(dbg_array(t_result,t_i)[dbg_index],t_j)[dbg_index]="X";
 					}else{
-						err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<102>";
+						err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<113>";
 						dbg_array(dbg_array(t_result,t_i)[dbg_index],t_j)[dbg_index]="O";
 					}
 				}
 			}
-			err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<106>";
+			err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<117>";
 			if(t_i==0 || t_j==0 || t_i==t_design.length-1 || t_j==dbg_array(t_design,0)[dbg_index].length-1){
-				err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<107>";
+				err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<118>";
 				dbg_array(dbg_array(t_result,t_i)[dbg_index],t_j)[dbg_index]="X";
 			}
 		}
 	}
-	err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<112>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<123>";
 	pop_err();
 	return t_result;
 }
 c_Level.prototype.p_fillCells=function(t_design){
 	push_err();
-	err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<165>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<176>";
 	for(var t_i=0;t_i<t_design.length;t_i=t_i+1){
-		err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<166>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<177>";
 		for(var t_j=0;t_j<dbg_array(t_design,0)[dbg_index].length;t_j=t_j+1){
-			err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<167>";
+			err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<178>";
 			dbg_array(dbg_array(t_design,t_i)[dbg_index],t_j)[dbg_index]="X";
 		}
 	}
@@ -10214,62 +10214,62 @@ c_Level.prototype.p_fillCells=function(t_design){
 }
 c_Level.prototype.p_drunkWalk=function(t_design){
 	push_err();
-	err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<174>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<185>";
 	var t_target=(t_design.length*dbg_array(t_design,0)[dbg_index].length)*0.35;
-	err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<175>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<186>";
 	var t_cleared=1;
-	err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<177>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<188>";
 	var t_tempX=0;
-	err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<178>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<189>";
 	var t_tempY=0;
-	err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<179>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<190>";
 	var t_direction=0;
-	err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<181>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<192>";
 	var t_followBias=0;
-	err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<182>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<193>";
 	t_tempX=((bb_random_Rnd2(1.0,(t_design.length-1)))|0);
-	err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<183>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<194>";
 	t_tempY=((bb_random_Rnd2(1.0,(dbg_array(t_design,0)[dbg_index].length-1)))|0);
-	err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<185>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<196>";
 	dbg_array(dbg_array(t_design,t_tempX)[dbg_index],t_tempY)[dbg_index]="O";
-	err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<187>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<198>";
 	while((t_cleared)<t_target){
-		err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<188>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<199>";
 		if(t_followBias<40){
-			err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<189>";
+			err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<200>";
 			t_direction=((bb_random_Rnd2(0.0,4.0))|0);
 		}
-		err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<191>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<202>";
 		if(t_direction==0 && t_tempY>1){
-			err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<192>";
+			err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<203>";
 			t_tempY-=1;
 		}else{
-			err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<193>";
+			err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<204>";
 			if(t_direction==1 && t_tempY<dbg_array(t_design,0)[dbg_index].length-2){
-				err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<194>";
+				err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<205>";
 				t_tempY+=1;
 			}else{
-				err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<195>";
+				err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<206>";
 				if(t_direction==2 && t_tempX>1){
-					err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<196>";
+					err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<207>";
 					t_tempX-=1;
 				}else{
-					err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<197>";
+					err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<208>";
 					if(t_direction==3 && t_tempX<t_design.length-2){
-						err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<198>";
+						err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<209>";
 						t_tempX+=1;
 					}
 				}
 			}
 		}
-		err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<201>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<212>";
 		if(dbg_array(dbg_array(t_design,t_tempX)[dbg_index],t_tempY)[dbg_index]=="X"){
-			err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<202>";
+			err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<213>";
 			dbg_array(dbg_array(t_design,t_tempX)[dbg_index],t_tempY)[dbg_index]="O";
-			err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<203>";
+			err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<214>";
 			t_cleared+=1;
 		}
-		err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<205>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<216>";
 		t_followBias=((bb_random_Rnd2(0.0,100.0))|0);
 	}
 	pop_err();
@@ -10277,49 +10277,49 @@ c_Level.prototype.p_drunkWalk=function(t_design){
 }
 c_Level.m_new=function(t_x,t_y,t_w,t_h,t_type){
 	push_err();
-	err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<16>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<21>";
 	dbg_object(this).m_generated=false;
-	err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<17>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<22>";
 	dbg_object(this).m_xCoord=t_x;
-	err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<18>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<23>";
 	dbg_object(this).m_yCoord=t_y;
-	err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<20>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<25>";
 	dbg_object(this).m_width=t_w;
-	err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<21>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<26>";
 	dbg_object(this).m_height=t_h;
-	err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<22>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<27>";
 	dbg_object(this).m_layout=this.p_setArray(dbg_object(this).m_width,dbg_object(this).m_height);
-	err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<24>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<29>";
 	if(t_type=="Cellular"){
-		err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<25>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<30>";
 		this.p_randomlyAssignCells(dbg_object(this).m_layout);
-		err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<26>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<31>";
 		this.m_layout=this.p_generateCellularly(dbg_object(this).m_layout);
-		err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<27>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<32>";
 		this.m_layout=this.p_generateCellularly(dbg_object(this).m_layout);
-		err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<28>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<33>";
 		this.m_layout=this.p_generateCellularly(dbg_object(this).m_layout);
-		err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<29>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<34>";
 		this.m_layout=this.p_generateCellularly(dbg_object(this).m_layout);
-		err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<30>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<35>";
 		this.m_layout=this.p_generateCellularly(dbg_object(this).m_layout);
 	}else{
-		err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<31>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<36>";
 		if(t_type=="Drunk"){
-			err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<32>";
+			err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<37>";
 			this.p_fillCells(dbg_object(this).m_layout);
-			err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<33>";
+			err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<38>";
 			this.p_drunkWalk(dbg_object(this).m_layout);
 		}
 	}
-	err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<35>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<41>";
 	dbg_object(this).m_generated=true;
 	pop_err();
 	return this;
 }
 c_Level.m_new2=function(){
 	push_err();
-	err_info="/Users/BlenderChild/ProcedualGeneration/level.monkey<4>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<6>";
 	pop_err();
 	return this;
 }
@@ -10357,14 +10357,14 @@ var bb_noisetestscene_textures=null;
 var bb_noisetestscene_enemies=null;
 function bb_noisetestscene_setArray(t_i,t_j){
 	push_err();
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<481>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<481>";
 	var t_result=new_array_array(t_i);
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<483>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<483>";
 	for(var t_index=0;t_index<t_i;t_index=t_index+1){
-		err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<484>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<484>";
 		dbg_array(t_result,t_index)[dbg_index]=new_number_array(t_j);
 	}
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<487>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<487>";
 	pop_err();
 	return t_result;
 }
@@ -10376,15 +10376,15 @@ function c_SimplexNoise(){
 }
 c_SimplexNoise.m_new=function(){
 	push_err();
-	err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<18>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<18>";
 	this.m_grad3=[[1,1,0],[-1,1,0],[1,-1,0],[-1,-1,0],[1,0,1],[-1,0,1],[1,0,-1],[-1,0,-1],[0,1,1],[0,-1,1],[0,1,-1],[0,-1,-1]];
-	err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<31>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<31>";
 	this.m_p=[151,160,137,91,90,15,131,13,201,95,96,53,194,233,7,225,140,36,103,30,69,142,8,99,37,240,21,10,23,190,6,148,247,120,234,75,0,26,197,62,94,252,219,203,117,35,11,32,57,177,33,88,237,149,56,87,174,20,125,136,171,168,68,175,74,165,71,134,139,48,27,166,77,146,158,231,83,111,229,122,60,211,133,230,220,105,92,41,55,46,245,40,244,102,143,54,65,25,63,161,1,216,80,73,209,76,132,187,208,89,18,169,200,196,135,130,116,188,159,86,164,100,109,198,173,186,3,64,52,217,226,250,124,123,5,202,38,147,118,126,255,82,85,212,207,206,59,227,47,16,58,17,182,189,28,42,223,183,170,213,119,248,152,2,44,154,163,70,221,153,101,155,167,43,172,9,129,22,39,253,19,98,108,110,79,113,224,232,178,185,112,104,218,246,97,228,251,34,242,193,238,210,144,12,191,179,162,241,81,51,145,235,249,14,239,107,49,192,214,31,181,199,106,157,184,84,204,176,115,121,50,45,127,4,150,254,138,236,205,93,222,114,67,29,24,72,243,141,128,195,78,66,215,61,156,180];
-	err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<32>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<32>";
 	this.m_perm=new_number_array(512);
-	err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<33>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<33>";
 	for(var t_i=0;t_i<512;t_i=t_i+1){
-		err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<34>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<34>";
 		dbg_array(this.m_perm,t_i)[dbg_index]=dbg_array(this.m_p,t_i&255)[dbg_index];
 	}
 	pop_err();
@@ -10392,270 +10392,270 @@ c_SimplexNoise.m_new=function(){
 }
 c_SimplexNoise.prototype.p_setArray=function(t_i,t_j){
 	push_err();
-	err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<227>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<235>";
 	var t_result=new_array_array(t_i);
-	err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<229>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<237>";
 	for(var t_index=0;t_index<t_i;t_index=t_index+1){
-		err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<230>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<238>";
 		dbg_array(t_result,t_index)[dbg_index]=new_number_array(t_j);
 	}
-	err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<233>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<241>";
 	pop_err();
 	return t_result;
 }
 c_SimplexNoise.prototype.p_dot=function(t_g,t_x,t_y){
 	push_err();
-	err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<43>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<43>";
 	var t_=(dbg_array(t_g,0)[dbg_index])*t_x+(dbg_array(t_g,1)[dbg_index])*t_y;
 	pop_err();
 	return t_;
 }
 c_SimplexNoise.prototype.p_makeNoise=function(t_x,t_y){
 	push_err();
-	err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<52>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<52>";
 	var t_n0=.0;
-	err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<53>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<53>";
 	var t_n1=.0;
-	err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<54>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<54>";
 	var t_n2=.0;
-	err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<56>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<56>";
 	var t_f2=0.5*(Math.sqrt(3.0)-1.0);
-	err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<57>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<57>";
 	var t_s=(t_x+t_y)*t_f2;
-	err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<58>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<58>";
 	var t_i=((Math.floor(t_x+t_s))|0);
-	err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<59>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<59>";
 	var t_j=((Math.floor(t_y+t_s))|0);
-	err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<61>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<61>";
 	var t_g2=(3.0-Math.sqrt(3.0))/6.0;
-	err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<62>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<62>";
 	var t_t=(t_i+t_j)*t_g2;
-	err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<63>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<63>";
 	var t_x0=(t_i)-t_t;
-	err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<64>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<64>";
 	var t_y0=(t_j)-t_t;
-	err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<65>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<65>";
 	var t_x01=t_x-t_x0;
-	err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<66>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<66>";
 	var t_y01=t_y-t_y0;
-	err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<69>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<69>";
 	var t_i1=0;
-	err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<70>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<70>";
 	var t_j1=0;
-	err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<71>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<71>";
 	if(t_x01>t_y01){
-		err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<72>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<72>";
 		t_i1=1;
-		err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<73>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<73>";
 		t_j1=0;
 	}else{
-		err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<75>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<75>";
 		t_i1=0;
-		err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<76>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<76>";
 		t_j1=1;
 	}
-	err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<79>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<79>";
 	var t_x1=t_x01-(t_i1)+t_g2;
-	err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<80>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<80>";
 	var t_y1=t_y01-(t_j1)+t_g2;
-	err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<81>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<81>";
 	var t_x2=t_x01-1.0+2.0*t_g2;
-	err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<82>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<82>";
 	var t_y2=t_y01-1.0+2.0*t_g2;
-	err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<85>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<85>";
 	var t_ii=t_i&255;
-	err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<86>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<86>";
 	var t_jj=t_j&255;
-	err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<88>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<88>";
 	var t_gi0=dbg_array(this.m_perm,t_ii+dbg_array(this.m_perm,t_jj)[dbg_index])[dbg_index] % 12;
-	err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<89>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<89>";
 	var t_gi1=dbg_array(this.m_perm,t_ii+t_i1+dbg_array(this.m_perm,t_jj+t_j1)[dbg_index])[dbg_index] % 12;
-	err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<90>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<90>";
 	var t_gi2=dbg_array(this.m_perm,t_ii+1+dbg_array(this.m_perm,t_jj+1)[dbg_index])[dbg_index] % 12;
-	err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<93>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<93>";
 	var t_t0=0.5-t_x01*t_x01-t_y01*t_y01;
-	err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<94>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<94>";
 	if(t_t0<0.0){
-		err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<95>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<95>";
 		t_n0=0.0;
 	}else{
-		err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<97>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<97>";
 		t_t0*=t_t0;
-		err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<99>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<98>";
 		t_n0=t_t0*t_t0*this.p_dot(dbg_array(this.m_grad3,t_gi0)[dbg_index],t_x01,t_y01);
 	}
-	err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<102>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<101>";
 	var t_t1=0.5-t_x1*t_x1-t_y1*t_y1;
-	err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<103>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<102>";
 	if(t_t1<0.0){
-		err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<104>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<103>";
 		t_n1=0.0;
 	}else{
-		err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<106>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<105>";
 		t_t1*=t_t1;
-		err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<108>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<106>";
 		t_n1=t_t1*t_t1*this.p_dot(dbg_array(this.m_grad3,t_gi1)[dbg_index],t_x1,t_y1);
 	}
-	err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<111>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<109>";
 	var t_t2=0.5-t_x2*t_x2-t_y2*t_y2;
-	err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<112>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<110>";
 	if(t_t2<0.0){
-		err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<113>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<111>";
 		t_n2=0.0;
 	}else{
-		err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<115>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<113>";
 		t_t2*=t_t2;
-		err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<117>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<114>";
 		t_n2=t_t2*t_t2*this.p_dot(dbg_array(this.m_grad3,t_gi2)[dbg_index],t_x2,t_y2);
 	}
-	err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<122>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<119>";
 	var t_=70.0*(t_n0+t_n1+t_n2);
 	pop_err();
 	return t_;
 }
 c_SimplexNoise.prototype.p_makeOctavedNoise=function(t_octaves,t_roughness,t_scale,t_x,t_y,t_offset){
 	push_err();
-	err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<210>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<215>";
 	var t_noiseSum=0.0;
-	err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<211>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<216>";
 	var t_layerFrequency=t_scale;
-	err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<212>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<217>";
 	var t_layerWeight=1.0;
-	err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<213>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<218>";
 	var t_weightSum=0.0;
-	err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<217>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<222>";
 	for(var t_i=0;t_i<t_octaves;t_i=t_i+1){
-		err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<218>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<223>";
 		t_noiseSum+=this.p_makeNoise((t_x+t_offset)*t_layerFrequency,(t_y+t_offset)*t_layerFrequency)*t_layerWeight;
-		err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<219>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<224>";
 		t_layerFrequency=t_layerFrequency*2.0;
-		err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<220>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<225>";
 		t_weightSum+=t_layerWeight;
-		err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<221>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<226>";
 		t_layerWeight*=t_roughness;
 	}
-	err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<223>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<228>";
 	var t_=t_noiseSum/t_weightSum;
 	pop_err();
 	return t_;
 }
 c_SimplexNoise.prototype.p_makeIsland=function(t_noiseMap,t_width,t_height){
 	push_err();
-	err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<185>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<186>";
 	var t_island=this.p_setArray(t_width,t_height);
-	err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<187>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<188>";
 	var t_centerX=((t_width/2)|0);
-	err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<188>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<189>";
 	var t_centerY=((t_height/2)|0);
-	err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<191>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<192>";
 	print("Island CenterX = "+String(t_centerX));
-	err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<192>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<193>";
 	print("Island CenterY = "+String(t_centerY));
-	err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<193>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<194>";
 	var t_xDist=0.0;
-	err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<194>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<195>";
 	var t_yDist=0.0;
-	err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<195>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<196>";
 	var t_totalDist=0.0;
-	err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<197>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<198>";
 	for(var t_i=0;t_i<t_width;t_i=t_i+1){
-		err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<198>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<199>";
 		for(var t_j=0;t_j<t_height;t_j=t_j+1){
-			err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<199>";
+			err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<200>";
 			t_xDist=((t_centerX-t_i)*(t_centerX-t_i));
-			err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<200>";
+			err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<201>";
 			t_yDist=((t_centerY-t_j)*(t_centerY-t_j));
-			err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<202>";
+			err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<203>";
 			t_totalDist=Math.sqrt(t_xDist+t_yDist)/(t_width);
-			err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<203>";
+			err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<204>";
 			dbg_array(dbg_array(t_noiseMap,t_i)[dbg_index],t_j)[dbg_index]-=t_totalDist;
 		}
 	}
-	err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<206>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<207>";
 	pop_err();
 	return t_noiseMap;
 }
 c_SimplexNoise.prototype.p_generateOctavedNoiseMap=function(t_width,t_height,t_octaves,t_roughness,t_scale){
 	push_err();
-	err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<154>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<151>";
 	var t_result=this.p_setArray(t_width,t_height);
-	err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<155>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<152>";
 	bb_random_Seed=bb_app_Millisecs();
-	err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<156>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<153>";
 	var t_offset=((bb_random_Rnd2(0.0,1000000.0))|0);
-	err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<158>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<155>";
 	var t_layerFrequency=t_scale;
-	err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<159>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<156>";
 	var t_layerWeight=1.0;
-	err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<160>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<157>";
 	var t_weightSum=0.0;
-	err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<164>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<161>";
 	for(var t_i=0;t_i<t_width;t_i=t_i+1){
-		err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<165>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<162>";
 		for(var t_j=0;t_j<t_height;t_j=t_j+1){
-			err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<166>";
+			err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<163>";
 			dbg_array(dbg_array(t_result,t_i)[dbg_index],t_j)[dbg_index]=this.p_makeOctavedNoise(5,0.5,0.01,t_i,t_j,t_offset);
 		}
 	}
-	err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<177>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<174>";
 	print("Islandizing noise...");
-	err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<178>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<175>";
 	t_result=this.p_makeIsland(t_result,t_width,t_height);
-	err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<179>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<176>";
 	print("Returning Noise Map");
-	err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<182>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<179>";
 	pop_err();
 	return t_result;
 }
 c_SimplexNoise.prototype.p_generateNoiseMap=function(t_width,t_height){
 	push_err();
-	err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<131>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<128>";
 	var t_result=this.p_setArray(t_width,t_height);
-	err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<132>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<129>";
 	bb_random_Seed=bb_app_Millisecs();
-	err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<133>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<130>";
 	var t_offset=((bb_random_Rnd2(0.0,1000.0))|0);
-	err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<134>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<131>";
 	var t_frequency=5.0/(t_width);
-	err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<136>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<133>";
 	for(var t_i=0;t_i<t_width;t_i=t_i+1){
-		err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<137>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<134>";
 		for(var t_j=0;t_j<t_height;t_j=t_j+1){
-			err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<138>";
+			err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<135>";
 			dbg_array(dbg_array(t_result,t_i)[dbg_index],t_j)[dbg_index]=this.p_makeNoise((t_i+t_offset)*t_frequency,(t_j+t_offset)*t_frequency);
 		}
 	}
-	err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<144>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<141>";
 	print("Returning Moisture Map");
-	err_info="/Users/BlenderChild/ProcedualGeneration/simplexnoise.monkey<145>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<142>";
 	pop_err();
 	return t_result;
 }
 function bb_noisetestscene_randomlyAssignCells(t_cells,t_threshold){
 	push_err();
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<459>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<459>";
 	bb_random_Seed=bb_app_Millisecs();
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<460>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<460>";
 	var t_rand=0;
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<461>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<461>";
 	var t_thresh=t_threshold % 100;
-	err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<463>";
+	err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<463>";
 	for(var t_i=0;t_i<t_cells.length;t_i=t_i+1){
-		err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<464>";
+		err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<464>";
 		for(var t_j=0;t_j<dbg_array(t_cells,0)[dbg_index].length;t_j=t_j+1){
-			err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<465>";
+			err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<465>";
 			t_rand=((bb_random_Rnd2(0.0,100.0))|0);
-			err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<466>";
+			err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<466>";
 			if(t_rand<t_thresh){
-				err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<467>";
+				err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<467>";
 				dbg_array(dbg_array(t_cells,t_i)[dbg_index],t_j)[dbg_index]=1;
 			}else{
-				err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<469>";
+				err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<469>";
 				dbg_array(dbg_array(t_cells,t_i)[dbg_index],t_j)[dbg_index]=-1;
 			}
-			err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<471>";
+			err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<471>";
 			if(t_i==0 || t_j==0 || t_i==t_cells.length-1 || t_j==dbg_array(t_cells,0)[dbg_index].length-1 || dbg_array(dbg_array(t_cells,t_i)[dbg_index],t_j)[dbg_index]==9){
-				err_info="/Users/BlenderChild/ProcedualGeneration/noisetestscene.monkey<472>";
+				err_info="/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<472>";
 				dbg_array(dbg_array(t_cells,t_i)[dbg_index],t_j)[dbg_index]=-1;
 			}
 		}
