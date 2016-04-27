@@ -4441,6 +4441,7 @@ class c_Player;
 class c_Animation;
 class c_Sound;
 class c_Level;
+class c_Point;
 class c_SimplexNoise;
 class c_iConfig;
 class c_iVector2d;
@@ -4806,17 +4807,6 @@ extern c_iScene* bb_app2_iNextScene;
 int bb_input_ResetInput();
 void bb_app2_iUpdate();
 extern int bb_random_Seed;
-c_Image* bb_gfx_iLoadSprite(String,int);
-c_Image* bb_gfx_iLoadSprite2(String,int,int,int);
-String bb_strings_iStripExt(String);
-String bb_strings_iExtractExt(String);
-Array<c_Image* > bb_gfx_iLoadImage(int,int,String,int,int);
-Array<c_Image* > bb_gfx_iLoadImage2(Array<c_Image* >,int,int,String,int,int);
-Array<c_Image* > bb_gfx_iLoadImage3(int,int,String,int,int,int,int);
-Array<c_Image* > bb_gfx_iLoadSprite3(int,int,String,int);
-Array<c_Image* > bb_gfx_iLoadSprite4(int,int,String,int,int,int);
-extern c_Image* bb_main_gfxMonkey;
-extern c_Image* bb_main_textures;
 class c_iEngine : public c_iScene{
 	public:
 	int m__timeCode;
@@ -4895,6 +4885,7 @@ class c_GameplayScene : public c_iEngine{
 	int p_OnRender();
 	int p_OnStart();
 	int p_OnStop();
+	int p_checkCameraBounds();
 	int p_OnUpdate();
 	void mark();
 	String debug();
@@ -4906,12 +4897,39 @@ class c_NoiseTestScene : public c_iEngine{
 	c_iPlayfield* m_playfieldN;
 	int m_mapWidth;
 	int m_mapHeight;
+	Array<Array<int > > m_chunks;
+	Array<c_Point* > m_deepWaterTiles;
+	Array<c_Point* > m_shallowWaterTiles;
+	Array<c_Point* > m_beachTiles;
+	Array<c_Point* > m_lightGrassTiles;
+	Array<c_Point* > m_heavyGrassTiles;
+	Array<c_Point* > m_swampTiles;
+	Array<c_Point* > m_forestTiles;
+	Array<c_Point* > m_desertTiles;
+	Array<c_Point* > m_mountainTiles;
+	Array<c_Point* > m_darkSnowMountainTiles;
+	Array<c_Point* > m_lightSnowMountainTiles;
+	Array<c_Point* > m_riverTiles;
+	Array<c_Point* > m_caveEntranceTiles;
+	Array<Array<int > > m_biomes;
 	Array<Array<Float > > m_noiseMap;
+	Array<Array<Float > > m_moisture;
+	Array<c_Level* > m_caves;
+	Array<Array<int > > m_enemyPlacement;
 	c_NoiseTestScene();
 	c_NoiseTestScene* m_new();
 	int p_OnCreate();
 	int p_drawNoiseMap(int,int);
 	int p_OnRender();
+	int p_determineBiomes(Array<Array<Float > >,Array<Array<Float > >,int,int);
+	int p_processBiomes();
+	int p_makeLake(int,int);
+	int p_makeRiver(int,int);
+	int p_makeRivers(int);
+	int p_selectRandomStartPoint();
+	int p_makeCaves(int);
+	int p_determineEnemyType(Array<Array<int > >,Array<Array<int > >);
+	int p_placeEnemies(int,int);
 	int p_OnStart();
 	int p_OnStop();
 	int p_checkCameraBounds();
@@ -5232,10 +5250,10 @@ class c_iLayerObject : public c_iGraph{
 	bool m__collisionWrite;
 	int m__column;
 	int m__row;
-	Array<String > m__debugInfo;
 	c_iConfig* m__loaderCache;
 	Array<int > m__collisionMask;
 	Array<c_iControlSet* > m__control;
+	Array<String > m__debugInfo;
 	c_iLayerObject();
 	virtual void p_Render();
 	virtual void p_UpdateWorldXY();
@@ -5274,7 +5292,6 @@ class c_iLayerObject : public c_iGraph{
 	void p_Position5(Float,Float,c_iLayerObject*);
 	void p_Position2(Float,Float,Float);
 	void p_Position6(Float,Float,Float,c_iLayerObject*);
-	void p_Show(String);
 	void p_Destroy();
 	int p_SetAlpha(Float);
 	int p_SetColor(Float,Float,Float);
@@ -5462,6 +5479,15 @@ int bb_graphics_PopMatrix();
 int bb_graphics_DrawImage2(c_Image*,Float,Float,Float,Float,Float,int);
 int bb_graphics_DrawText(String,Float,Float,Float,Float);
 int bb_input_KeyHit(int);
+c_Image* bb_gfx_iLoadSprite(String,int);
+c_Image* bb_gfx_iLoadSprite2(String,int,int,int);
+String bb_strings_iStripExt(String);
+String bb_strings_iExtractExt(String);
+Array<c_Image* > bb_gfx_iLoadImage(int,int,String,int,int);
+Array<c_Image* > bb_gfx_iLoadImage2(Array<c_Image* >,int,int,String,int,int);
+Array<c_Image* > bb_gfx_iLoadImage3(int,int,String,int,int,int,int);
+Array<c_Image* > bb_gfx_iLoadSprite3(int,int,String,int);
+Array<c_Image* > bb_gfx_iLoadSprite4(int,int,String,int,int,int);
 class c_iLayerSprite : public c_iLayerObject{
 	public:
 	Array<c_Image* > m__imagePointer;
@@ -5482,17 +5508,12 @@ class c_iLayerSprite : public c_iLayerObject{
 	void p_ImagePointer5(int,int,String,int);
 	void p_ImagePointer6(String,int,int,int);
 	void p_ImagePointer7(String,int);
-	void p_SetImage(c_Image*);
-	void p_SetImage2(String);
-	bool p_AnimationLoop(Float,String);
-	void p_Frame(Float);
+	void p_Destroy();
 	Float p_ImageIndex();
 	void p_ImageIndex2(Float);
-	Float p_ImageFrame();
-	Float p_Frame2();
-	void p_Destroy();
 	bool p_ImageLoaded();
 	Float p_Height();
+	Float p_ImageFrame();
 	void p_Render();
 	void p_Update();
 	Float p_Width();
@@ -5553,12 +5574,9 @@ class c_Player : public Object{
 	int m_yVel;
 	c_Animation* m_downAnim;
 	c_Animation* m_currentAnimation;
-	int m_frameNum;
 	c_Player();
 	c_Player* m_new(c_Image*,int,int);
 	c_Player* m_new2();
-	int p_HandleControls();
-	int p_Update();
 	void mark();
 	String debug();
 };
@@ -5576,7 +5594,6 @@ class c_Animation : public Object{
 	c_Animation();
 	c_Animation* m_new(c_Image*,int,int,int,int);
 	c_Animation* m_new2();
-	int p_getFrame();
 	void mark();
 	String debug();
 };
@@ -5594,28 +5611,49 @@ String dbg_type(c_Sound**p){return "Sound";}
 c_Sound* bb_audio_LoadSound(String);
 class c_Level : public Object{
 	public:
-	Array<Array<String > > m_layout;
+	Array<Array<int > > m_layout;
 	bool m_generated;
+	int m_xCoord;
+	int m_yCoord;
 	int m_width;
 	int m_height;
+	Array<c_Point* > m_walkways;
 	c_Level();
-	int p_Draw();
-	Array<Array<String > > p_setArray(int,int);
-	int p_randomlyAssignCells(Array<Array<String > >);
-	int p_checkWalls(Array<Array<String > >,int,int);
-	Array<Array<String > > p_generateCellularly(Array<Array<String > >);
-	int p_fillCells(Array<Array<String > >);
-	int p_drunkWalk(Array<Array<String > >);
-	c_Level* m_new(int,int,String);
+	int p_Draw(int,int);
+	Array<Array<int > > p_setArray(int,int);
+	int p_randomlyAssignCells(Array<Array<int > >);
+	int p_checkWalls(Array<Array<int > >,int,int);
+	Array<Array<int > > p_generateCellularly(Array<Array<int > >);
+	int p_smoothEdges();
+	int p_fillCells(Array<Array<int > >);
+	int p_drunkWalk(Array<Array<int > >);
+	int p_countWalkways();
+	c_Level* m_new(int,int,int,int,String);
 	c_Level* m_new2();
 	void mark();
 	String debug();
 };
 String dbg_type(c_Level**p){return "Level";}
+extern c_Image* bb_level_caveTextures;
 Float bb_random_Rnd();
 Float bb_random_Rnd2(Float,Float);
 Float bb_random_Rnd3(Float);
+class c_Point : public Object{
+	public:
+	int m_x;
+	int m_y;
+	c_Point();
+	c_Point* m_new(int,int);
+	c_Point* m_new2();
+	int p_getX();
+	void mark();
+	String debug();
+};
+String dbg_type(c_Point**p){return "Point";}
 int bb_input_KeyDown(int);
+extern c_Image* bb_noisetestscene_textures;
+extern c_Image* bb_noisetestscene_enemies;
+Array<Array<int > > bb_noisetestscene_setArray(int,int);
 class c_SimplexNoise : public Object{
 	public:
 	Array<Array<int > > m_grad3;
@@ -5633,6 +5671,7 @@ class c_SimplexNoise : public Object{
 	String debug();
 };
 String dbg_type(c_SimplexNoise**p){return "SimplexNoise";}
+int bb_noisetestscene_randomlyAssignCells(Array<Array<int > >,int);
 class c_iConfig : public Object{
 	public:
 	c_iConfig();
@@ -5841,7 +5880,7 @@ c_Game* c_Game::m_new(){
 	DBG_ENTER("Game.new")
 	c_Game *self=this;
 	DBG_LOCAL(self,"Self")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<19>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<21>");
 	c_iApp::m_new();
 	return this;
 }
@@ -5849,19 +5888,15 @@ int c_Game::p_OnCreate(){
 	DBG_ENTER("Game.OnCreate")
 	c_Game *self=this;
 	DBG_LOCAL(self,"Self")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<26>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<26>");
 	bb_random_Seed=bb_app_Millisecs();
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<34>");
-	gc_assign(bb_main_gfxMonkey,bb_gfx_iLoadSprite(String(L"char_walk_down.png",18),1));
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<35>");
-	gc_assign(bb_main_textures,bb_gfx_iLoadSprite2(String(L"textures20.png",14),20,20,8));
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<36>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<34>");
 	gc_assign(bb_main_menu,(new c_MenuScene)->m_new());
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<37>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<35>");
 	gc_assign(bb_main_gameplay,(new c_GameplayScene)->m_new());
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<38>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<36>");
 	gc_assign(bb_main_noiseTest,(new c_NoiseTestScene)->m_new());
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<40>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<39>");
 	bb_app2_iStart3((bb_main_menu),60);
 	return 0;
 }
@@ -6061,7 +6096,7 @@ c_GameDelegate* bb_app__delegate;
 BBGame* bb_app__game;
 int bbMain(){
 	DBG_ENTER("Main")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<407>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<306>");
 	c_Game* t_g=(new c_Game)->m_new();
 	return 0;
 }
@@ -8138,207 +8173,6 @@ void bb_app2_iUpdate(){
 	}
 }
 int bb_random_Seed;
-c_Image* bb_gfx_iLoadSprite(String t_path,int t_frameCount){
-	DBG_ENTER("iLoadSprite")
-	DBG_LOCAL(t_path,"path")
-	DBG_LOCAL(t_frameCount,"frameCount")
-	DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/framework/gfx.monkey<390>");
-	c_Image* t_=bb_graphics_LoadImage(t_path,t_frameCount,1);
-	return t_;
-}
-c_Image* bb_gfx_iLoadSprite2(String t_path,int t_frameWidth,int t_frameHeight,int t_frameCount){
-	DBG_ENTER("iLoadSprite")
-	DBG_LOCAL(t_path,"path")
-	DBG_LOCAL(t_frameWidth,"frameWidth")
-	DBG_LOCAL(t_frameHeight,"frameHeight")
-	DBG_LOCAL(t_frameCount,"frameCount")
-	DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/framework/gfx.monkey<399>");
-	c_Image* t_=bb_graphics_LoadImage2(t_path,t_frameWidth,t_frameHeight,t_frameCount,1);
-	return t_;
-}
-String bb_strings_iStripExt(String t_path){
-	DBG_ENTER("iStripExt")
-	DBG_LOCAL(t_path,"path")
-	DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/framework/strings.monkey<261>");
-	int t_i=t_path.FindLast(String(L".",1));
-	DBG_LOCAL(t_i,"i")
-	DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/framework/strings.monkey<262>");
-	if(t_i!=-1 && t_path.Find(String(L"/",1),t_i+1)==-1 && t_path.Find(String(L"\\",1),t_i+1)==-1){
-		DBG_BLOCK();
-		String t_=t_path.Slice(0,t_i);
-		return t_;
-	}
-	DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/framework/strings.monkey<264>");
-	return t_path;
-}
-String bb_strings_iExtractExt(String t_path){
-	DBG_ENTER("iExtractExt")
-	DBG_LOCAL(t_path,"path")
-	DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/framework/strings.monkey<319>");
-	int t_i=t_path.FindLast(String(L".",1));
-	DBG_LOCAL(t_i,"i")
-	DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/framework/strings.monkey<320>");
-	if(t_i!=-1 && t_path.Find(String(L"/",1),t_i+1)==-1 && t_path.Find(String(L"\\",1),t_i+1)==-1){
-		DBG_BLOCK();
-		String t_=t_path.Slice(t_i+1);
-		return t_;
-	}
-	DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/framework/strings.monkey<321>");
-	return String();
-}
-Array<c_Image* > bb_gfx_iLoadImage(int t_start,int t_count,String t_path,int t_frameCount,int t_flags){
-	DBG_ENTER("iLoadImage")
-	DBG_LOCAL(t_start,"start")
-	DBG_LOCAL(t_count,"count")
-	DBG_LOCAL(t_path,"path")
-	DBG_LOCAL(t_frameCount,"frameCount")
-	DBG_LOCAL(t_flags,"flags")
-	DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/framework/gfx.monkey<324>");
-	int t_i=0;
-	DBG_LOCAL(t_i,"i")
-	DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/framework/gfx.monkey<326>");
-	Array<c_Image* > t_image=Array<c_Image* >(t_count);
-	DBG_LOCAL(t_image,"image")
-	DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/framework/gfx.monkey<328>");
-	String t_file=bb_strings_iStripExt(t_path);
-	DBG_LOCAL(t_file,"file")
-	DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/framework/gfx.monkey<329>");
-	String t_extension=String(L".",1)+bb_strings_iExtractExt(t_path);
-	DBG_LOCAL(t_extension,"extension")
-	DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/framework/gfx.monkey<331>");
-	for(int t_c=t_start;t_c<t_start+t_count;t_c=t_c+1){
-		DBG_BLOCK();
-		DBG_LOCAL(t_c,"c")
-		DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/framework/gfx.monkey<332>");
-		if(t_c<10){
-			DBG_BLOCK();
-			gc_assign(t_image.At(t_i),bb_graphics_LoadImage(t_file+String(L"000",3)+String(t_c)+t_extension,t_frameCount,t_flags));
-		}
-		DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/framework/gfx.monkey<333>");
-		if(t_c>9 && t_c<100){
-			DBG_BLOCK();
-			gc_assign(t_image.At(t_i),bb_graphics_LoadImage(t_file+String(L"00",2)+String(t_c)+t_extension,t_frameCount,t_flags));
-		}
-		DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/framework/gfx.monkey<334>");
-		if(t_c>99 && t_c<1000){
-			DBG_BLOCK();
-			gc_assign(t_image.At(t_i),bb_graphics_LoadImage(t_file+String(L"0",1)+String(t_c)+t_extension,t_frameCount,t_flags));
-		}
-		DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/framework/gfx.monkey<335>");
-		t_i=t_i+1;
-	}
-	DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/framework/gfx.monkey<338>");
-	return t_image;
-}
-Array<c_Image* > bb_gfx_iLoadImage2(Array<c_Image* > t_image,int t_start,int t_count,String t_path,int t_frameCount,int t_flags){
-	DBG_ENTER("iLoadImage")
-	DBG_LOCAL(t_image,"image")
-	DBG_LOCAL(t_start,"start")
-	DBG_LOCAL(t_count,"count")
-	DBG_LOCAL(t_path,"path")
-	DBG_LOCAL(t_frameCount,"frameCount")
-	DBG_LOCAL(t_flags,"flags")
-	DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/framework/gfx.monkey<344>");
-	int t_i=t_image.Length();
-	DBG_LOCAL(t_i,"i")
-	DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/framework/gfx.monkey<346>");
-	t_image=t_image.Resize(t_image.Length()+t_count);
-	DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/framework/gfx.monkey<348>");
-	String t_file=bb_strings_iStripExt(t_path);
-	DBG_LOCAL(t_file,"file")
-	DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/framework/gfx.monkey<349>");
-	String t_extension=String(L".",1)+bb_strings_iExtractExt(t_path);
-	DBG_LOCAL(t_extension,"extension")
-	DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/framework/gfx.monkey<351>");
-	for(int t_c=t_start;t_c<t_start+t_count;t_c=t_c+1){
-		DBG_BLOCK();
-		DBG_LOCAL(t_c,"c")
-		DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/framework/gfx.monkey<352>");
-		if(t_c<10){
-			DBG_BLOCK();
-			gc_assign(t_image.At(t_i),bb_graphics_LoadImage(t_file+String(L"000",3)+String(t_c)+t_extension,t_frameCount,t_flags));
-		}
-		DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/framework/gfx.monkey<353>");
-		if(t_c>9 && t_c<100){
-			DBG_BLOCK();
-			gc_assign(t_image.At(t_i),bb_graphics_LoadImage(t_file+String(L"00",2)+String(t_c)+t_extension,t_frameCount,t_flags));
-		}
-		DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/framework/gfx.monkey<354>");
-		if(t_c>99 && t_c<1000){
-			DBG_BLOCK();
-			gc_assign(t_image.At(t_i),bb_graphics_LoadImage(t_file+String(L"0",1)+String(t_c)+t_extension,t_frameCount,t_flags));
-		}
-		DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/framework/gfx.monkey<355>");
-		t_i=t_i+1;
-	}
-	DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/framework/gfx.monkey<358>");
-	return t_image;
-}
-Array<c_Image* > bb_gfx_iLoadImage3(int t_start,int t_count,String t_path,int t_frameWidth,int t_frameHeight,int t_frameCount,int t_flags){
-	DBG_ENTER("iLoadImage")
-	DBG_LOCAL(t_start,"start")
-	DBG_LOCAL(t_count,"count")
-	DBG_LOCAL(t_path,"path")
-	DBG_LOCAL(t_frameWidth,"frameWidth")
-	DBG_LOCAL(t_frameHeight,"frameHeight")
-	DBG_LOCAL(t_frameCount,"frameCount")
-	DBG_LOCAL(t_flags,"flags")
-	DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/framework/gfx.monkey<369>");
-	Array<c_Image* > t_i=Array<c_Image* >(t_count);
-	DBG_LOCAL(t_i,"i")
-	DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/framework/gfx.monkey<371>");
-	String t_f=bb_strings_iStripExt(t_path);
-	DBG_LOCAL(t_f,"f")
-	DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/framework/gfx.monkey<372>");
-	String t_e=String(L".",1)+bb_strings_iExtractExt(t_path);
-	DBG_LOCAL(t_e,"e")
-	DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/framework/gfx.monkey<374>");
-	for(int t_c=t_start;t_c<t_start+t_count;t_c=t_c+1){
-		DBG_BLOCK();
-		DBG_LOCAL(t_c,"c")
-		DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/framework/gfx.monkey<375>");
-		if(t_c<10){
-			DBG_BLOCK();
-			gc_assign(t_i.At(t_c),bb_graphics_LoadImage2(t_f+String(L"000",3)+String(t_c)+t_e,t_frameWidth,t_frameHeight,t_frameCount,t_flags));
-		}
-		DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/framework/gfx.monkey<376>");
-		if(t_c>9 && t_c<100){
-			DBG_BLOCK();
-			gc_assign(t_i.At(t_c),bb_graphics_LoadImage2(t_f+String(L"00",2)+String(t_c)+t_e,t_frameWidth,t_frameHeight,t_frameCount,t_flags));
-		}
-		DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/framework/gfx.monkey<377>");
-		if(t_c>99 && t_c<1000){
-			DBG_BLOCK();
-			gc_assign(t_i.At(t_c),bb_graphics_LoadImage2(t_f+String(L"0",1)+String(t_c)+t_e,t_frameWidth,t_frameHeight,t_frameCount,t_flags));
-		}
-	}
-	DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/framework/gfx.monkey<380>");
-	return t_i;
-}
-Array<c_Image* > bb_gfx_iLoadSprite3(int t_start,int t_count,String t_path,int t_frameCount){
-	DBG_ENTER("iLoadSprite")
-	DBG_LOCAL(t_start,"start")
-	DBG_LOCAL(t_count,"count")
-	DBG_LOCAL(t_path,"path")
-	DBG_LOCAL(t_frameCount,"frameCount")
-	DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/framework/gfx.monkey<408>");
-	Array<c_Image* > t_=bb_gfx_iLoadImage(t_start,t_count,t_path,t_frameCount,1);
-	return t_;
-}
-Array<c_Image* > bb_gfx_iLoadSprite4(int t_start,int t_count,String t_path,int t_frameWidth,int t_frameHeight,int t_frameCount){
-	DBG_ENTER("iLoadSprite")
-	DBG_LOCAL(t_start,"start")
-	DBG_LOCAL(t_count,"count")
-	DBG_LOCAL(t_path,"path")
-	DBG_LOCAL(t_frameWidth,"frameWidth")
-	DBG_LOCAL(t_frameHeight,"frameHeight")
-	DBG_LOCAL(t_frameCount,"frameCount")
-	DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/framework/gfx.monkey<417>");
-	Array<c_Image* > t_=bb_gfx_iLoadImage3(t_start,t_count,t_path,t_frameWidth,t_frameHeight,t_frameCount,1);
-	return t_;
-}
-c_Image* bb_main_gfxMonkey;
-c_Image* bb_main_textures;
 c_iEngine::c_iEngine(){
 	m__timeCode=0;
 	m__autoCls=true;
@@ -8944,7 +8778,7 @@ c_MenuScene* c_MenuScene::m_new(){
 	DBG_ENTER("MenuScene.new")
 	c_MenuScene *self=this;
 	DBG_LOCAL(self,"Self")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<48>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<47>");
 	c_iEngine::m_new();
 	return this;
 }
@@ -8952,7 +8786,7 @@ int c_MenuScene::p_OnCreate(){
 	DBG_ENTER("MenuScene.OnCreate")
 	c_MenuScene *self=this;
 	DBG_LOCAL(self,"Self")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<50>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<51>");
 	bbPrint(String(L"Creating Menu",13));
 	return 0;
 }
@@ -8960,9 +8794,9 @@ int c_MenuScene::p_OnRender(){
 	DBG_ENTER("MenuScene.OnRender")
 	c_MenuScene *self=this;
 	DBG_LOCAL(self,"Self")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<54>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<57>");
 	bb_graphics_DrawText(String(L"Press Enter to generate Cellularly",34),FLOAT(200.0),FLOAT(200.0),FLOAT(0.0),FLOAT(0.0));
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<55>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<58>");
 	bb_graphics_DrawText(String(L"Press Space to generate with Noise",34),FLOAT(200.0),FLOAT(300.0),FLOAT(0.0),FLOAT(0.0));
 	return 0;
 }
@@ -8970,7 +8804,7 @@ int c_MenuScene::p_OnStart(){
 	DBG_ENTER("MenuScene.OnStart")
 	c_MenuScene *self=this;
 	DBG_LOCAL(self,"Self")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<59>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<64>");
 	bbPrint(String(L"Starting Menu",13));
 	return 0;
 }
@@ -8978,7 +8812,7 @@ int c_MenuScene::p_OnStop(){
 	DBG_ENTER("MenuScene.OnStop")
 	c_MenuScene *self=this;
 	DBG_LOCAL(self,"Self")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<63>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<70>");
 	bbPrint(String(L"Stopping Menu",13));
 	return 0;
 }
@@ -8986,20 +8820,20 @@ int c_MenuScene::p_OnUpdate(){
 	DBG_ENTER("MenuScene.OnUpdate")
 	c_MenuScene *self=this;
 	DBG_LOCAL(self,"Self")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<67>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<77>");
 	if((bb_input_KeyHit(13))!=0){
 		DBG_BLOCK();
-		DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<68>");
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<78>");
 		bbPrint(String(L"Switch",6));
-		DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<69>");
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<79>");
 		bb_app2_iStart2(bb_main_gameplay);
 	}
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<71>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<82>");
 	if((bb_input_KeyHit(32))!=0){
 		DBG_BLOCK();
-		DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<72>");
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<83>");
 		bbPrint(String(L"Switch to Noise",15));
-		DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<73>");
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<84>");
 		bb_app2_iStart2(bb_main_noiseTest);
 	}
 	return 0;
@@ -9025,7 +8859,7 @@ c_GameplayScene* c_GameplayScene::m_new(){
 	DBG_ENTER("GameplayScene.new")
 	c_GameplayScene *self=this;
 	DBG_LOCAL(self,"Self")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<257>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<95>");
 	c_iEngine::m_new();
 	return this;
 }
@@ -9033,42 +8867,42 @@ int c_GameplayScene::p_OnCreate(){
 	DBG_ENTER("GameplayScene.OnCreate")
 	c_GameplayScene *self=this;
 	DBG_LOCAL(self,"Self")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<269>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<108>");
 	bbPrint(String(L"Creating Gameplay",17));
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<270>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<109>");
 	gc_assign(this->m_playfield,(new c_iPlayfield)->m_new());
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<271>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<110>");
 	this->m_playfield->p_AttachLast();
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<272>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<111>");
 	this->m_playfield->p_AutoCls(0,0,0);
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<273>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<112>");
 	this->m_playfield->p_Width2(FLOAT(600.0));
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<274>");
-	this->m_playfield->p_Height2(FLOAT(445.0));
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<275>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<113>");
+	this->m_playfield->p_Height2(FLOAT(440.0));
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<114>");
 	this->m_playfield->p_Position(FLOAT(16.0),FLOAT(16.0));
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<276>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<115>");
 	this->m_playfield->p_ZoomPointX2(FLOAT(200.0));
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<277>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<116>");
 	this->m_playfield->p_ZoomPointY2(FLOAT(128.0));
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<291>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<130>");
 	gc_assign(this->m_layer,(new c_iLayer)->m_new());
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<295>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<134>");
 	c_Image* t_img=bb_gfx_iLoadSprite2(String(L"char_walk_down.png",18),69,102,4);
 	DBG_LOCAL(t_img,"img")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<296>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<135>");
 	this->m_layer->p_AttachLast3(this->m_playfield);
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<300>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<139>");
 	gc_assign(this->m_sprite1,(new c_iLayerSprite)->m_new());
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<301>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<140>");
 	this->m_sprite1->p_AttachLast4(this->m_layer);
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<302>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<141>");
 	this->m_sprite1->p_ImagePointer2(t_img);
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<303>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<142>");
 	this->m_sprite1->p_Position(FLOAT(300.0),FLOAT(275.0));
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<311>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<150>");
 	gc_assign(this->m_p1,(new c_Player)->m_new(t_img,100,100));
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<313>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<152>");
 	gc_assign(m_music,bb_audio_LoadSound(String(L"tetris.mp3",10)));
 	return 0;
 }
@@ -9076,64 +8910,132 @@ int c_GameplayScene::p_OnRender(){
 	DBG_ENTER("GameplayScene.OnRender")
 	c_GameplayScene *self=this;
 	DBG_LOCAL(self,"Self")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<320>");
-	m_room->p_Draw();
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<160>");
+	m_room->p_Draw(int(this->m_playfield->p_CameraX()),int(this->m_playfield->p_CameraY()));
 	return 0;
 }
 int c_GameplayScene::p_OnStart(){
 	DBG_ENTER("GameplayScene.OnStart")
 	c_GameplayScene *self=this;
 	DBG_LOCAL(self,"Self")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<333>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<166>");
 	bbPrint(String(L"Starting Gameplay",17));
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<334>");
-	gc_assign(m_room,(new c_Level)->m_new(150,100,String(L"Drunk",5)));
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<167>");
+	gc_assign(m_room,(new c_Level)->m_new(0,0,160,120,String(L"Cellular",8)));
 	return 0;
 }
 int c_GameplayScene::p_OnStop(){
 	DBG_ENTER("GameplayScene.OnStop")
 	c_GameplayScene *self=this;
 	DBG_LOCAL(self,"Self")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<341>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<176>");
 	bbPrint(String(L"Stopping Gameplay",17));
+	return 0;
+}
+int c_GameplayScene::p_checkCameraBounds(){
+	DBG_ENTER("GameplayScene.checkCameraBounds")
+	c_GameplayScene *self=this;
+	DBG_LOCAL(self,"Self")
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<281>");
+	if(this->m_playfield->p_CameraX()<FLOAT(0.0)){
+		DBG_BLOCK();
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<282>");
+		this->m_playfield->p_CameraX2(FLOAT(0.0));
+	}
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<284>");
+	if(this->m_playfield->p_CameraY()<FLOAT(0.0)){
+		DBG_BLOCK();
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<285>");
+		this->m_playfield->p_CameraY2(FLOAT(0.0));
+	}
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<292>");
+	if(this->m_playfield->p_CameraX()+this->m_playfield->p_Width()/FLOAT(40.0)>this->m_playfield->p_Width()){
+		DBG_BLOCK();
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<293>");
+		this->m_playfield->p_CameraX2(this->m_playfield->p_Width()-this->m_playfield->p_Width()/FLOAT(40.0));
+	}
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<295>");
+	if(this->m_playfield->p_CameraY()+this->m_playfield->p_Height()/FLOAT(40.0)>this->m_playfield->p_Height()){
+		DBG_BLOCK();
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<296>");
+		this->m_playfield->p_CameraY2(this->m_playfield->p_Height()-this->m_playfield->p_Height()/FLOAT(40.0));
+	}
 	return 0;
 }
 int c_GameplayScene::p_OnUpdate(){
 	DBG_ENTER("GameplayScene.OnUpdate")
 	c_GameplayScene *self=this;
 	DBG_LOCAL(self,"Self")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<373>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<233>");
+	if((bb_input_KeyDown(17))!=0){
+		DBG_BLOCK();
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<235>");
+		if((bb_input_KeyDown(65))!=0){
+			DBG_BLOCK();
+			DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<236>");
+			this->m_playfield->p_AlphaFade2(this->m_playfield->p_AlphaFade()-FLOAT(0.01));
+			DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<237>");
+			if(this->m_playfield->p_AlphaFade()<FLOAT(0.0)){
+				DBG_BLOCK();
+				this->m_playfield->p_AlphaFade2(this->m_playfield->p_AlphaFade()+FLOAT(1.0));
+			}
+		}
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<240>");
+		if((bb_input_KeyDown(90))!=0){
+			DBG_BLOCK();
+			DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<241>");
+			this->m_playfield->p_ZoomX2(this->m_playfield->p_ZoomX()-FLOAT(0.01));
+			DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<242>");
+			this->m_playfield->p_ZoomY2(this->m_playfield->p_ZoomY()-FLOAT(0.01));
+		}
+	}else{
+		DBG_BLOCK();
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<247>");
+		if((bb_input_KeyDown(65))!=0){
+			DBG_BLOCK();
+			DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<248>");
+			this->m_playfield->p_AlphaFade2(this->m_playfield->p_AlphaFade()+FLOAT(0.01));
+			DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<249>");
+			if(this->m_playfield->p_AlphaFade()>FLOAT(1.0)){
+				DBG_BLOCK();
+				this->m_playfield->p_AlphaFade2(this->m_playfield->p_AlphaFade()-FLOAT(1.0));
+			}
+		}
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<252>");
+		if((bb_input_KeyDown(90))!=0){
+			DBG_BLOCK();
+			DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<253>");
+			this->m_playfield->p_ZoomX2(this->m_playfield->p_ZoomX()+FLOAT(0.01));
+			DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<254>");
+			this->m_playfield->p_ZoomY2(this->m_playfield->p_ZoomY()+FLOAT(0.01));
+		}
+	}
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<258>");
 	if((bb_input_KeyDown(37))!=0){
 		DBG_BLOCK();
-		DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<374>");
-		this->m_playfield->p_CameraX2(this->m_playfield->p_CameraX()-FLOAT(4.0));
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<259>");
+		this->m_playfield->p_CameraX2(this->m_playfield->p_CameraX()-FLOAT(1.0));
 	}
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<377>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<262>");
 	if((bb_input_KeyDown(39))!=0){
 		DBG_BLOCK();
-		DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<378>");
-		this->m_playfield->p_CameraX2(this->m_playfield->p_CameraX()+FLOAT(4.0));
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<263>");
+		this->m_playfield->p_CameraX2(this->m_playfield->p_CameraX()+FLOAT(1.0));
 	}
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<381>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<266>");
 	if((bb_input_KeyDown(38))!=0){
 		DBG_BLOCK();
-		DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<382>");
-		this->m_playfield->p_CameraY2(this->m_playfield->p_CameraY()-FLOAT(4.0));
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<267>");
+		this->m_playfield->p_CameraY2(this->m_playfield->p_CameraY()-FLOAT(1.0));
 	}
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<385>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<270>");
 	if((bb_input_KeyDown(40))!=0){
 		DBG_BLOCK();
-		DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<386>");
-		this->m_playfield->p_CameraY2(this->m_playfield->p_CameraY()+FLOAT(4.0));
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<271>");
+		this->m_playfield->p_CameraY2(this->m_playfield->p_CameraY()+FLOAT(1.0));
 	}
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<398>");
-	m_sprite1->p_AnimationLoop(FLOAT(1.0),String(L"60",2));
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<399>");
-	this->m_sprite1->p_Show(String(L"LOOPING ANIMATION:",18));
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<400>");
-	this->m_sprite1->p_Show(String(L"FramePointer=",13)+String(this->m_sprite1->p_Frame2()));
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<402>");
-	m_p1->p_Update();
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/main.monkey<273>");
+	p_checkCameraBounds();
 	return 0;
 }
 void c_GameplayScene::mark(){
@@ -9161,13 +9063,31 @@ c_NoiseTestScene::c_NoiseTestScene(){
 	m_playfieldN=0;
 	m_mapWidth=0;
 	m_mapHeight=0;
+	m_chunks=Array<Array<int > >();
+	m_deepWaterTiles=Array<c_Point* >();
+	m_shallowWaterTiles=Array<c_Point* >();
+	m_beachTiles=Array<c_Point* >();
+	m_lightGrassTiles=Array<c_Point* >();
+	m_heavyGrassTiles=Array<c_Point* >();
+	m_swampTiles=Array<c_Point* >();
+	m_forestTiles=Array<c_Point* >();
+	m_desertTiles=Array<c_Point* >();
+	m_mountainTiles=Array<c_Point* >();
+	m_darkSnowMountainTiles=Array<c_Point* >();
+	m_lightSnowMountainTiles=Array<c_Point* >();
+	m_riverTiles=Array<c_Point* >();
+	m_caveEntranceTiles=Array<c_Point* >();
+	m_biomes=Array<Array<int > >();
 	m_noiseMap=Array<Array<Float > >();
+	m_moisture=Array<Array<Float > >();
+	m_caves=Array<c_Level* >(1);
+	m_enemyPlacement=Array<Array<int > >();
 }
 c_NoiseTestScene* c_NoiseTestScene::m_new(){
 	DBG_ENTER("NoiseTestScene.new")
 	c_NoiseTestScene *self=this;
 	DBG_LOCAL(self,"Self")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<78>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<13>");
 	c_iEngine::m_new();
 	return this;
 }
@@ -9175,28 +9095,60 @@ int c_NoiseTestScene::p_OnCreate(){
 	DBG_ENTER("NoiseTestScene.OnCreate")
 	c_NoiseTestScene *self=this;
 	DBG_LOCAL(self,"Self")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<85>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<73>");
 	bbPrint(String(L"Creating Noise Test",19));
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<86>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<74>");
 	gc_assign(this->m_playfieldN,(new c_iPlayfield)->m_new());
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<87>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<75>");
 	this->m_playfieldN->p_AttachLast();
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<88>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<76>");
 	this->m_playfieldN->p_AutoCls(0,0,0);
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<89>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<77>");
 	this->m_playfieldN->p_Width2(FLOAT(600.0));
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<90>");
-	this->m_playfieldN->p_Height2(FLOAT(445.0));
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<91>");
-	this->m_playfieldN->p_Position(FLOAT(0.0),FLOAT(0.0));
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<92>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<78>");
+	this->m_playfieldN->p_Height2(FLOAT(460.0));
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<79>");
+	this->m_playfieldN->p_Position(FLOAT(25.0),FLOAT(15.0));
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<80>");
 	this->m_playfieldN->p_ZoomPointX2(FLOAT(200.0));
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<93>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<81>");
 	this->m_playfieldN->p_ZoomPointY2(FLOAT(128.0));
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<96>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<83>");
+	gc_assign(bb_noisetestscene_textures,bb_gfx_iLoadSprite2(String(L"textures40.png",14),40,40,19));
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<84>");
+	gc_assign(bb_noisetestscene_enemies,bb_gfx_iLoadSprite2(String(L"enemies20.png",13),20,20,9));
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<91>");
 	m_mapWidth=600;
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<97>");
-	m_mapHeight=600;
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<92>");
+	m_mapHeight=460;
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<94>");
+	gc_assign(m_chunks,bb_noisetestscene_setArray(30,23));
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<95>");
+	gc_assign(this->m_deepWaterTiles,Array<c_Point* >(1000));
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<96>");
+	gc_assign(this->m_shallowWaterTiles,Array<c_Point* >(1000));
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<97>");
+	gc_assign(this->m_beachTiles,Array<c_Point* >(1000));
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<98>");
+	gc_assign(this->m_lightGrassTiles,Array<c_Point* >(1000));
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<99>");
+	gc_assign(this->m_heavyGrassTiles,Array<c_Point* >(1000));
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<100>");
+	gc_assign(this->m_swampTiles,Array<c_Point* >(1000));
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<101>");
+	gc_assign(this->m_forestTiles,Array<c_Point* >(1000));
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<102>");
+	gc_assign(this->m_desertTiles,Array<c_Point* >(1000));
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<103>");
+	gc_assign(this->m_mountainTiles,Array<c_Point* >(1000));
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<104>");
+	gc_assign(this->m_darkSnowMountainTiles,Array<c_Point* >(1000));
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<105>");
+	gc_assign(this->m_lightSnowMountainTiles,Array<c_Point* >(1000));
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<106>");
+	gc_assign(this->m_riverTiles,Array<c_Point* >(1000));
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<107>");
+	gc_assign(this->m_caveEntranceTiles,Array<c_Point* >(1000));
 	return 0;
 }
 int c_NoiseTestScene::p_drawNoiseMap(int t_w,int t_h){
@@ -9205,96 +9157,28 @@ int c_NoiseTestScene::p_drawNoiseMap(int t_w,int t_h){
 	DBG_LOCAL(self,"Self")
 	DBG_LOCAL(t_w,"w")
 	DBG_LOCAL(t_h,"h")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<202>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<401>");
 	int t_xOffset=int(this->m_playfieldN->p_CameraX());
 	DBG_LOCAL(t_xOffset,"xOffset")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<203>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<402>");
 	int t_yOffset=int(this->m_playfieldN->p_CameraY());
 	DBG_LOCAL(t_yOffset,"yOffset")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<204>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<403>");
 	int t_xTarget=t_xOffset+30;
 	DBG_LOCAL(t_xTarget,"xTarget")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<205>");
-	int t_yTarget=t_yOffset+30;
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<404>");
+	int t_yTarget=t_yOffset+23;
 	DBG_LOCAL(t_yTarget,"yTarget")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<206>");
-	int t_localTexture=0;
-	DBG_LOCAL(t_localTexture,"localTexture")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<207>");
-	int t_counter=0;
-	DBG_LOCAL(t_counter,"counter")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<210>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<408>");
 	for(int t_i=t_xOffset;t_i<t_xTarget;t_i=t_i+1){
 		DBG_BLOCK();
 		DBG_LOCAL(t_i,"i")
-		DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<211>");
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<409>");
 		for(int t_j=t_yOffset;t_j<t_yTarget;t_j=t_j+1){
 			DBG_BLOCK();
 			DBG_LOCAL(t_j,"j")
-			DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<212>");
-			if(m_noiseMap.At(t_i).At(t_j)<FLOAT(-0.35)){
-				DBG_BLOCK();
-				DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<214>");
-				t_localTexture=0;
-			}else{
-				DBG_BLOCK();
-				DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<215>");
-				if(m_noiseMap.At(t_i).At(t_j)<FLOAT(-0.3)){
-					DBG_BLOCK();
-					DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<217>");
-					t_localTexture=1;
-				}else{
-					DBG_BLOCK();
-					DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<218>");
-					if(m_noiseMap.At(t_i).At(t_j)<FLOAT(-0.2)){
-						DBG_BLOCK();
-						DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<220>");
-						t_localTexture=2;
-					}else{
-						DBG_BLOCK();
-						DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<221>");
-						if(m_noiseMap.At(t_i).At(t_j)<FLOAT(-0.1)){
-							DBG_BLOCK();
-							DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<223>");
-							t_localTexture=3;
-						}else{
-							DBG_BLOCK();
-							DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<224>");
-							if(m_noiseMap.At(t_i).At(t_j)<FLOAT(0.3)){
-								DBG_BLOCK();
-								DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<226>");
-								t_localTexture=4;
-							}else{
-								DBG_BLOCK();
-								DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<227>");
-								if(m_noiseMap.At(t_i).At(t_j)<FLOAT(0.5)){
-									DBG_BLOCK();
-									DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<229>");
-									t_localTexture=5;
-								}else{
-									DBG_BLOCK();
-									DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<230>");
-									if(m_noiseMap.At(t_i).At(t_j)<FLOAT(0.6)){
-										DBG_BLOCK();
-										DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<232>");
-										t_localTexture=6;
-									}else{
-										DBG_BLOCK();
-										DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<233>");
-										if(m_noiseMap.At(t_i).At(t_j)<FLOAT(1.0)){
-											DBG_BLOCK();
-											DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<235>");
-											t_localTexture=7;
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-			DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<241>");
-			bb_graphics_DrawImage(bb_main_textures,Float((t_i-t_xOffset)*20+t_xOffset),Float((t_j-t_yOffset)*20+t_yOffset),t_localTexture);
+			DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<410>");
+			bb_graphics_DrawImage(bb_noisetestscene_textures,Float((t_i-t_xOffset)*20+t_xOffset),Float((t_j-t_yOffset)*20+t_yOffset),m_biomes.At(t_i).At(t_j));
 		}
 	}
 	return 0;
@@ -9303,46 +9187,733 @@ int c_NoiseTestScene::p_OnRender(){
 	DBG_ENTER("NoiseTestScene.OnRender")
 	c_NoiseTestScene *self=this;
 	DBG_LOCAL(self,"Self")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<104>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<113>");
 	p_drawNoiseMap(m_mapWidth,m_mapHeight);
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<116>");
+	bb_graphics_DrawText(String(L"CameraX: ",9)+String(this->m_playfieldN->p_CameraX()),this->m_playfieldN->p_CameraX()+FLOAT(10.0),this->m_playfieldN->p_CameraY()+FLOAT(10.0),FLOAT(0.0),FLOAT(0.0));
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<117>");
+	bb_graphics_DrawText(String(L"CameraY: ",9)+String(this->m_playfieldN->p_CameraY()),this->m_playfieldN->p_CameraX()+FLOAT(10.0),this->m_playfieldN->p_CameraY()+FLOAT(20.0),FLOAT(0.0),FLOAT(0.0));
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<118>");
+	bb_graphics_DrawText(String(L"MapX: ",6)+String(this->m_playfieldN->p_CameraX()),this->m_playfieldN->p_CameraX()+FLOAT(10.0),this->m_playfieldN->p_CameraY()+FLOAT(40.0),FLOAT(0.0),FLOAT(0.0));
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<119>");
+	bb_graphics_DrawText(String(L"MapY: ",6)+String(this->m_playfieldN->p_CameraY()),this->m_playfieldN->p_CameraX()+FLOAT(10.0),this->m_playfieldN->p_CameraY()+FLOAT(50.0),FLOAT(0.0),FLOAT(0.0));
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<120>");
+	bb_graphics_DrawText(String(L"MapXEnd: ",9)+String(this->m_playfieldN->p_CameraX()+FLOAT(120.0)),this->m_playfieldN->p_CameraX()+FLOAT(10.0),this->m_playfieldN->p_CameraY()+FLOAT(70.0),FLOAT(0.0),FLOAT(0.0));
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<121>");
+	bb_graphics_DrawText(String(L"MapYEnd: ",9)+String(this->m_playfieldN->p_CameraY()+FLOAT(89.0)),this->m_playfieldN->p_CameraX()+FLOAT(10.0),this->m_playfieldN->p_CameraY()+FLOAT(80.0),FLOAT(0.0),FLOAT(0.0));
+	return 0;
+}
+int c_NoiseTestScene::p_determineBiomes(Array<Array<Float > > t_elevation,Array<Array<Float > > t_moist,int t_width,int t_height){
+	DBG_ENTER("NoiseTestScene.determineBiomes")
+	c_NoiseTestScene *self=this;
+	DBG_LOCAL(self,"Self")
+	DBG_LOCAL(t_elevation,"elevation")
+	DBG_LOCAL(t_moist,"moist")
+	DBG_LOCAL(t_width,"width")
+	DBG_LOCAL(t_height,"height")
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<443>");
+	int t_localBiome=0;
+	DBG_LOCAL(t_localBiome,"localBiome")
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<445>");
+	for(int t_i=0;t_i<t_width;t_i=t_i+1){
+		DBG_BLOCK();
+		DBG_LOCAL(t_i,"i")
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<446>");
+		for(int t_j=0;t_j<t_height;t_j=t_j+1){
+			DBG_BLOCK();
+			DBG_LOCAL(t_j,"j")
+			DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<447>");
+			if(m_noiseMap.At(t_i).At(t_j)<FLOAT(-0.35)){
+				DBG_BLOCK();
+				DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<448>");
+				t_localBiome=0;
+			}else{
+				DBG_BLOCK();
+				DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<449>");
+				if(m_noiseMap.At(t_i).At(t_j)<FLOAT(-0.3)){
+					DBG_BLOCK();
+					DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<450>");
+					t_localBiome=1;
+				}else{
+					DBG_BLOCK();
+					DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<451>");
+					if(m_noiseMap.At(t_i).At(t_j)<FLOAT(-0.2)){
+						DBG_BLOCK();
+						DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<452>");
+						t_localBiome=2;
+					}else{
+						DBG_BLOCK();
+						DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<457>");
+						if(m_noiseMap.At(t_i).At(t_j)<FLOAT(0.2)){
+							DBG_BLOCK();
+							DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<458>");
+							if(m_moisture.At(t_i).At(t_j)<FLOAT(-0.6)){
+								DBG_BLOCK();
+								DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<459>");
+								t_localBiome=7;
+							}else{
+								DBG_BLOCK();
+								DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<460>");
+								if(m_moisture.At(t_i).At(t_j)<FLOAT(-.1)){
+									DBG_BLOCK();
+									DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<461>");
+									t_localBiome=3;
+								}else{
+									DBG_BLOCK();
+									DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<462>");
+									if(m_moisture.At(t_i).At(t_j)<FLOAT(0.2)){
+										DBG_BLOCK();
+										DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<463>");
+										t_localBiome=4;
+									}else{
+										DBG_BLOCK();
+										DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<464>");
+										if(m_moisture.At(t_i).At(t_j)<FLOAT(0.4)){
+											DBG_BLOCK();
+											DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<465>");
+											t_localBiome=6;
+										}else{
+											DBG_BLOCK();
+											DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<466>");
+											if(m_moisture.At(t_i).At(t_j)<FLOAT(1.0)){
+												DBG_BLOCK();
+												DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<467>");
+												t_localBiome=5;
+											}
+										}
+									}
+								}
+							}
+						}else{
+							DBG_BLOCK();
+							DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<469>");
+							if(m_noiseMap.At(t_i).At(t_j)<FLOAT(0.4)){
+								DBG_BLOCK();
+								DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<470>");
+								t_localBiome=8;
+							}else{
+								DBG_BLOCK();
+								DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<471>");
+								if(m_noiseMap.At(t_i).At(t_j)<FLOAT(0.45)){
+									DBG_BLOCK();
+									DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<472>");
+									t_localBiome=9;
+								}else{
+									DBG_BLOCK();
+									DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<473>");
+									if(m_noiseMap.At(t_i).At(t_j)<FLOAT(1.0)){
+										DBG_BLOCK();
+										DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<474>");
+										t_localBiome=10;
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+			DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<477>");
+			if(t_i==0 || t_i==t_width-1 || t_j==0 || t_j==t_height-1){
+				DBG_BLOCK();
+				DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<478>");
+				t_localBiome=11;
+			}
+			DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<481>");
+			m_biomes.At(t_i).At(t_j)=t_localBiome;
+		}
+	}
+	return 0;
+}
+int c_NoiseTestScene::p_processBiomes(){
+	DBG_ENTER("NoiseTestScene.processBiomes")
+	c_NoiseTestScene *self=this;
+	DBG_LOCAL(self,"Self")
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<488>");
+	bbPrint(String(L"Begin processing",16));
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<489>");
+	int t_localBiome=0;
+	DBG_LOCAL(t_localBiome,"localBiome")
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<491>");
+	int t_deepWaterIndex=0;
+	DBG_LOCAL(t_deepWaterIndex,"deepWaterIndex")
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<492>");
+	int t_shallowWaterIndex=0;
+	DBG_LOCAL(t_shallowWaterIndex,"shallowWaterIndex")
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<493>");
+	int t_beachIndex=0;
+	DBG_LOCAL(t_beachIndex,"beachIndex")
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<494>");
+	int t_lightGrassIndex=0;
+	DBG_LOCAL(t_lightGrassIndex,"lightGrassIndex")
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<495>");
+	int t_heavyGrassIndex=0;
+	DBG_LOCAL(t_heavyGrassIndex,"heavyGrassIndex")
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<496>");
+	int t_swampIndex=0;
+	DBG_LOCAL(t_swampIndex,"swampIndex")
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<497>");
+	int t_forestIndex=0;
+	DBG_LOCAL(t_forestIndex,"forestIndex")
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<498>");
+	int t_desertIndex=0;
+	DBG_LOCAL(t_desertIndex,"desertIndex")
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<499>");
+	int t_mountainIndex=0;
+	DBG_LOCAL(t_mountainIndex,"mountainIndex")
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<501>");
+	for(int t_i=0;t_i<this->m_mapWidth;t_i=t_i+1){
+		DBG_BLOCK();
+		DBG_LOCAL(t_i,"i")
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<502>");
+		for(int t_j=0;t_j<this->m_mapHeight;t_j=t_j+1){
+			DBG_BLOCK();
+			DBG_LOCAL(t_j,"j")
+			DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<504>");
+			t_localBiome=this->m_biomes.At(t_i).At(t_j);
+			DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<505>");
+			if(t_localBiome==0){
+				DBG_BLOCK();
+				DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<507>");
+				gc_assign(m_deepWaterTiles.At(t_deepWaterIndex),(new c_Point)->m_new(t_i,t_j));
+				DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<508>");
+				t_deepWaterIndex+=1;
+				DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<509>");
+				if(t_deepWaterIndex==m_deepWaterTiles.Length()){
+					DBG_BLOCK();
+					DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<510>");
+					gc_assign(m_deepWaterTiles,m_deepWaterTiles.Resize(m_deepWaterTiles.Length()+1000));
+				}
+			}else{
+				DBG_BLOCK();
+				DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<512>");
+				if(t_localBiome==1){
+					DBG_BLOCK();
+					DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<514>");
+					gc_assign(m_shallowWaterTiles.At(t_shallowWaterIndex),(new c_Point)->m_new(t_i,t_j));
+					DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<515>");
+					t_shallowWaterIndex+=1;
+					DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<516>");
+					if(t_shallowWaterIndex==m_shallowWaterTiles.Length()){
+						DBG_BLOCK();
+						DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<517>");
+						gc_assign(m_shallowWaterTiles,m_shallowWaterTiles.Resize(m_shallowWaterTiles.Length()+1000));
+					}
+				}else{
+					DBG_BLOCK();
+					DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<519>");
+					if(t_localBiome==2){
+						DBG_BLOCK();
+						DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<521>");
+						gc_assign(m_beachTiles.At(t_beachIndex),(new c_Point)->m_new(t_i,t_j));
+						DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<522>");
+						t_beachIndex+=1;
+						DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<523>");
+						if(t_beachIndex==m_beachTiles.Length()){
+							DBG_BLOCK();
+							DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<524>");
+							gc_assign(m_beachTiles,m_beachTiles.Resize(m_beachTiles.Length()+1000));
+						}
+					}else{
+						DBG_BLOCK();
+						DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<526>");
+						if(t_localBiome==3){
+							DBG_BLOCK();
+							DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<528>");
+							gc_assign(m_lightGrassTiles.At(t_lightGrassIndex),(new c_Point)->m_new(t_i,t_j));
+							DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<529>");
+							t_lightGrassIndex+=1;
+							DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<530>");
+							if(t_lightGrassIndex==m_deepWaterTiles.Length()){
+								DBG_BLOCK();
+								DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<531>");
+								gc_assign(m_deepWaterTiles,m_deepWaterTiles.Resize(m_deepWaterTiles.Length()+1000));
+							}
+						}else{
+							DBG_BLOCK();
+							DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<533>");
+							if(t_localBiome==4){
+								DBG_BLOCK();
+								DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<535>");
+								gc_assign(m_heavyGrassTiles.At(t_heavyGrassIndex),(new c_Point)->m_new(t_i,t_j));
+								DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<536>");
+								t_heavyGrassIndex+=1;
+								DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<537>");
+								if(t_heavyGrassIndex==m_heavyGrassTiles.Length()){
+									DBG_BLOCK();
+									DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<538>");
+									gc_assign(m_heavyGrassTiles,m_heavyGrassTiles.Resize(m_heavyGrassTiles.Length()+1000));
+								}
+							}else{
+								DBG_BLOCK();
+								DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<540>");
+								if(t_localBiome==5){
+									DBG_BLOCK();
+									DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<542>");
+									gc_assign(m_swampTiles.At(t_swampIndex),(new c_Point)->m_new(t_i,t_j));
+									DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<543>");
+									t_swampIndex+=1;
+									DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<544>");
+									if(t_swampIndex==m_swampTiles.Length()){
+										DBG_BLOCK();
+										DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<545>");
+										gc_assign(m_swampTiles,m_swampTiles.Resize(m_swampTiles.Length()+1000));
+									}
+								}else{
+									DBG_BLOCK();
+									DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<547>");
+									if(t_localBiome==6){
+										DBG_BLOCK();
+										DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<549>");
+										gc_assign(m_forestTiles.At(t_forestIndex),(new c_Point)->m_new(t_i,t_j));
+										DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<550>");
+										t_forestIndex+=1;
+										DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<551>");
+										if(t_forestIndex==m_forestTiles.Length()){
+											DBG_BLOCK();
+											DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<552>");
+											gc_assign(m_forestTiles,m_forestTiles.Resize(m_forestTiles.Length()+1000));
+										}
+									}else{
+										DBG_BLOCK();
+										DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<554>");
+										if(t_localBiome==7){
+											DBG_BLOCK();
+											DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<556>");
+											gc_assign(m_desertTiles.At(t_desertIndex),(new c_Point)->m_new(t_i,t_j));
+											DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<557>");
+											t_desertIndex+=1;
+											DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<558>");
+											if(t_desertIndex==m_desertTiles.Length()){
+												DBG_BLOCK();
+												DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<559>");
+												gc_assign(m_desertTiles,m_desertTiles.Resize(m_desertTiles.Length()+1000));
+											}
+										}else{
+											DBG_BLOCK();
+											DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<561>");
+											if(t_localBiome==8){
+												DBG_BLOCK();
+												DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<563>");
+												gc_assign(m_mountainTiles.At(t_mountainIndex),(new c_Point)->m_new(t_i,t_j));
+												DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<564>");
+												t_mountainIndex+=1;
+												DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<565>");
+												if(t_mountainIndex==m_mountainTiles.Length()){
+													DBG_BLOCK();
+													DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<566>");
+													gc_assign(m_mountainTiles,m_mountainTiles.Resize(m_mountainTiles.Length()+1000));
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<573>");
+	bbPrint(String(L"End processing",14));
+	return 0;
+}
+int c_NoiseTestScene::p_makeLake(int t_centerX,int t_centerY){
+	DBG_ENTER("NoiseTestScene.makeLake")
+	c_NoiseTestScene *self=this;
+	DBG_LOCAL(self,"Self")
+	DBG_LOCAL(t_centerX,"centerX")
+	DBG_LOCAL(t_centerY,"centerY")
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<224>");
+	int t_lakeWidth=int(bb_random_Rnd2(FLOAT(1.0),FLOAT(5.0)));
+	DBG_LOCAL(t_lakeWidth,"lakeWidth")
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<225>");
+	int t_lakeHeight=int(bb_random_Rnd2(FLOAT(1.0),FLOAT(5.0)));
+	DBG_LOCAL(t_lakeHeight,"lakeHeight")
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<226>");
+	bbPrint(String(L"Make a lake at ",15)+String(t_centerX)+String(L", ",2)+String(t_centerY)+String(L", Size: ",8)+String(t_lakeWidth)+String(L"x",1)+String(t_lakeHeight));
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<227>");
+	int t_tempX=t_centerX-t_lakeWidth;
+	DBG_LOCAL(t_tempX,"tempX")
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<228>");
+	int t_tempY=t_centerY-t_lakeHeight;
+	DBG_LOCAL(t_tempY,"tempY")
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<230>");
+	int t_xTarget=t_tempX+(t_lakeWidth*2+1);
+	DBG_LOCAL(t_xTarget,"xTarget")
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<231>");
+	int t_yTarget=t_tempY+(t_lakeHeight*2+1);
+	DBG_LOCAL(t_yTarget,"yTarget")
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<233>");
+	m_biomes.At(t_centerX).At(t_centerY)=1;
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<235>");
+	for(int t_i=t_tempX;t_i<t_xTarget;t_i=t_i+1){
+		DBG_BLOCK();
+		DBG_LOCAL(t_i,"i")
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<236>");
+		for(int t_j=t_tempY;t_j<t_yTarget;t_j=t_j+1){
+			DBG_BLOCK();
+			DBG_LOCAL(t_j,"j")
+			DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<237>");
+			if(t_i>0 && t_i<m_mapWidth-1 && t_j>0 && t_j<m_mapHeight-1 && !(m_biomes.At(t_i).At(t_j)==0)){
+				DBG_BLOCK();
+				DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<238>");
+				m_biomes.At(t_i).At(t_j)=1;
+			}
+		}
+	}
+	return 0;
+}
+int c_NoiseTestScene::p_makeRiver(int t_startX,int t_startY){
+	DBG_ENTER("NoiseTestScene.makeRiver")
+	c_NoiseTestScene *self=this;
+	DBG_LOCAL(self,"Self")
+	DBG_LOCAL(t_startX,"startX")
+	DBG_LOCAL(t_startY,"startY")
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<172>");
+	int t_currentX=t_startX;
+	DBG_LOCAL(t_currentX,"currentX")
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<173>");
+	int t_currentY=t_startY;
+	DBG_LOCAL(t_currentY,"currentY")
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<174>");
+	int t_localMinX=t_startX;
+	DBG_LOCAL(t_localMinX,"localMinX")
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<175>");
+	int t_localMinY=t_startY;
+	DBG_LOCAL(t_localMinY,"localMinY")
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<176>");
+	Float t_lowestElevation=m_noiseMap.At(t_currentX).At(t_currentY);
+	DBG_LOCAL(t_lowestElevation,"lowestElevation")
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<177>");
+	bool t_riverEnd=false;
+	DBG_LOCAL(t_riverEnd,"riverEnd")
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<178>");
+	int t_riverLength=0;
+	DBG_LOCAL(t_riverLength,"riverLength")
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<179>");
+	m_biomes.At(t_currentX).At(t_currentY)=1;
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<181>");
+	while(t_riverEnd==false && t_riverLength<100){
+		DBG_BLOCK();
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<183>");
+		if(t_currentX>0 && m_noiseMap.At(t_currentX-1).At(t_currentY)<t_lowestElevation){
+			DBG_BLOCK();
+			DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<184>");
+			t_localMinX=t_currentX-1;
+			DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<185>");
+			t_localMinY=t_currentY;
+			DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<186>");
+			t_lowestElevation=m_noiseMap.At(t_localMinX).At(t_localMinY);
+		}
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<188>");
+		if(t_currentX<m_mapWidth-2 && m_noiseMap.At(t_currentX+1).At(t_currentY)<t_lowestElevation){
+			DBG_BLOCK();
+			DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<189>");
+			t_localMinX=t_currentX+1;
+			DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<190>");
+			t_localMinY=t_currentY;
+			DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<191>");
+			t_lowestElevation=m_noiseMap.At(t_localMinX).At(t_localMinY);
+		}
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<193>");
+		if(t_currentY>0 && m_noiseMap.At(t_currentX).At(t_currentY-1)<t_lowestElevation){
+			DBG_BLOCK();
+			DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<194>");
+			t_localMinX=t_currentX;
+			DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<195>");
+			t_localMinY=t_currentY-1;
+			DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<196>");
+			t_lowestElevation=m_noiseMap.At(t_localMinX).At(t_localMinY);
+		}
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<198>");
+		if(t_currentY<m_mapHeight-2 && m_noiseMap.At(t_currentX).At(t_currentY+1)<t_lowestElevation){
+			DBG_BLOCK();
+			DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<199>");
+			t_localMinX=t_currentX;
+			DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<200>");
+			t_localMinY=t_currentY+1;
+			DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<201>");
+			t_lowestElevation=m_noiseMap.At(t_localMinX).At(t_localMinY);
+		}
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<204>");
+		if(m_biomes.At(t_localMinX).At(t_localMinY)==0){
+			DBG_BLOCK();
+			DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<206>");
+			t_riverEnd=true;
+		}else{
+			DBG_BLOCK();
+			DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<207>");
+			if(t_localMinX==t_currentX && t_localMinY==t_currentY){
+				DBG_BLOCK();
+				DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<208>");
+				p_makeLake(t_currentX,t_currentY);
+				DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<209>");
+				t_riverEnd=true;
+			}else{
+				DBG_BLOCK();
+				DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<211>");
+				m_biomes.At(t_localMinX).At(t_localMinY)=1;
+				DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<212>");
+				t_currentX=t_localMinX;
+				DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<213>");
+				t_currentY=t_localMinY;
+				DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<214>");
+				t_riverLength+=1;
+			}
+		}
+	}
+	return 0;
+}
+int c_NoiseTestScene::p_makeRivers(int t_total){
+	DBG_ENTER("NoiseTestScene.makeRivers")
+	c_NoiseTestScene *self=this;
+	DBG_LOCAL(self,"Self")
+	DBG_LOCAL(t_total,"total")
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<153>");
+	int t_rivers=0;
+	DBG_LOCAL(t_rivers,"rivers")
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<154>");
+	int t_randX=0;
+	DBG_LOCAL(t_randX,"randX")
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<155>");
+	int t_randY=0;
+	DBG_LOCAL(t_randY,"randY")
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<156>");
+	int t_randBiome=0;
+	DBG_LOCAL(t_randBiome,"randBiome")
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<157>");
+	while(t_rivers<t_total){
+		DBG_BLOCK();
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<158>");
+		t_randX=int(bb_random_Rnd2(FLOAT(0.0),Float(m_mapWidth)));
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<159>");
+		t_randY=int(bb_random_Rnd2(FLOAT(0.0),Float(m_mapHeight)));
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<160>");
+		t_randBiome=m_biomes.At(t_randX).At(t_randY);
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<161>");
+		if(t_randBiome==8){
+			DBG_BLOCK();
+			DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<162>");
+			p_makeRiver(t_randX,t_randY);
+			DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<163>");
+			bbPrint(String(L"River at ",9)+String(t_randX)+String(L", ",2)+String(t_randY));
+			DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<164>");
+			t_rivers+=1;
+		}
+	}
+	return 0;
+}
+int c_NoiseTestScene::p_selectRandomStartPoint(){
+	DBG_ENTER("NoiseTestScene.selectRandomStartPoint")
+	c_NoiseTestScene *self=this;
+	DBG_LOCAL(self,"Self")
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<306>");
+	int t_x=0;
+	DBG_LOCAL(t_x,"x")
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<307>");
+	int t_y=0;
+	DBG_LOCAL(t_y,"y")
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<308>");
+	bool t_startPointSet=false;
+	DBG_LOCAL(t_startPointSet,"startPointSet")
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<310>");
+	while(!t_startPointSet){
+		DBG_BLOCK();
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<311>");
+		t_x=int(bb_random_Rnd2(FLOAT(200.0),FLOAT(400.0)));
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<312>");
+		t_y=int(bb_random_Rnd2(FLOAT(130.0),FLOAT(330.0)));
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<313>");
+		if(this->m_biomes.At(t_x).At(t_y)==3 || this->m_biomes.At(t_x).At(t_y)==4){
+			DBG_BLOCK();
+			DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<314>");
+			this->m_playfieldN->p_CameraX2(Float(t_x));
+			DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<315>");
+			this->m_playfieldN->p_CameraY2(Float(t_y));
+			DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<316>");
+			t_startPointSet=true;
+		}
+	}
+	return 0;
+}
+int c_NoiseTestScene::p_makeCaves(int t_total){
+	DBG_ENTER("NoiseTestScene.makeCaves")
+	c_NoiseTestScene *self=this;
+	DBG_LOCAL(self,"Self")
+	DBG_LOCAL(t_total,"total")
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<248>");
+	int t_lowX=int(this->m_playfieldN->p_CameraX()-FLOAT(50.0));
+	DBG_LOCAL(t_lowX,"lowX")
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<249>");
+	int t_highX=int(this->m_playfieldN->p_CameraX()+FLOAT(100.0));
+	DBG_LOCAL(t_highX,"highX")
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<250>");
+	int t_lowY=int(this->m_playfieldN->p_CameraY()-FLOAT(50.0));
+	DBG_LOCAL(t_lowY,"lowY")
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<251>");
+	int t_highY=int(this->m_playfieldN->p_CameraY()+FLOAT(100.0));
+	DBG_LOCAL(t_highY,"highY")
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<253>");
+	int t_randX=0;
+	DBG_LOCAL(t_randX,"randX")
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<254>");
+	int t_randY=0;
+	DBG_LOCAL(t_randY,"randY")
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<256>");
+	int t_cavesMade=0;
+	DBG_LOCAL(t_cavesMade,"cavesMade")
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<257>");
+	bool t_isReachable=false;
+	DBG_LOCAL(t_isReachable,"isReachable")
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<259>");
+	while(t_cavesMade<t_total){
+		DBG_BLOCK();
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<260>");
+		t_isReachable=false;
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<261>");
+		t_randX=int(bb_random_Rnd2(Float(t_lowX),Float(t_highX)));
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<262>");
+		t_randY=int(bb_random_Rnd2(Float(t_lowY),Float(t_highY)));
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<265>");
+		if(m_biomes.At(t_randX).At(t_randY)==8){
+			DBG_BLOCK();
+			DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<268>");
+			if(t_randX>0 && m_biomes.At(t_randX-1).At(t_randY)==4){
+				DBG_BLOCK();
+				DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<269>");
+				t_isReachable=true;
+			}
+			DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<271>");
+			if(t_randX<m_mapWidth-2 && m_biomes.At(t_randX+1).At(t_randY)==4){
+				DBG_BLOCK();
+				DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<272>");
+				t_isReachable=true;
+			}
+			DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<274>");
+			if(t_randX>0 && t_randY>0 && m_biomes.At(t_randX-1).At(t_randY-1)==4){
+				DBG_BLOCK();
+				DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<275>");
+				t_isReachable=true;
+			}
+			DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<277>");
+			if(t_randX<m_mapWidth-2 && t_randY>0 && m_biomes.At(t_randX+1).At(t_randY-1)==4){
+				DBG_BLOCK();
+				DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<278>");
+				t_isReachable=true;
+			}
+			DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<280>");
+			if(t_randY>0 && m_biomes.At(t_randX).At(t_randY-1)==4){
+				DBG_BLOCK();
+				DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<281>");
+				t_isReachable=true;
+			}
+			DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<283>");
+			if(t_randY>m_mapHeight-2 && m_biomes.At(t_randX).At(t_randY+1)==4){
+				DBG_BLOCK();
+				DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<284>");
+				t_isReachable=true;
+			}
+			DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<286>");
+			if(t_randX>0 && t_randY<m_mapHeight-2 && m_biomes.At(t_randX-1).At(t_randY+1)==4){
+				DBG_BLOCK();
+				DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<287>");
+				t_isReachable=true;
+			}
+			DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<289>");
+			if(t_randX<m_mapWidth-2 && t_randY<m_mapHeight-2 && m_biomes.At(t_randX+1).At(t_randY+1)==4){
+				DBG_BLOCK();
+				DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<290>");
+				t_isReachable=true;
+			}
+		}
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<294>");
+		if(t_isReachable){
+			DBG_BLOCK();
+			DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<295>");
+			bbPrint(String(L"Cave entrance at ",17)+String(t_randX)+String(L", ",2)+String(t_randY));
+			DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<296>");
+			m_biomes.At(t_randX).At(t_randY)=11;
+			DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<297>");
+			gc_assign(m_caves.At(t_cavesMade),(new c_Level)->m_new(t_randX,t_randY,150,100,String(L"Cellular",8)));
+			DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<298>");
+			t_cavesMade+=1;
+		}
+	}
+	return 0;
+}
+int c_NoiseTestScene::p_determineEnemyType(Array<Array<int > > t_enemies,Array<Array<int > > t_habitat){
+	DBG_ENTER("NoiseTestScene.determineEnemyType")
+	c_NoiseTestScene *self=this;
+	DBG_LOCAL(self,"Self")
+	DBG_LOCAL(t_enemies,"enemies")
+	DBG_LOCAL(t_habitat,"habitat")
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<580>");
+	for(int t_i=0;t_i<t_enemies.Length();t_i=t_i+1){
+		DBG_BLOCK();
+		DBG_LOCAL(t_i,"i")
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<581>");
+		for(int t_j=0;t_j<t_enemies.At(0).Length();t_j=t_j+1){
+			DBG_BLOCK();
+			DBG_LOCAL(t_j,"j")
+			DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<582>");
+			if(!(t_enemies.At(t_i).At(t_j)==-1)){
+				DBG_BLOCK();
+				DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<583>");
+				t_enemies.At(t_i).At(t_j)=t_habitat.At(t_i).At(t_j);
+			}
+		}
+	}
+	return 0;
+}
+int c_NoiseTestScene::p_placeEnemies(int t_width,int t_height){
+	DBG_ENTER("NoiseTestScene.placeEnemies")
+	c_NoiseTestScene *self=this;
+	DBG_LOCAL(self,"Self")
+	DBG_LOCAL(t_width,"width")
+	DBG_LOCAL(t_height,"height")
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<592>");
+	gc_assign(this->m_enemyPlacement,bb_noisetestscene_setArray(t_width,t_height));
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<593>");
+	bb_noisetestscene_randomlyAssignCells(this->m_enemyPlacement,1);
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<594>");
+	p_determineEnemyType(this->m_enemyPlacement,this->m_biomes);
 	return 0;
 }
 int c_NoiseTestScene::p_OnStart(){
 	DBG_ENTER("NoiseTestScene.OnStart")
 	c_NoiseTestScene *self=this;
 	DBG_LOCAL(self,"Self")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<117>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<127>");
 	bbPrint(String(L"Starting Noise Test",19));
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<118>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<128>");
 	c_SimplexNoise* t_n=(new c_SimplexNoise)->m_new();
 	DBG_LOCAL(t_n,"n")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<119>");
-	gc_assign(m_noiseMap,t_n->p_generateOctavedNoiseMap(m_mapWidth,m_mapHeight,6,FLOAT(0.5),FLOAT(1.0)));
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<120>");
-	int t_x=m_noiseMap.Length();
-	DBG_LOCAL(t_x,"x")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<121>");
-	int t_y=m_noiseMap.At(0).Length();
-	DBG_LOCAL(t_y,"y")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<122>");
-	bbPrint(String(L"X: ",3)+String(t_x));
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<123>");
-	bbPrint(String(L"Y: ",3)+String(t_y));
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<124>");
-	bbPrint(String(L"Top Left Corner: ",17)+String(m_noiseMap.At(0).At(0)));
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<125>");
-	bbPrint(String(L"Top Right Corner: ",18)+String(m_noiseMap.At(t_x-1).At(0)));
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<126>");
-	bbPrint(String(L"Bottom Left Corner: ",20)+String(m_noiseMap.At(0).At(t_y-1)));
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<127>");
-	bbPrint(String(L"Bottom Right Corner: ",21)+String(m_noiseMap.At(t_x-1).At(t_y-1)));
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<129>");
+	gc_assign(m_noiseMap,t_n->p_generateOctavedNoiseMap(m_mapWidth,m_mapHeight,5,FLOAT(0.5),FLOAT(1.0)));
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<130>");
+	gc_assign(m_moisture,t_n->p_generateOctavedNoiseMap(m_mapWidth,m_mapHeight,5,FLOAT(0.5),FLOAT(1.0)));
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<131>");
+	gc_assign(m_biomes,bb_noisetestscene_setArray(m_mapWidth,m_mapHeight));
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<132>");
+	p_determineBiomes(m_noiseMap,m_moisture,m_mapWidth,m_mapHeight);
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<133>");
+	p_processBiomes();
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<134>");
+	p_makeRivers(25);
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<135>");
+	p_selectRandomStartPoint();
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<136>");
+	p_makeCaves(1);
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<137>");
+	p_placeEnemies(m_mapWidth,m_mapHeight);
 	return 0;
 }
 int c_NoiseTestScene::p_OnStop(){
 	DBG_ENTER("NoiseTestScene.OnStop")
 	c_NoiseTestScene *self=this;
 	DBG_LOCAL(self,"Self")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<132>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<324>");
 	bbPrint(String(L"Stopping Noise Test",19));
 	return 0;
 }
@@ -9350,29 +9921,29 @@ int c_NoiseTestScene::p_checkCameraBounds(){
 	DBG_ENTER("NoiseTestScene.checkCameraBounds")
 	c_NoiseTestScene *self=this;
 	DBG_LOCAL(self,"Self")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<184>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<378>");
 	if(this->m_playfieldN->p_CameraX()<FLOAT(0.0)){
 		DBG_BLOCK();
-		DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<185>");
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<379>");
 		this->m_playfieldN->p_CameraX2(FLOAT(0.0));
 	}
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<187>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<381>");
 	if(this->m_playfieldN->p_CameraY()<FLOAT(0.0)){
 		DBG_BLOCK();
-		DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<188>");
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<382>");
 		this->m_playfieldN->p_CameraY2(FLOAT(0.0));
 	}
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<192>");
-	if(this->m_playfieldN->p_CameraX()+Float(m_mapWidth/20)>Float(m_mapWidth)){
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<389>");
+	if(this->m_playfieldN->p_CameraX()+this->m_playfieldN->p_Width()/FLOAT(20.0)>this->m_playfieldN->p_Width()){
 		DBG_BLOCK();
-		DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<193>");
-		this->m_playfieldN->p_CameraX2(Float(m_mapWidth-m_mapWidth/20));
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<390>");
+		this->m_playfieldN->p_CameraX2(this->m_playfieldN->p_Width()-this->m_playfieldN->p_Width()/FLOAT(20.0));
 	}
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<195>");
-	if(this->m_playfieldN->p_CameraY()+Float(m_mapHeight/20)>Float(m_mapHeight)){
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<392>");
+	if(this->m_playfieldN->p_CameraY()+this->m_playfieldN->p_Height()/FLOAT(20.0)>this->m_playfieldN->p_Height()){
 		DBG_BLOCK();
-		DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<196>");
-		this->m_playfieldN->p_CameraY2(Float(m_mapHeight-m_mapHeight/20));
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<393>");
+		this->m_playfieldN->p_CameraY2(this->m_playfieldN->p_Height()-this->m_playfieldN->p_Height()/FLOAT(20.0));
 	}
 	return 0;
 }
@@ -9380,98 +9951,126 @@ int c_NoiseTestScene::p_OnUpdate(){
 	DBG_ENTER("NoiseTestScene.OnUpdate")
 	c_NoiseTestScene *self=this;
 	DBG_LOCAL(self,"Self")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<136>");
-	if((bb_input_KeyHit(13))!=0){
-		DBG_BLOCK();
-		DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<137>");
-		bbPrint(String(L"Switch",6));
-		DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<138>");
-		bb_app2_iStart2(bb_main_gameplay);
-	}
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<140>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<330>");
 	if((bb_input_KeyDown(17))!=0){
 		DBG_BLOCK();
-		DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<142>");
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<332>");
 		if((bb_input_KeyDown(65))!=0){
 			DBG_BLOCK();
-			DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<143>");
+			DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<333>");
 			this->m_playfieldN->p_AlphaFade2(this->m_playfieldN->p_AlphaFade()-FLOAT(0.01));
-			DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<144>");
+			DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<334>");
 			if(this->m_playfieldN->p_AlphaFade()<FLOAT(0.0)){
 				DBG_BLOCK();
 				this->m_playfieldN->p_AlphaFade2(this->m_playfieldN->p_AlphaFade()+FLOAT(1.0));
 			}
 		}
-		DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<147>");
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<337>");
 		if((bb_input_KeyDown(90))!=0){
 			DBG_BLOCK();
-			DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<148>");
+			DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<338>");
 			this->m_playfieldN->p_ZoomX2(this->m_playfieldN->p_ZoomX()-FLOAT(0.01));
-			DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<149>");
+			DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<339>");
 			this->m_playfieldN->p_ZoomY2(this->m_playfieldN->p_ZoomY()-FLOAT(0.01));
 		}
 	}else{
 		DBG_BLOCK();
-		DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<154>");
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<344>");
 		if((bb_input_KeyDown(65))!=0){
 			DBG_BLOCK();
-			DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<155>");
+			DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<345>");
 			this->m_playfieldN->p_AlphaFade2(this->m_playfieldN->p_AlphaFade()+FLOAT(0.01));
-			DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<156>");
+			DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<346>");
 			if(this->m_playfieldN->p_AlphaFade()>FLOAT(1.0)){
 				DBG_BLOCK();
 				this->m_playfieldN->p_AlphaFade2(this->m_playfieldN->p_AlphaFade()-FLOAT(1.0));
 			}
 		}
-		DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<159>");
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<349>");
 		if((bb_input_KeyDown(90))!=0){
 			DBG_BLOCK();
-			DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<160>");
+			DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<350>");
 			this->m_playfieldN->p_ZoomX2(this->m_playfieldN->p_ZoomX()+FLOAT(0.01));
-			DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<161>");
+			DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<351>");
 			this->m_playfieldN->p_ZoomY2(this->m_playfieldN->p_ZoomY()+FLOAT(0.01));
 		}
 	}
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<165>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<355>");
 	if((bb_input_KeyDown(37))!=0){
 		DBG_BLOCK();
-		DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<166>");
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<356>");
 		this->m_playfieldN->p_CameraX2(this->m_playfieldN->p_CameraX()-FLOAT(1.0));
 	}
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<169>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<359>");
 	if((bb_input_KeyDown(39))!=0){
 		DBG_BLOCK();
-		DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<170>");
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<360>");
 		this->m_playfieldN->p_CameraX2(this->m_playfieldN->p_CameraX()+FLOAT(1.0));
 	}
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<173>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<363>");
 	if((bb_input_KeyDown(38))!=0){
 		DBG_BLOCK();
-		DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<174>");
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<364>");
 		this->m_playfieldN->p_CameraY2(this->m_playfieldN->p_CameraY()-FLOAT(1.0));
 	}
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<177>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<367>");
 	if((bb_input_KeyDown(40))!=0){
 		DBG_BLOCK();
-		DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<178>");
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<368>");
 		this->m_playfieldN->p_CameraY2(this->m_playfieldN->p_CameraY()+FLOAT(1.0));
 	}
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/main.monkey<180>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<370>");
 	p_checkCameraBounds();
 	return 0;
 }
 void c_NoiseTestScene::mark(){
 	c_iEngine::mark();
 	gc_mark_q(m_playfieldN);
+	gc_mark_q(m_chunks);
+	gc_mark_q(m_deepWaterTiles);
+	gc_mark_q(m_shallowWaterTiles);
+	gc_mark_q(m_beachTiles);
+	gc_mark_q(m_lightGrassTiles);
+	gc_mark_q(m_heavyGrassTiles);
+	gc_mark_q(m_swampTiles);
+	gc_mark_q(m_forestTiles);
+	gc_mark_q(m_desertTiles);
+	gc_mark_q(m_mountainTiles);
+	gc_mark_q(m_darkSnowMountainTiles);
+	gc_mark_q(m_lightSnowMountainTiles);
+	gc_mark_q(m_riverTiles);
+	gc_mark_q(m_caveEntranceTiles);
+	gc_mark_q(m_biomes);
 	gc_mark_q(m_noiseMap);
+	gc_mark_q(m_moisture);
+	gc_mark_q(m_caves);
+	gc_mark_q(m_enemyPlacement);
 }
 String c_NoiseTestScene::debug(){
 	String t="(NoiseTestScene)\n";
 	t=c_iEngine::debug()+t;
+	t+=dbg_decl("deepWaterTiles",&m_deepWaterTiles);
+	t+=dbg_decl("shallowWaterTiles",&m_shallowWaterTiles);
+	t+=dbg_decl("beachTiles",&m_beachTiles);
+	t+=dbg_decl("lightGrassTiles",&m_lightGrassTiles);
+	t+=dbg_decl("heavyGrassTiles",&m_heavyGrassTiles);
+	t+=dbg_decl("swampTiles",&m_swampTiles);
+	t+=dbg_decl("forestTiles",&m_forestTiles);
+	t+=dbg_decl("desertTiles",&m_desertTiles);
+	t+=dbg_decl("mountainTiles",&m_mountainTiles);
+	t+=dbg_decl("darkSnowMountainTiles",&m_darkSnowMountainTiles);
+	t+=dbg_decl("lightSnowMountainTiles",&m_lightSnowMountainTiles);
+	t+=dbg_decl("riverTiles",&m_riverTiles);
+	t+=dbg_decl("caveEntranceTiles",&m_caveEntranceTiles);
 	t+=dbg_decl("noiseMap",&m_noiseMap);
+	t+=dbg_decl("moisture",&m_moisture);
+	t+=dbg_decl("biomes",&m_biomes);
+	t+=dbg_decl("caves",&m_caves);
+	t+=dbg_decl("enemyPlacement",&m_enemyPlacement);
 	t+=dbg_decl("mapWidth",&m_mapWidth);
 	t+=dbg_decl("mapHeight",&m_mapHeight);
 	t+=dbg_decl("playfieldN",&m_playfieldN);
+	t+=dbg_decl("chunks",&m_chunks);
 	return t;
 }
 c_NoiseTestScene* bb_main_noiseTest;
@@ -11826,10 +12425,10 @@ c_iLayerObject::c_iLayerObject(){
 	m__collisionWrite=false;
 	m__column=0;
 	m__row=0;
-	m__debugInfo=Array<String >(8);
 	m__loaderCache=0;
 	m__collisionMask=Array<int >();
 	m__control=Array<c_iControlSet* >();
+	m__debugInfo=Array<String >(8);
 }
 void c_iLayerObject::p_Render(){
 	DBG_ENTER("iLayerObject.Render")
@@ -12340,24 +12939,6 @@ void c_iLayerObject::p_Position6(Float t_x,Float t_y,Float t_z,c_iLayerObject* t
 	DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/engine/components/layerobject.monkey<1776>");
 	m__z=t_layerObject->p_PositionZ()+t_z;
 }
-void c_iLayerObject::p_Show(String t_info){
-	DBG_ENTER("iLayerObject.Show")
-	c_iLayerObject *self=this;
-	DBG_LOCAL(self,"Self")
-	DBG_LOCAL(t_info,"info")
-	DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/engine/components/layerobject.monkey<2122>");
-	for(int t_i=0;t_i<m__debugInfo.Length();t_i=t_i+1){
-		DBG_BLOCK();
-		DBG_LOCAL(t_i,"i")
-		DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/engine/components/layerobject.monkey<2123>");
-		if(!((m__debugInfo.At(t_i)).Length()!=0)){
-			DBG_BLOCK();
-			DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/engine/components/layerobject.monkey<2124>");
-			m__debugInfo.At(t_i)=t_info;
-			return;
-		}
-	}
-}
 void c_iLayerObject::p_Destroy(){
 	DBG_ENTER("iLayerObject.Destroy")
 	c_iLayerObject *self=this;
@@ -12727,10 +13308,10 @@ void c_iLayerObject::mark(){
 	gc_mark_q(m__parent);
 	gc_mark_q(m__layer);
 	gc_mark_q(m__scoreCollector);
-	gc_mark_q(m__debugInfo);
 	gc_mark_q(m__loaderCache);
 	gc_mark_q(m__collisionMask);
 	gc_mark_q(m__control);
+	gc_mark_q(m__debugInfo);
 }
 String c_iLayerObject::debug(){
 	String t="(iLayerObject)\n";
@@ -14085,6 +14666,205 @@ int bb_input_KeyHit(int t_key){
 	int t_=bb_input_device->p_KeyHit(t_key);
 	return t_;
 }
+c_Image* bb_gfx_iLoadSprite(String t_path,int t_frameCount){
+	DBG_ENTER("iLoadSprite")
+	DBG_LOCAL(t_path,"path")
+	DBG_LOCAL(t_frameCount,"frameCount")
+	DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/framework/gfx.monkey<390>");
+	c_Image* t_=bb_graphics_LoadImage(t_path,t_frameCount,1);
+	return t_;
+}
+c_Image* bb_gfx_iLoadSprite2(String t_path,int t_frameWidth,int t_frameHeight,int t_frameCount){
+	DBG_ENTER("iLoadSprite")
+	DBG_LOCAL(t_path,"path")
+	DBG_LOCAL(t_frameWidth,"frameWidth")
+	DBG_LOCAL(t_frameHeight,"frameHeight")
+	DBG_LOCAL(t_frameCount,"frameCount")
+	DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/framework/gfx.monkey<399>");
+	c_Image* t_=bb_graphics_LoadImage2(t_path,t_frameWidth,t_frameHeight,t_frameCount,1);
+	return t_;
+}
+String bb_strings_iStripExt(String t_path){
+	DBG_ENTER("iStripExt")
+	DBG_LOCAL(t_path,"path")
+	DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/framework/strings.monkey<261>");
+	int t_i=t_path.FindLast(String(L".",1));
+	DBG_LOCAL(t_i,"i")
+	DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/framework/strings.monkey<262>");
+	if(t_i!=-1 && t_path.Find(String(L"/",1),t_i+1)==-1 && t_path.Find(String(L"\\",1),t_i+1)==-1){
+		DBG_BLOCK();
+		String t_=t_path.Slice(0,t_i);
+		return t_;
+	}
+	DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/framework/strings.monkey<264>");
+	return t_path;
+}
+String bb_strings_iExtractExt(String t_path){
+	DBG_ENTER("iExtractExt")
+	DBG_LOCAL(t_path,"path")
+	DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/framework/strings.monkey<319>");
+	int t_i=t_path.FindLast(String(L".",1));
+	DBG_LOCAL(t_i,"i")
+	DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/framework/strings.monkey<320>");
+	if(t_i!=-1 && t_path.Find(String(L"/",1),t_i+1)==-1 && t_path.Find(String(L"\\",1),t_i+1)==-1){
+		DBG_BLOCK();
+		String t_=t_path.Slice(t_i+1);
+		return t_;
+	}
+	DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/framework/strings.monkey<321>");
+	return String();
+}
+Array<c_Image* > bb_gfx_iLoadImage(int t_start,int t_count,String t_path,int t_frameCount,int t_flags){
+	DBG_ENTER("iLoadImage")
+	DBG_LOCAL(t_start,"start")
+	DBG_LOCAL(t_count,"count")
+	DBG_LOCAL(t_path,"path")
+	DBG_LOCAL(t_frameCount,"frameCount")
+	DBG_LOCAL(t_flags,"flags")
+	DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/framework/gfx.monkey<324>");
+	int t_i=0;
+	DBG_LOCAL(t_i,"i")
+	DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/framework/gfx.monkey<326>");
+	Array<c_Image* > t_image=Array<c_Image* >(t_count);
+	DBG_LOCAL(t_image,"image")
+	DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/framework/gfx.monkey<328>");
+	String t_file=bb_strings_iStripExt(t_path);
+	DBG_LOCAL(t_file,"file")
+	DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/framework/gfx.monkey<329>");
+	String t_extension=String(L".",1)+bb_strings_iExtractExt(t_path);
+	DBG_LOCAL(t_extension,"extension")
+	DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/framework/gfx.monkey<331>");
+	for(int t_c=t_start;t_c<t_start+t_count;t_c=t_c+1){
+		DBG_BLOCK();
+		DBG_LOCAL(t_c,"c")
+		DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/framework/gfx.monkey<332>");
+		if(t_c<10){
+			DBG_BLOCK();
+			gc_assign(t_image.At(t_i),bb_graphics_LoadImage(t_file+String(L"000",3)+String(t_c)+t_extension,t_frameCount,t_flags));
+		}
+		DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/framework/gfx.monkey<333>");
+		if(t_c>9 && t_c<100){
+			DBG_BLOCK();
+			gc_assign(t_image.At(t_i),bb_graphics_LoadImage(t_file+String(L"00",2)+String(t_c)+t_extension,t_frameCount,t_flags));
+		}
+		DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/framework/gfx.monkey<334>");
+		if(t_c>99 && t_c<1000){
+			DBG_BLOCK();
+			gc_assign(t_image.At(t_i),bb_graphics_LoadImage(t_file+String(L"0",1)+String(t_c)+t_extension,t_frameCount,t_flags));
+		}
+		DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/framework/gfx.monkey<335>");
+		t_i=t_i+1;
+	}
+	DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/framework/gfx.monkey<338>");
+	return t_image;
+}
+Array<c_Image* > bb_gfx_iLoadImage2(Array<c_Image* > t_image,int t_start,int t_count,String t_path,int t_frameCount,int t_flags){
+	DBG_ENTER("iLoadImage")
+	DBG_LOCAL(t_image,"image")
+	DBG_LOCAL(t_start,"start")
+	DBG_LOCAL(t_count,"count")
+	DBG_LOCAL(t_path,"path")
+	DBG_LOCAL(t_frameCount,"frameCount")
+	DBG_LOCAL(t_flags,"flags")
+	DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/framework/gfx.monkey<344>");
+	int t_i=t_image.Length();
+	DBG_LOCAL(t_i,"i")
+	DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/framework/gfx.monkey<346>");
+	t_image=t_image.Resize(t_image.Length()+t_count);
+	DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/framework/gfx.monkey<348>");
+	String t_file=bb_strings_iStripExt(t_path);
+	DBG_LOCAL(t_file,"file")
+	DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/framework/gfx.monkey<349>");
+	String t_extension=String(L".",1)+bb_strings_iExtractExt(t_path);
+	DBG_LOCAL(t_extension,"extension")
+	DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/framework/gfx.monkey<351>");
+	for(int t_c=t_start;t_c<t_start+t_count;t_c=t_c+1){
+		DBG_BLOCK();
+		DBG_LOCAL(t_c,"c")
+		DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/framework/gfx.monkey<352>");
+		if(t_c<10){
+			DBG_BLOCK();
+			gc_assign(t_image.At(t_i),bb_graphics_LoadImage(t_file+String(L"000",3)+String(t_c)+t_extension,t_frameCount,t_flags));
+		}
+		DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/framework/gfx.monkey<353>");
+		if(t_c>9 && t_c<100){
+			DBG_BLOCK();
+			gc_assign(t_image.At(t_i),bb_graphics_LoadImage(t_file+String(L"00",2)+String(t_c)+t_extension,t_frameCount,t_flags));
+		}
+		DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/framework/gfx.monkey<354>");
+		if(t_c>99 && t_c<1000){
+			DBG_BLOCK();
+			gc_assign(t_image.At(t_i),bb_graphics_LoadImage(t_file+String(L"0",1)+String(t_c)+t_extension,t_frameCount,t_flags));
+		}
+		DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/framework/gfx.monkey<355>");
+		t_i=t_i+1;
+	}
+	DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/framework/gfx.monkey<358>");
+	return t_image;
+}
+Array<c_Image* > bb_gfx_iLoadImage3(int t_start,int t_count,String t_path,int t_frameWidth,int t_frameHeight,int t_frameCount,int t_flags){
+	DBG_ENTER("iLoadImage")
+	DBG_LOCAL(t_start,"start")
+	DBG_LOCAL(t_count,"count")
+	DBG_LOCAL(t_path,"path")
+	DBG_LOCAL(t_frameWidth,"frameWidth")
+	DBG_LOCAL(t_frameHeight,"frameHeight")
+	DBG_LOCAL(t_frameCount,"frameCount")
+	DBG_LOCAL(t_flags,"flags")
+	DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/framework/gfx.monkey<369>");
+	Array<c_Image* > t_i=Array<c_Image* >(t_count);
+	DBG_LOCAL(t_i,"i")
+	DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/framework/gfx.monkey<371>");
+	String t_f=bb_strings_iStripExt(t_path);
+	DBG_LOCAL(t_f,"f")
+	DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/framework/gfx.monkey<372>");
+	String t_e=String(L".",1)+bb_strings_iExtractExt(t_path);
+	DBG_LOCAL(t_e,"e")
+	DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/framework/gfx.monkey<374>");
+	for(int t_c=t_start;t_c<t_start+t_count;t_c=t_c+1){
+		DBG_BLOCK();
+		DBG_LOCAL(t_c,"c")
+		DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/framework/gfx.monkey<375>");
+		if(t_c<10){
+			DBG_BLOCK();
+			gc_assign(t_i.At(t_c),bb_graphics_LoadImage2(t_f+String(L"000",3)+String(t_c)+t_e,t_frameWidth,t_frameHeight,t_frameCount,t_flags));
+		}
+		DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/framework/gfx.monkey<376>");
+		if(t_c>9 && t_c<100){
+			DBG_BLOCK();
+			gc_assign(t_i.At(t_c),bb_graphics_LoadImage2(t_f+String(L"00",2)+String(t_c)+t_e,t_frameWidth,t_frameHeight,t_frameCount,t_flags));
+		}
+		DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/framework/gfx.monkey<377>");
+		if(t_c>99 && t_c<1000){
+			DBG_BLOCK();
+			gc_assign(t_i.At(t_c),bb_graphics_LoadImage2(t_f+String(L"0",1)+String(t_c)+t_e,t_frameWidth,t_frameHeight,t_frameCount,t_flags));
+		}
+	}
+	DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/framework/gfx.monkey<380>");
+	return t_i;
+}
+Array<c_Image* > bb_gfx_iLoadSprite3(int t_start,int t_count,String t_path,int t_frameCount){
+	DBG_ENTER("iLoadSprite")
+	DBG_LOCAL(t_start,"start")
+	DBG_LOCAL(t_count,"count")
+	DBG_LOCAL(t_path,"path")
+	DBG_LOCAL(t_frameCount,"frameCount")
+	DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/framework/gfx.monkey<408>");
+	Array<c_Image* > t_=bb_gfx_iLoadImage(t_start,t_count,t_path,t_frameCount,1);
+	return t_;
+}
+Array<c_Image* > bb_gfx_iLoadSprite4(int t_start,int t_count,String t_path,int t_frameWidth,int t_frameHeight,int t_frameCount){
+	DBG_ENTER("iLoadSprite")
+	DBG_LOCAL(t_start,"start")
+	DBG_LOCAL(t_count,"count")
+	DBG_LOCAL(t_path,"path")
+	DBG_LOCAL(t_frameWidth,"frameWidth")
+	DBG_LOCAL(t_frameHeight,"frameHeight")
+	DBG_LOCAL(t_frameCount,"frameCount")
+	DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/framework/gfx.monkey<417>");
+	Array<c_Image* > t_=bb_gfx_iLoadImage3(t_start,t_count,t_path,t_frameWidth,t_frameHeight,t_frameCount,1);
+	return t_;
+}
 c_iLayerSprite::c_iLayerSprite(){
 	m__imagePointer=Array<c_Image* >(1);
 	m__imageSignature=Array<c_Image* >(1);
@@ -14311,130 +15091,18 @@ void c_iLayerSprite::p_ImagePointer7(String t_path,int t_frameCount){
 		m__imagePath=t_path;
 	}
 }
-void c_iLayerSprite::p_SetImage(c_Image* t_image){
-	DBG_ENTER("iLayerSprite.SetImage")
+void c_iLayerSprite::p_Destroy(){
+	DBG_ENTER("iLayerSprite.Destroy")
 	c_iLayerSprite *self=this;
 	DBG_LOCAL(self,"Self")
-	DBG_LOCAL(t_image,"image")
-	DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/engine/components/layersprite.monkey<714>");
-	p_ImagePointer2(t_image);
-}
-void c_iLayerSprite::p_SetImage2(String t_path){
-	DBG_ENTER("iLayerSprite.SetImage")
-	c_iLayerSprite *self=this;
-	DBG_LOCAL(self,"Self")
-	DBG_LOCAL(t_path,"path")
-	DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/engine/components/layersprite.monkey<722>");
-	if(t_path!=m__imagePath){
-		DBG_BLOCK();
-		DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/engine/components/layersprite.monkey<724>");
-		c_iContentObject* t_o=bb_contentmanager_iContent->p_Get2(t_path);
-		DBG_LOCAL(t_o,"o")
-		DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/engine/components/layersprite.monkey<725>");
-		if((t_o)!=0){
-			DBG_BLOCK();
-			DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/engine/components/layersprite.monkey<727>");
-			if((t_o->m__imagePointer)!=0){
-				DBG_BLOCK();
-				p_ImagePointer2(t_o->m__imagePointer);
-			}
-			DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/engine/components/layersprite.monkey<728>");
-			if((t_o->m__imagePointers.Length())!=0){
-				DBG_BLOCK();
-				p_ImagePointer3(t_o->m__imagePointers);
-			}
-			DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/engine/components/layersprite.monkey<730>");
-			m__imagePath=t_path;
-			DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/engine/components/layersprite.monkey<732>");
-			m__animationMode=1;
-			DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/engine/components/layersprite.monkey<733>");
-			m__frame=FLOAT(0.0);
-			DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/engine/components/layersprite.monkey<734>");
-			m__frameOffset=FLOAT(.025);
-			DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/engine/components/layersprite.monkey<735>");
-			m__imageIndex=FLOAT(0.0);
-		}
-	}
-}
-bool c_iLayerSprite::p_AnimationLoop(Float t_frameOffset,String t_path){
-	DBG_ENTER("iLayerSprite.AnimationLoop")
-	c_iLayerSprite *self=this;
-	DBG_LOCAL(self,"Self")
-	DBG_LOCAL(t_frameOffset,"frameOffset")
-	DBG_LOCAL(t_path,"path")
-	DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/engine/components/layersprite.monkey<55>");
-	if(t_frameOffset==FLOAT(0.0)){
-		DBG_BLOCK();
-		t_frameOffset=m__frameOffset;
-	}
-	DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/engine/components/layersprite.monkey<57>");
-	if((t_path).Length()!=0){
-		DBG_BLOCK();
-		p_SetImage2(t_path);
-	}
-	DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/engine/components/layersprite.monkey<59>");
-	bool t_finished=false;
-	DBG_LOCAL(t_finished,"finished")
-	DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/engine/components/layersprite.monkey<61>");
-	if(m__imagePointer.Length()>1){
-		DBG_BLOCK();
-		DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/engine/components/layersprite.monkey<63>");
-		m__imageIndex=m__imageIndex+t_frameOffset*Float(m__animationMode);
-		DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/engine/components/layersprite.monkey<65>");
-		if(m__imageIndex<FLOAT(0.0)){
-			DBG_BLOCK();
-			DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/engine/components/layersprite.monkey<66>");
-			m__imageIndex=m__imageIndex+Float(m__imagePointer.Length());
-			DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/engine/components/layersprite.monkey<67>");
-			t_finished=true;
-		}
-		DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/engine/components/layersprite.monkey<70>");
-		if(m__imageIndex>=Float(m__imagePointer.Length())){
-			DBG_BLOCK();
-			DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/engine/components/layersprite.monkey<71>");
-			m__imageIndex=m__imageIndex-Float(m__imagePointer.Length());
-			DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/engine/components/layersprite.monkey<72>");
-			t_finished=true;
-		}
-	}else{
-		DBG_BLOCK();
-		DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/engine/components/layersprite.monkey<77>");
-		m__frame=m__frame+t_frameOffset*Float(m__animationMode);
-		DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/engine/components/layersprite.monkey<79>");
-		if(m__frame<FLOAT(0.0)){
-			DBG_BLOCK();
-			DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/engine/components/layersprite.monkey<80>");
-			m__frame=m__frame+Float(m__imagePointer.At(int(m__imageIndex))->p_Frames());
-			DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/engine/components/layersprite.monkey<81>");
-			t_finished=true;
-		}
-		DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/engine/components/layersprite.monkey<84>");
-		if(m__frame>=Float(m__imagePointer.At(int(m__imageIndex))->p_Frames())){
-			DBG_BLOCK();
-			DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/engine/components/layersprite.monkey<85>");
-			m__frame=m__frame-Float(m__imagePointer.At(int(m__imageIndex))->p_Frames());
-			DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/engine/components/layersprite.monkey<86>");
-			t_finished=true;
-		}
-	}
-	DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/engine/components/layersprite.monkey<91>");
-	return t_finished;
-}
-void c_iLayerSprite::p_Frame(Float t_frame){
-	DBG_ENTER("iLayerSprite.Frame")
-	c_iLayerSprite *self=this;
-	DBG_LOCAL(self,"Self")
-	DBG_LOCAL(t_frame,"frame")
-	DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/engine/components/layersprite.monkey<297>");
-	if(m__imagePointer.Length()>1){
-		DBG_BLOCK();
-		DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/engine/components/layersprite.monkey<298>");
-		m__imageIndex=t_frame;
-	}else{
-		DBG_BLOCK();
-		DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/engine/components/layersprite.monkey<300>");
-		m__frame=t_frame;
-	}
+	DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/engine/components/layersprite.monkey<280>");
+	c_iLayerObject::p_Destroy();
+	DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/engine/components/layersprite.monkey<282>");
+	m__imagePointer=Array<c_Image* >();
+	DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/engine/components/layersprite.monkey<283>");
+	m__imageSignature=Array<c_Image* >();
+	DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/engine/components/layersprite.monkey<284>");
+	m__ghostImagePointer=Array<c_Image* >();
 }
 Float c_iLayerSprite::p_ImageIndex(){
 	DBG_ENTER("iLayerSprite.ImageIndex")
@@ -14451,44 +15119,6 @@ void c_iLayerSprite::p_ImageIndex2(Float t_index){
 	DBG_LOCAL(t_index,"index")
 	DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/engine/components/layersprite.monkey<342>");
 	m__imageIndex=t_index;
-}
-Float c_iLayerSprite::p_ImageFrame(){
-	DBG_ENTER("iLayerSprite.ImageFrame")
-	c_iLayerSprite *self=this;
-	DBG_LOCAL(self,"Self")
-	DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/engine/components/layersprite.monkey<421>");
-	Float t_=(Float)fmod(m__frame,Float(m__imagePointer.At(int(p_ImageIndex()))->p_Frames()));
-	return t_;
-}
-Float c_iLayerSprite::p_Frame2(){
-	DBG_ENTER("iLayerSprite.Frame")
-	c_iLayerSprite *self=this;
-	DBG_LOCAL(self,"Self")
-	DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/engine/components/layersprite.monkey<310>");
-	if(m__imagePointer.Length()>1){
-		DBG_BLOCK();
-		DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/engine/components/layersprite.monkey<311>");
-		Float t_=p_ImageIndex();
-		return t_;
-	}else{
-		DBG_BLOCK();
-		DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/engine/components/layersprite.monkey<313>");
-		Float t_2=p_ImageFrame();
-		return t_2;
-	}
-}
-void c_iLayerSprite::p_Destroy(){
-	DBG_ENTER("iLayerSprite.Destroy")
-	c_iLayerSprite *self=this;
-	DBG_LOCAL(self,"Self")
-	DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/engine/components/layersprite.monkey<280>");
-	c_iLayerObject::p_Destroy();
-	DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/engine/components/layersprite.monkey<282>");
-	m__imagePointer=Array<c_Image* >();
-	DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/engine/components/layersprite.monkey<283>");
-	m__imageSignature=Array<c_Image* >();
-	DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/engine/components/layersprite.monkey<284>");
-	m__ghostImagePointer=Array<c_Image* >();
 }
 bool c_iLayerSprite::p_ImageLoaded(){
 	DBG_ENTER("iLayerSprite.ImageLoaded")
@@ -14516,6 +15146,14 @@ Float c_iLayerSprite::p_Height(){
 		DBG_BLOCK();
 		return FLOAT(0.0);
 	}
+}
+Float c_iLayerSprite::p_ImageFrame(){
+	DBG_ENTER("iLayerSprite.ImageFrame")
+	c_iLayerSprite *self=this;
+	DBG_LOCAL(self,"Self")
+	DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/playniax/ignitionx/engine/components/layersprite.monkey<421>");
+	Float t_=(Float)fmod(m__frame,Float(m__imagePointer.At(int(p_ImageIndex()))->p_Frames()));
+	return t_;
 }
 void c_iLayerSprite::p_Render(){
 	DBG_ENTER("iLayerSprite.Render")
@@ -14934,7 +15572,6 @@ c_Player::c_Player(){
 	m_yVel=0;
 	m_downAnim=0;
 	m_currentAnimation=0;
-	m_frameNum=0;
 }
 c_Player* c_Player::m_new(c_Image* t_i,int t_x,int t_y){
 	DBG_ENTER("Player.new")
@@ -14943,19 +15580,19 @@ c_Player* c_Player::m_new(c_Image* t_i,int t_x,int t_y){
 	DBG_LOCAL(t_i,"i")
 	DBG_LOCAL(t_x,"x")
 	DBG_LOCAL(t_y,"y")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/player.monkey<15>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/player.monkey<21>");
 	gc_assign(this->m_image,t_i);
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/player.monkey<16>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/player.monkey<22>");
 	this->m_x=t_x;
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/player.monkey<17>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/player.monkey<23>");
 	this->m_y=t_y;
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/player.monkey<18>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/player.monkey<24>");
 	this->m_xVel=0;
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/player.monkey<19>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/player.monkey<25>");
 	this->m_yVel=0;
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/player.monkey<20>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/player.monkey<26>");
 	gc_assign(this->m_downAnim,(new c_Animation)->m_new(t_i,4,69,102,200));
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/player.monkey<21>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/player.monkey<27>");
 	gc_assign(this->m_currentAnimation,this->m_downAnim);
 	return this;
 }
@@ -14963,48 +15600,8 @@ c_Player* c_Player::m_new2(){
 	DBG_ENTER("Player.new")
 	c_Player *self=this;
 	DBG_LOCAL(self,"Self")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/player.monkey<4>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/player.monkey<7>");
 	return this;
-}
-int c_Player::p_HandleControls(){
-	DBG_ENTER("Player.HandleControls")
-	c_Player *self=this;
-	DBG_LOCAL(self,"Self")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/player.monkey<34>");
-	if((bb_input_KeyDown(37))!=0){
-		DBG_BLOCK();
-		DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/player.monkey<35>");
-		m_x=m_x-4;
-	}
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/player.monkey<37>");
-	if((bb_input_KeyDown(39))!=0){
-		DBG_BLOCK();
-		DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/player.monkey<38>");
-		m_x=m_x+4;
-	}
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/player.monkey<40>");
-	if((bb_input_KeyDown(40))!=0){
-		DBG_BLOCK();
-		DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/player.monkey<41>");
-		m_y=m_y+4;
-	}
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/player.monkey<43>");
-	if((bb_input_KeyDown(38))!=0){
-		DBG_BLOCK();
-		DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/player.monkey<44>");
-		m_y=m_y-4;
-	}
-	return 0;
-}
-int c_Player::p_Update(){
-	DBG_ENTER("Player.Update")
-	c_Player *self=this;
-	DBG_LOCAL(self,"Self")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/player.monkey<25>");
-	p_HandleControls();
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/player.monkey<26>");
-	m_frameNum=m_currentAnimation->p_getFrame();
-	return 0;
 }
 void c_Player::mark(){
 	Object::mark();
@@ -15019,7 +15616,6 @@ String c_Player::debug(){
 	t+=dbg_decl("xVel",&m_xVel);
 	t+=dbg_decl("yVel",&m_yVel);
 	t+=dbg_decl("image",&m_image);
-	t+=dbg_decl("frameNum",&m_frameNum);
 	t+=dbg_decl("downAnim",&m_downAnim);
 	t+=dbg_decl("currentAnimation",&m_currentAnimation);
 	return t;
@@ -15043,21 +15639,21 @@ c_Animation* c_Animation::m_new(c_Image* t_i,int t_f,int t_w,int t_h,int t_ft){
 	DBG_LOCAL(t_w,"w")
 	DBG_LOCAL(t_h,"h")
 	DBG_LOCAL(t_ft,"ft")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/animation.monkey<15>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/animation.monkey<20>");
 	gc_assign(this->m_img,t_i);
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/animation.monkey<16>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/animation.monkey<21>");
 	this->m_frames=t_f;
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/animation.monkey<17>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/animation.monkey<22>");
 	this->m_width=t_w;
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/animation.monkey<18>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/animation.monkey<23>");
 	this->m_height=t_h;
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/animation.monkey<19>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/animation.monkey<24>");
 	this->m_frameTime=t_ft;
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/animation.monkey<21>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/animation.monkey<26>");
 	this->m_elapsed=0;
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/animation.monkey<22>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/animation.monkey<27>");
 	this->m_frame=0;
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/animation.monkey<23>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/animation.monkey<28>");
 	this->m_lastTime=0;
 	return this;
 }
@@ -15065,30 +15661,8 @@ c_Animation* c_Animation::m_new2(){
 	DBG_ENTER("Animation.new")
 	c_Animation *self=this;
 	DBG_LOCAL(self,"Self")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/animation.monkey<4>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/animation.monkey<6>");
 	return this;
-}
-int c_Animation::p_getFrame(){
-	DBG_ENTER("Animation.getFrame")
-	c_Animation *self=this;
-	DBG_LOCAL(self,"Self")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/animation.monkey<27>");
-	m_elapsed=m_elapsed+(bb_app_Millisecs()-m_lastTime);
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/animation.monkey<28>");
-	m_lastTime=bb_app_Millisecs();
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/animation.monkey<30>");
-	int t_toReturn=int((Float)floor(Float(m_elapsed/m_frameTime)));
-	DBG_LOCAL(t_toReturn,"toReturn")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/animation.monkey<32>");
-	if(t_toReturn>m_frames-1){
-		DBG_BLOCK();
-		DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/animation.monkey<33>");
-		t_toReturn=0;
-		DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/animation.monkey<34>");
-		m_elapsed=0;
-	}
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/animation.monkey<37>");
-	return t_toReturn;
 }
 void c_Animation::mark(){
 	Object::mark();
@@ -15150,363 +15724,532 @@ c_Sound* bb_audio_LoadSound(String t_path){
 	return 0;
 }
 c_Level::c_Level(){
-	m_layout=Array<Array<String > >();
+	m_layout=Array<Array<int > >();
 	m_generated=false;
+	m_xCoord=0;
+	m_yCoord=0;
 	m_width=0;
 	m_height=0;
+	m_walkways=Array<c_Point* >();
 }
-int c_Level::p_Draw(){
+int c_Level::p_Draw(int t_xOffsetG,int t_yOffsetG){
 	DBG_ENTER("Level.Draw")
 	c_Level *self=this;
 	DBG_LOCAL(self,"Self")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<207>");
-	for(int t_i=0;t_i<this->m_layout.Length();t_i=t_i+1){
+	DBG_LOCAL(t_xOffsetG,"xOffsetG")
+	DBG_LOCAL(t_yOffsetG,"yOffsetG")
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<324>");
+	int t_xOffset=t_xOffsetG;
+	DBG_LOCAL(t_xOffset,"xOffset")
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<325>");
+	int t_yOffset=t_yOffsetG;
+	DBG_LOCAL(t_yOffset,"yOffset")
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<326>");
+	int t_xTarget=t_xOffset+16;
+	DBG_LOCAL(t_xTarget,"xTarget")
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<327>");
+	int t_yTarget=t_yOffset+13;
+	DBG_LOCAL(t_yTarget,"yTarget")
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<331>");
+	for(int t_i=t_xOffset;t_i<t_xTarget;t_i=t_i+1){
 		DBG_BLOCK();
 		DBG_LOCAL(t_i,"i")
-		DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<208>");
-		for(int t_j=0;t_j<this->m_layout.At(0).Length();t_j=t_j+1){
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<332>");
+		for(int t_j=t_yOffset;t_j<t_yTarget;t_j=t_j+1){
 			DBG_BLOCK();
 			DBG_LOCAL(t_j,"j")
-			DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<209>");
-			if(this->m_layout.At(t_i).At(t_j)==String(L"X",1)){
+			DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<334>");
+			if(!(m_layout.At(t_i).At(t_j)==0 || m_layout.At(t_i).At(t_j)==5)){
 				DBG_BLOCK();
-				DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<210>");
-				bb_graphics_SetColor(FLOAT(0.0),FLOAT(0.0),FLOAT(0.0));
-			}else{
-				DBG_BLOCK();
-				DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<212>");
-				bb_graphics_SetColor(FLOAT(255.0),FLOAT(255.0),FLOAT(255.0));
+				DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<335>");
+				bb_graphics_DrawImage(bb_level_caveTextures,Float((t_i-t_xOffset)*40+t_xOffset),Float((t_j-t_yOffset)*40+t_yOffset),5);
 			}
-			DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<214>");
-			bb_graphics_DrawRect(Float(t_i*10),Float(t_j*10),FLOAT(10.0),FLOAT(10.0));
+			DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<337>");
+			bb_graphics_DrawImage(bb_level_caveTextures,Float((t_i-t_xOffset)*40+t_xOffset),Float((t_j-t_yOffset)*40+t_yOffset),m_layout.At(t_i).At(t_j));
 		}
 	}
 	return 0;
 }
-Array<Array<String > > c_Level::p_setArray(int t_i,int t_j){
+Array<Array<int > > c_Level::p_setArray(int t_i,int t_j){
 	DBG_ENTER("Level.setArray")
 	c_Level *self=this;
 	DBG_LOCAL(self,"Self")
 	DBG_LOCAL(t_i,"i")
 	DBG_LOCAL(t_j,"j")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<44>");
-	Array<Array<String > > t_result=Array<Array<String > >(t_i);
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<146>");
+	Array<Array<int > > t_result=Array<Array<int > >(t_i);
 	DBG_LOCAL(t_result,"result")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<46>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<148>");
 	for(int t_index=0;t_index<t_i;t_index=t_index+1){
 		DBG_BLOCK();
 		DBG_LOCAL(t_index,"index")
-		DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<47>");
-		gc_assign(t_result.At(t_index),Array<String >(t_j));
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<149>");
+		gc_assign(t_result.At(t_index),Array<int >(t_j));
 	}
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<50>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<152>");
 	return t_result;
 }
-int c_Level::p_randomlyAssignCells(Array<Array<String > > t_design){
+int c_Level::p_randomlyAssignCells(Array<Array<int > > t_design){
 	DBG_ENTER("Level.randomlyAssignCells")
 	c_Level *self=this;
 	DBG_LOCAL(self,"Self")
 	DBG_LOCAL(t_design,"design")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<57>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<159>");
 	bb_random_Seed=bb_app_Millisecs();
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<58>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<160>");
 	int t_rand=0;
 	DBG_LOCAL(t_rand,"rand")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<60>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<162>");
 	for(int t_i=0;t_i<t_design.Length();t_i=t_i+1){
 		DBG_BLOCK();
 		DBG_LOCAL(t_i,"i")
-		DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<61>");
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<163>");
 		for(int t_j=0;t_j<t_design.At(0).Length();t_j=t_j+1){
 			DBG_BLOCK();
 			DBG_LOCAL(t_j,"j")
-			DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<62>");
+			DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<164>");
 			t_rand=int(bb_random_Rnd2(FLOAT(0.0),FLOAT(100.0)));
-			DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<63>");
+			DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<165>");
 			if(t_rand<45){
 				DBG_BLOCK();
-				DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<64>");
-				t_design.At(t_i).At(t_j)=String(L"X",1);
+				DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<166>");
+				t_design.At(t_i).At(t_j)=0;
 			}else{
 				DBG_BLOCK();
-				DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<66>");
-				t_design.At(t_i).At(t_j)=String(L"O",1);
+				DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<168>");
+				t_design.At(t_i).At(t_j)=5;
 			}
-			DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<68>");
+			DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<170>");
 			if(t_i==0 || t_j==0 || t_i==t_design.Length()-1 || t_j==t_design.At(0).Length()-1){
 				DBG_BLOCK();
-				DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<69>");
-				t_design.At(t_i).At(t_j)=String(L"X",1);
+				DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<171>");
+				t_design.At(t_i).At(t_j)=0;
 			}
 		}
 	}
 	return 0;
 }
-int c_Level::p_checkWalls(Array<Array<String > > t_design,int t_i,int t_j){
+int c_Level::p_checkWalls(Array<Array<int > > t_design,int t_i,int t_j){
 	DBG_ENTER("Level.checkWalls")
 	c_Level *self=this;
 	DBG_LOCAL(self,"Self")
 	DBG_LOCAL(t_design,"design")
 	DBG_LOCAL(t_i,"i")
 	DBG_LOCAL(t_j,"j")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<114>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<216>");
 	int t_total=0;
 	DBG_LOCAL(t_total,"total")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<115>");
-	if(t_i>0 && t_design.At(t_i-1).At(t_j)==String(L"X",1)){
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<217>");
+	if(t_i>0 && t_design.At(t_i-1).At(t_j)==0){
 		DBG_BLOCK();
-		DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<116>");
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<218>");
 		t_total+=1;
 	}
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<118>");
-	if(t_i<t_design.Length()-1 && t_design.At(t_i+1).At(t_j)==String(L"X",1)){
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<220>");
+	if(t_i<t_design.Length()-1 && t_design.At(t_i+1).At(t_j)==0){
 		DBG_BLOCK();
-		DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<119>");
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<221>");
 		t_total+=1;
 	}
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<121>");
-	if(t_j>0 && t_design.At(t_i).At(t_j-1)==String(L"X",1)){
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<223>");
+	if(t_j>0 && t_design.At(t_i).At(t_j-1)==0){
 		DBG_BLOCK();
-		DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<122>");
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<224>");
 		t_total+=1;
 	}
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<124>");
-	if(t_j<t_design.At(0).Length()-1 && t_design.At(t_i).At(t_j+1)==String(L"X",1)){
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<226>");
+	if(t_j<t_design.At(0).Length()-1 && t_design.At(t_i).At(t_j+1)==0){
 		DBG_BLOCK();
-		DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<125>");
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<227>");
 		t_total+=1;
 	}
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<127>");
-	if(t_i>0 && t_j<t_design.At(0).Length()-1 && t_design.At(t_i-1).At(t_j+1)==String(L"X",1)){
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<229>");
+	if(t_i>0 && t_j<t_design.At(0).Length()-1 && t_design.At(t_i-1).At(t_j+1)==0){
 		DBG_BLOCK();
-		DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<128>");
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<230>");
 		t_total+=1;
 	}
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<130>");
-	if(t_i>0 && t_j>0 && t_design.At(t_i-1).At(t_j-1)==String(L"X",1)){
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<232>");
+	if(t_i>0 && t_j>0 && t_design.At(t_i-1).At(t_j-1)==0){
 		DBG_BLOCK();
-		DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<131>");
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<233>");
 		t_total+=1;
 	}
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<133>");
-	if(t_i<t_design.Length()-1 && t_j<t_design.At(0).Length()-1 && t_design.At(t_i+1).At(t_j+1)==String(L"X",1)){
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<235>");
+	if(t_i<t_design.Length()-1 && t_j<t_design.At(0).Length()-1 && t_design.At(t_i+1).At(t_j+1)==0){
 		DBG_BLOCK();
-		DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<134>");
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<236>");
 		t_total+=1;
 	}
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<136>");
-	if(t_i<t_design.Length()-1 && t_j>0 && t_design.At(t_i+1).At(t_j-1)==String(L"X",1)){
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<238>");
+	if(t_i<t_design.Length()-1 && t_j>0 && t_design.At(t_i+1).At(t_j-1)==0){
 		DBG_BLOCK();
-		DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<137>");
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<239>");
 		t_total+=1;
 	}
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<140>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<242>");
 	return t_total;
 }
-Array<Array<String > > c_Level::p_generateCellularly(Array<Array<String > > t_design){
+Array<Array<int > > c_Level::p_generateCellularly(Array<Array<int > > t_design){
 	DBG_ENTER("Level.generateCellularly")
 	c_Level *self=this;
 	DBG_LOCAL(self,"Self")
 	DBG_LOCAL(t_design,"design")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<81>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<183>");
 	int t_adjacentWalls=0;
 	DBG_LOCAL(t_adjacentWalls,"adjacentWalls")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<82>");
-	Array<Array<String > > t_result=p_setArray(t_design.Length(),t_design.At(0).Length());
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<184>");
+	Array<Array<int > > t_result=p_setArray(t_design.Length(),t_design.At(0).Length());
 	DBG_LOCAL(t_result,"result")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<84>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<186>");
 	for(int t_i=0;t_i<t_design.Length();t_i=t_i+1){
 		DBG_BLOCK();
 		DBG_LOCAL(t_i,"i")
-		DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<85>");
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<187>");
 		for(int t_j=0;t_j<t_design.At(0).Length();t_j=t_j+1){
 			DBG_BLOCK();
 			DBG_LOCAL(t_j,"j")
-			DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<86>");
+			DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<188>");
 			t_adjacentWalls=p_checkWalls(t_design,t_i,t_j);
-			DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<88>");
-			if(t_design.At(t_i).At(t_j)==String(L"X",1)){
+			DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<190>");
+			if(t_design.At(t_i).At(t_j)==0){
 				DBG_BLOCK();
-				DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<89>");
+				DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<191>");
 				if(t_adjacentWalls>3){
 					DBG_BLOCK();
-					DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<90>");
-					t_result.At(t_i).At(t_j)=String(L"X",1);
+					DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<192>");
+					t_result.At(t_i).At(t_j)=0;
 				}else{
 					DBG_BLOCK();
-					DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<92>");
-					t_result.At(t_i).At(t_j)=String(L"O",1);
+					DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<194>");
+					t_result.At(t_i).At(t_j)=5;
 				}
 			}else{
 				DBG_BLOCK();
-				DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<94>");
-				if(t_design.At(t_i).At(t_j)==String(L"O",1)){
+				DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<196>");
+				if(t_design.At(t_i).At(t_j)==5){
 					DBG_BLOCK();
-					DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<95>");
+					DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<197>");
 					if(t_adjacentWalls>4){
 						DBG_BLOCK();
-						DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<96>");
-						t_result.At(t_i).At(t_j)=String(L"X",1);
+						DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<198>");
+						t_result.At(t_i).At(t_j)=0;
 					}else{
 						DBG_BLOCK();
-						DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<98>");
-						t_result.At(t_i).At(t_j)=String(L"O",1);
+						DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<200>");
+						t_result.At(t_i).At(t_j)=5;
 					}
 				}
 			}
-			DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<102>");
+			DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<204>");
 			if(t_i==0 || t_j==0 || t_i==t_design.Length()-1 || t_j==t_design.At(0).Length()-1){
 				DBG_BLOCK();
-				DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<103>");
-				t_result.At(t_i).At(t_j)=String(L"X",1);
+				DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<205>");
+				t_result.At(t_i).At(t_j)=0;
 			}
 		}
 	}
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<108>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<210>");
 	return t_result;
 }
-int c_Level::p_fillCells(Array<Array<String > > t_design){
-	DBG_ENTER("Level.fillCells")
+int c_Level::p_smoothEdges(){
+	DBG_ENTER("Level.smoothEdges")
 	c_Level *self=this;
 	DBG_LOCAL(self,"Self")
-	DBG_LOCAL(t_design,"design")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<161>");
-	for(int t_i=0;t_i<t_design.Length();t_i=t_i+1){
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<89>");
+	Array<Array<int > > t_cave=this->m_layout;
+	DBG_LOCAL(t_cave,"cave")
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<90>");
+	bool t_up=false;
+	DBG_LOCAL(t_up,"up")
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<91>");
+	bool t_down=false;
+	DBG_LOCAL(t_down,"down")
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<92>");
+	bool t_left=false;
+	DBG_LOCAL(t_left,"left")
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<93>");
+	bool t_right=false;
+	DBG_LOCAL(t_right,"right")
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<95>");
+	for(int t_i=0;t_i<t_cave.Length();t_i=t_i+1){
 		DBG_BLOCK();
 		DBG_LOCAL(t_i,"i")
-		DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<162>");
-		for(int t_j=0;t_j<t_design.At(0).Length();t_j=t_j+1){
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<96>");
+		for(int t_j=0;t_j<t_cave.At(0).Length();t_j=t_j+1){
 			DBG_BLOCK();
 			DBG_LOCAL(t_j,"j")
-			DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<163>");
-			t_design.At(t_i).At(t_j)=String(L"X",1);
+			DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<97>");
+			t_up=false;
+			DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<98>");
+			t_down=false;
+			DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<99>");
+			t_left=false;
+			DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<100>");
+			t_right=false;
+			DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<102>");
+			if(t_cave.At(t_i).At(t_j)==5){
+				DBG_BLOCK();
+				DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<103>");
+				if(t_i>0 && t_cave.At(t_i-1).At(t_j)==0){
+					DBG_BLOCK();
+					DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<104>");
+					t_up=true;
+				}
+				DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<106>");
+				if(t_i<t_cave.Length()-2 && t_cave.At(t_i+1).At(t_j)==0){
+					DBG_BLOCK();
+					DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<107>");
+					t_down=true;
+				}
+				DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<109>");
+				if(t_j>0 && t_cave.At(t_i).At(t_j-1)==0){
+					DBG_BLOCK();
+					DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<110>");
+					t_left=true;
+				}
+				DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<112>");
+				if(t_j<t_cave.At(0).Length()-2 && t_cave.At(t_i).At(t_j+1)==0){
+					DBG_BLOCK();
+					DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<113>");
+					t_right=true;
+				}
+				DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<116>");
+				if(t_up==true && t_down==false){
+					DBG_BLOCK();
+					DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<117>");
+					if(t_left==true && t_right==false){
+						DBG_BLOCK();
+						DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<118>");
+						t_cave.At(t_i).At(t_j)=1;
+					}else{
+						DBG_BLOCK();
+						DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<119>");
+						if(t_right==true && t_left==false){
+							DBG_BLOCK();
+							DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<120>");
+							t_cave.At(t_i).At(t_j)=3;
+						}
+					}
+				}else{
+					DBG_BLOCK();
+					DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<122>");
+					if(t_down==true && t_up==false){
+						DBG_BLOCK();
+						DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<123>");
+						if(t_left==true && t_right==false){
+							DBG_BLOCK();
+							DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<124>");
+							t_cave.At(t_i).At(t_j)=2;
+						}else{
+							DBG_BLOCK();
+							DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<125>");
+							if(t_right==true && t_left==false){
+								DBG_BLOCK();
+								DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<126>");
+								t_cave.At(t_i).At(t_j)=4;
+							}
+						}
+					}
+				}
+			}
 		}
 	}
 	return 0;
 }
-int c_Level::p_drunkWalk(Array<Array<String > > t_design){
+int c_Level::p_fillCells(Array<Array<int > > t_design){
+	DBG_ENTER("Level.fillCells")
+	c_Level *self=this;
+	DBG_LOCAL(self,"Self")
+	DBG_LOCAL(t_design,"design")
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<263>");
+	for(int t_i=0;t_i<t_design.Length();t_i=t_i+1){
+		DBG_BLOCK();
+		DBG_LOCAL(t_i,"i")
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<264>");
+		for(int t_j=0;t_j<t_design.At(0).Length();t_j=t_j+1){
+			DBG_BLOCK();
+			DBG_LOCAL(t_j,"j")
+			DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<265>");
+			t_design.At(t_i).At(t_j)=0;
+		}
+	}
+	return 0;
+}
+int c_Level::p_drunkWalk(Array<Array<int > > t_design){
 	DBG_ENTER("Level.drunkWalk")
 	c_Level *self=this;
 	DBG_LOCAL(self,"Self")
 	DBG_LOCAL(t_design,"design")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<170>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<272>");
 	Float t_target=Float(t_design.Length()*t_design.At(0).Length())*FLOAT(0.35);
 	DBG_LOCAL(t_target,"target")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<171>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<273>");
 	int t_cleared=1;
 	DBG_LOCAL(t_cleared,"cleared")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<173>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<275>");
 	int t_tempX=0;
 	DBG_LOCAL(t_tempX,"tempX")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<174>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<276>");
 	int t_tempY=0;
 	DBG_LOCAL(t_tempY,"tempY")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<175>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<277>");
 	int t_direction=0;
 	DBG_LOCAL(t_direction,"direction")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<177>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<279>");
 	int t_followBias=0;
 	DBG_LOCAL(t_followBias,"followBias")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<178>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<280>");
 	t_tempX=int(bb_random_Rnd2(FLOAT(1.0),Float(t_design.Length()-1)));
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<179>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<281>");
 	t_tempY=int(bb_random_Rnd2(FLOAT(1.0),Float(t_design.At(0).Length()-1)));
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<181>");
-	t_design.At(t_tempX).At(t_tempY)=String(L"O",1);
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<183>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<283>");
+	t_design.At(t_tempX).At(t_tempY)=5;
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<285>");
 	while(Float(t_cleared)<t_target){
 		DBG_BLOCK();
-		DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<184>");
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<286>");
 		if(t_followBias<40){
 			DBG_BLOCK();
-			DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<185>");
+			DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<287>");
 			t_direction=int(bb_random_Rnd2(FLOAT(0.0),FLOAT(4.0)));
 		}
-		DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<187>");
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<289>");
 		if(t_direction==0 && t_tempY>1){
 			DBG_BLOCK();
-			DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<188>");
+			DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<290>");
 			t_tempY-=1;
 		}else{
 			DBG_BLOCK();
-			DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<189>");
+			DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<291>");
 			if(t_direction==1 && t_tempY<t_design.At(0).Length()-2){
 				DBG_BLOCK();
-				DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<190>");
+				DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<292>");
 				t_tempY+=1;
 			}else{
 				DBG_BLOCK();
-				DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<191>");
+				DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<293>");
 				if(t_direction==2 && t_tempX>1){
 					DBG_BLOCK();
-					DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<192>");
+					DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<294>");
 					t_tempX-=1;
 				}else{
 					DBG_BLOCK();
-					DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<193>");
+					DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<295>");
 					if(t_direction==3 && t_tempX<t_design.Length()-2){
 						DBG_BLOCK();
-						DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<194>");
+						DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<296>");
 						t_tempX+=1;
 					}
 				}
 			}
 		}
-		DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<197>");
-		if(t_design.At(t_tempX).At(t_tempY)==String(L"X",1)){
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<299>");
+		if(t_design.At(t_tempX).At(t_tempY)==0){
 			DBG_BLOCK();
-			DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<198>");
-			t_design.At(t_tempX).At(t_tempY)=String(L"O",1);
-			DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<199>");
+			DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<300>");
+			t_design.At(t_tempX).At(t_tempY)=5;
+			DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<301>");
 			t_cleared+=1;
 		}
-		DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<201>");
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<303>");
 		t_followBias=int(bb_random_Rnd2(FLOAT(0.0),FLOAT(100.0)));
 	}
 	return 0;
 }
-c_Level* c_Level::m_new(int t_w,int t_h,String t_type){
+int c_Level::p_countWalkways(){
+	DBG_ENTER("Level.countWalkways")
+	c_Level *self=this;
+	DBG_LOCAL(self,"Self")
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<67>");
+	gc_assign(this->m_walkways,Array<c_Point* >(1));
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<68>");
+	bbPrint(String(L"Initial size: ",14)+String(this->m_walkways.Length()));
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<69>");
+	int t_index=0;
+	DBG_LOCAL(t_index,"index")
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<70>");
+	for(int t_i=0;t_i<m_layout.Length();t_i=t_i+1){
+		DBG_BLOCK();
+		DBG_LOCAL(t_i,"i")
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<71>");
+		for(int t_j=0;t_j<m_layout.At(0).Length();t_j=t_j+1){
+			DBG_BLOCK();
+			DBG_LOCAL(t_j,"j")
+			DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<72>");
+			if(m_layout.At(t_i).At(t_j)==5){
+				DBG_BLOCK();
+				DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<73>");
+				gc_assign(this->m_walkways.At(t_index),(new c_Point)->m_new(t_i,t_j));
+				DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<74>");
+				gc_assign(this->m_walkways,this->m_walkways.Resize(t_index+2));
+				DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<75>");
+				t_index+=1;
+			}
+		}
+	}
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<80>");
+	gc_assign(this->m_walkways,this->m_walkways.Resize(this->m_walkways.Length()-1));
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<81>");
+	bbPrint(String(L"New length: ",12)+String(this->m_walkways.Length()));
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<82>");
+	bbPrint(String(L"Final point: ",13)+String(this->m_walkways.At(this->m_walkways.Length()-1)->p_getX()));
+	return 0;
+}
+c_Level* c_Level::m_new(int t_x,int t_y,int t_w,int t_h,String t_type){
 	DBG_ENTER("Level.new")
 	c_Level *self=this;
 	DBG_LOCAL(self,"Self")
+	DBG_LOCAL(t_x,"x")
+	DBG_LOCAL(t_y,"y")
 	DBG_LOCAL(t_w,"w")
 	DBG_LOCAL(t_h,"h")
 	DBG_LOCAL(t_type,"type")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<12>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<36>");
 	this->m_generated=false;
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<13>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<37>");
+	this->m_xCoord=t_x;
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<38>");
+	this->m_yCoord=t_y;
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<40>");
 	this->m_width=t_w;
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<14>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<41>");
 	this->m_height=t_h;
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<15>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<42>");
 	gc_assign(this->m_layout,p_setArray(this->m_width,this->m_height));
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<17>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<44>");
+	gc_assign(bb_level_caveTextures,bb_gfx_iLoadSprite2(String(L"cave_texture40.png",18),40,40,6));
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<46>");
 	if(t_type==String(L"Cellular",8)){
 		DBG_BLOCK();
-		DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<18>");
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<47>");
 		p_randomlyAssignCells(this->m_layout);
-		DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<19>");
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<48>");
 		gc_assign(m_layout,p_generateCellularly(this->m_layout));
-		DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<20>");
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<49>");
 		gc_assign(m_layout,p_generateCellularly(this->m_layout));
-		DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<21>");
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<50>");
 		gc_assign(m_layout,p_generateCellularly(this->m_layout));
-		DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<22>");
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<51>");
 		gc_assign(m_layout,p_generateCellularly(this->m_layout));
-		DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<23>");
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<52>");
 		gc_assign(m_layout,p_generateCellularly(this->m_layout));
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<53>");
+		p_smoothEdges();
 	}else{
 		DBG_BLOCK();
-		DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<24>");
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<54>");
 		if(t_type==String(L"Drunk",5)){
 			DBG_BLOCK();
-			DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<28>");
+			DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<55>");
 			p_fillCells(this->m_layout);
-			DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<29>");
+			DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<56>");
 			p_drunkWalk(this->m_layout);
 		}
 	}
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<31>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<59>");
+	p_countWalkways();
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<60>");
 	this->m_generated=true;
 	return this;
 }
@@ -15514,12 +16257,13 @@ c_Level* c_Level::m_new2(){
 	DBG_ENTER("Level.new")
 	c_Level *self=this;
 	DBG_LOCAL(self,"Self")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/level.monkey<4>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/level.monkey<9>");
 	return this;
 }
 void c_Level::mark(){
 	Object::mark();
 	gc_mark_q(m_layout);
+	gc_mark_q(m_walkways);
 }
 String c_Level::debug(){
 	String t="(Level)\n";
@@ -15527,8 +16271,12 @@ String c_Level::debug(){
 	t+=dbg_decl("width",&m_width);
 	t+=dbg_decl("height",&m_height);
 	t+=dbg_decl("generated",&m_generated);
+	t+=dbg_decl("walkways",&m_walkways);
+	t+=dbg_decl("xCoord",&m_xCoord);
+	t+=dbg_decl("yCoord",&m_yCoord);
 	return t;
 }
+c_Image* bb_level_caveTextures;
 Float bb_random_Rnd(){
 	DBG_ENTER("Rnd")
 	DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/monkey/random.monkey<21>");
@@ -15552,12 +16300,70 @@ Float bb_random_Rnd3(Float t_range){
 	Float t_=bb_random_Rnd()*t_range;
 	return t_;
 }
+c_Point::c_Point(){
+	m_x=0;
+	m_y=0;
+}
+c_Point* c_Point::m_new(int t_x,int t_y){
+	DBG_ENTER("Point.new")
+	c_Point *self=this;
+	DBG_LOCAL(self,"Self")
+	DBG_LOCAL(t_x,"x")
+	DBG_LOCAL(t_y,"y")
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/point.monkey<11>");
+	this->m_x=t_x;
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/point.monkey<12>");
+	this->m_y=t_y;
+	return this;
+}
+c_Point* c_Point::m_new2(){
+	DBG_ENTER("Point.new")
+	c_Point *self=this;
+	DBG_LOCAL(self,"Self")
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/point.monkey<6>");
+	return this;
+}
+int c_Point::p_getX(){
+	DBG_ENTER("Point.getX")
+	c_Point *self=this;
+	DBG_LOCAL(self,"Self")
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/point.monkey<16>");
+	return this->m_x;
+}
+void c_Point::mark(){
+	Object::mark();
+}
+String c_Point::debug(){
+	String t="(Point)\n";
+	t+=dbg_decl("x",&m_x);
+	t+=dbg_decl("y",&m_y);
+	return t;
+}
 int bb_input_KeyDown(int t_key){
 	DBG_ENTER("KeyDown")
 	DBG_LOCAL(t_key,"key")
 	DBG_INFO("/Applications/MonkeyXPro85e+IgnitionX2.09 orig/modules/mojo/input.monkey<40>");
 	int t_=((bb_input_device->p_KeyDown(t_key))?1:0);
 	return t_;
+}
+c_Image* bb_noisetestscene_textures;
+c_Image* bb_noisetestscene_enemies;
+Array<Array<int > > bb_noisetestscene_setArray(int t_i,int t_j){
+	DBG_ENTER("setArray")
+	DBG_LOCAL(t_i,"i")
+	DBG_LOCAL(t_j,"j")
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<621>");
+	Array<Array<int > > t_result=Array<Array<int > >(t_i);
+	DBG_LOCAL(t_result,"result")
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<623>");
+	for(int t_index=0;t_index<t_i;t_index=t_index+1){
+		DBG_BLOCK();
+		DBG_LOCAL(t_index,"index")
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<624>");
+		gc_assign(t_result.At(t_index),Array<int >(t_j));
+	}
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<627>");
+	return t_result;
 }
 c_SimplexNoise::c_SimplexNoise(){
 	m_grad3=Array<Array<int > >();
@@ -15568,7 +16374,7 @@ c_SimplexNoise* c_SimplexNoise::m_new(){
 	DBG_ENTER("SimplexNoise.new")
 	c_SimplexNoise *self=this;
 	DBG_LOCAL(self,"Self")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<18>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<18>");
 	int t_[]={1,1,0};
 	int t_2[]={-1,1,0};
 	int t_3[]={1,-1,0};
@@ -15583,16 +16389,16 @@ c_SimplexNoise* c_SimplexNoise::m_new(){
 	int t_12[]={0,-1,-1};
 	Array<int > t_13[]={Array<int >(t_,3),Array<int >(t_2,3),Array<int >(t_3,3),Array<int >(t_4,3),Array<int >(t_5,3),Array<int >(t_6,3),Array<int >(t_7,3),Array<int >(t_8,3),Array<int >(t_9,3),Array<int >(t_10,3),Array<int >(t_11,3),Array<int >(t_12,3)};
 	gc_assign(m_grad3,Array<Array<int > >(t_13,12));
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<31>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<31>");
 	int t_14[]={151,160,137,91,90,15,131,13,201,95,96,53,194,233,7,225,140,36,103,30,69,142,8,99,37,240,21,10,23,190,6,148,247,120,234,75,0,26,197,62,94,252,219,203,117,35,11,32,57,177,33,88,237,149,56,87,174,20,125,136,171,168,68,175,74,165,71,134,139,48,27,166,77,146,158,231,83,111,229,122,60,211,133,230,220,105,92,41,55,46,245,40,244,102,143,54,65,25,63,161,1,216,80,73,209,76,132,187,208,89,18,169,200,196,135,130,116,188,159,86,164,100,109,198,173,186,3,64,52,217,226,250,124,123,5,202,38,147,118,126,255,82,85,212,207,206,59,227,47,16,58,17,182,189,28,42,223,183,170,213,119,248,152,2,44,154,163,70,221,153,101,155,167,43,172,9,129,22,39,253,19,98,108,110,79,113,224,232,178,185,112,104,218,246,97,228,251,34,242,193,238,210,144,12,191,179,162,241,81,51,145,235,249,14,239,107,49,192,214,31,181,199,106,157,184,84,204,176,115,121,50,45,127,4,150,254,138,236,205,93,222,114,67,29,24,72,243,141,128,195,78,66,215,61,156,180};
 	gc_assign(m_p,Array<int >(t_14,256));
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<32>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<32>");
 	gc_assign(m_perm,Array<int >(512));
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<33>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<33>");
 	for(int t_i=0;t_i<512;t_i=t_i+1){
 		DBG_BLOCK();
 		DBG_LOCAL(t_i,"i")
-		DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<34>");
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<34>");
 		m_perm.At(t_i)=m_p.At(t_i&255);
 	}
 	return this;
@@ -15603,17 +16409,17 @@ Array<Array<Float > > c_SimplexNoise::p_setArray(int t_i,int t_j){
 	DBG_LOCAL(self,"Self")
 	DBG_LOCAL(t_i,"i")
 	DBG_LOCAL(t_j,"j")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<227>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<235>");
 	Array<Array<Float > > t_result=Array<Array<Float > >(t_i);
 	DBG_LOCAL(t_result,"result")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<229>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<237>");
 	for(int t_index=0;t_index<t_i;t_index=t_index+1){
 		DBG_BLOCK();
 		DBG_LOCAL(t_index,"index")
-		DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<230>");
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<238>");
 		gc_assign(t_result.At(t_index),Array<Float >(t_j));
 	}
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<233>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<241>");
 	return t_result;
 }
 Float c_SimplexNoise::p_dot(Array<int > t_g,Float t_x,Float t_y){
@@ -15623,7 +16429,7 @@ Float c_SimplexNoise::p_dot(Array<int > t_g,Float t_x,Float t_y){
 	DBG_LOCAL(t_g,"g")
 	DBG_LOCAL(t_x,"x")
 	DBG_LOCAL(t_y,"y")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<43>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<43>");
 	Float t_=Float(t_g.At(0))*t_x+Float(t_g.At(1))*t_y;
 	return t_;
 }
@@ -15633,138 +16439,138 @@ Float c_SimplexNoise::p_makeNoise(Float t_x,Float t_y){
 	DBG_LOCAL(self,"Self")
 	DBG_LOCAL(t_x,"x")
 	DBG_LOCAL(t_y,"y")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<52>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<52>");
 	Float t_n0=FLOAT(.0);
 	DBG_LOCAL(t_n0,"n0")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<53>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<53>");
 	Float t_n1=FLOAT(.0);
 	DBG_LOCAL(t_n1,"n1")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<54>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<54>");
 	Float t_n2=FLOAT(.0);
 	DBG_LOCAL(t_n2,"n2")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<56>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<56>");
 	Float t_f2=FLOAT(0.5)*((Float)sqrt(FLOAT(3.0))-FLOAT(1.0));
 	DBG_LOCAL(t_f2,"f2")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<57>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<57>");
 	Float t_s=(t_x+t_y)*t_f2;
 	DBG_LOCAL(t_s,"s")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<58>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<58>");
 	int t_i=int((Float)floor(t_x+t_s));
 	DBG_LOCAL(t_i,"i")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<59>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<59>");
 	int t_j=int((Float)floor(t_y+t_s));
 	DBG_LOCAL(t_j,"j")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<61>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<61>");
 	Float t_g2=(FLOAT(3.0)-(Float)sqrt(FLOAT(3.0)))/FLOAT(6.0);
 	DBG_LOCAL(t_g2,"g2")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<62>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<62>");
 	Float t_t=Float(t_i+t_j)*t_g2;
 	DBG_LOCAL(t_t,"t")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<63>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<63>");
 	Float t_x0=Float(t_i)-t_t;
 	DBG_LOCAL(t_x0,"x0")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<64>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<64>");
 	Float t_y0=Float(t_j)-t_t;
 	DBG_LOCAL(t_y0,"y0")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<65>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<65>");
 	Float t_x01=t_x-t_x0;
 	DBG_LOCAL(t_x01,"x01")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<66>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<66>");
 	Float t_y01=t_y-t_y0;
 	DBG_LOCAL(t_y01,"y01")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<69>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<69>");
 	int t_i1=0;
 	DBG_LOCAL(t_i1,"i1")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<70>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<70>");
 	int t_j1=0;
 	DBG_LOCAL(t_j1,"j1")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<71>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<71>");
 	if(t_x01>t_y01){
 		DBG_BLOCK();
-		DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<72>");
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<72>");
 		t_i1=1;
-		DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<73>");
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<73>");
 		t_j1=0;
 	}else{
 		DBG_BLOCK();
-		DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<75>");
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<75>");
 		t_i1=0;
-		DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<76>");
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<76>");
 		t_j1=1;
 	}
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<79>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<79>");
 	Float t_x1=t_x01-Float(t_i1)+t_g2;
 	DBG_LOCAL(t_x1,"x1")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<80>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<80>");
 	Float t_y1=t_y01-Float(t_j1)+t_g2;
 	DBG_LOCAL(t_y1,"y1")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<81>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<81>");
 	Float t_x2=t_x01-FLOAT(1.0)+FLOAT(2.0)*t_g2;
 	DBG_LOCAL(t_x2,"x2")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<82>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<82>");
 	Float t_y2=t_y01-FLOAT(1.0)+FLOAT(2.0)*t_g2;
 	DBG_LOCAL(t_y2,"y2")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<85>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<85>");
 	int t_ii=t_i&255;
 	DBG_LOCAL(t_ii,"ii")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<86>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<86>");
 	int t_jj=t_j&255;
 	DBG_LOCAL(t_jj,"jj")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<88>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<88>");
 	int t_gi0=m_perm.At(t_ii+m_perm.At(t_jj)) % 12;
 	DBG_LOCAL(t_gi0,"gi0")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<89>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<89>");
 	int t_gi1=m_perm.At(t_ii+t_i1+m_perm.At(t_jj+t_j1)) % 12;
 	DBG_LOCAL(t_gi1,"gi1")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<90>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<90>");
 	int t_gi2=m_perm.At(t_ii+1+m_perm.At(t_jj+1)) % 12;
 	DBG_LOCAL(t_gi2,"gi2")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<93>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<93>");
 	Float t_t0=FLOAT(0.5)-t_x01*t_x01-t_y01*t_y01;
 	DBG_LOCAL(t_t0,"t0")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<94>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<94>");
 	if(t_t0<FLOAT(0.0)){
 		DBG_BLOCK();
-		DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<95>");
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<95>");
 		t_n0=FLOAT(0.0);
 	}else{
 		DBG_BLOCK();
-		DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<97>");
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<97>");
 		t_t0*=t_t0;
-		DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<99>");
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<98>");
 		t_n0=t_t0*t_t0*p_dot(m_grad3.At(t_gi0),t_x01,t_y01);
 	}
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<102>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<101>");
 	Float t_t1=FLOAT(0.5)-t_x1*t_x1-t_y1*t_y1;
 	DBG_LOCAL(t_t1,"t1")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<103>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<102>");
 	if(t_t1<FLOAT(0.0)){
 		DBG_BLOCK();
-		DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<104>");
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<103>");
 		t_n1=FLOAT(0.0);
 	}else{
 		DBG_BLOCK();
-		DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<106>");
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<105>");
 		t_t1*=t_t1;
-		DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<108>");
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<106>");
 		t_n1=t_t1*t_t1*p_dot(m_grad3.At(t_gi1),t_x1,t_y1);
 	}
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<111>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<109>");
 	Float t_t2=FLOAT(0.5)-t_x2*t_x2-t_y2*t_y2;
 	DBG_LOCAL(t_t2,"t2")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<112>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<110>");
 	if(t_t2<FLOAT(0.0)){
 		DBG_BLOCK();
-		DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<113>");
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<111>");
 		t_n2=FLOAT(0.0);
 	}else{
 		DBG_BLOCK();
-		DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<115>");
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<113>");
 		t_t2*=t_t2;
-		DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<117>");
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<114>");
 		t_n2=t_t2*t_t2*p_dot(m_grad3.At(t_gi2),t_x2,t_y2);
 	}
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<122>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<119>");
 	Float t_=FLOAT(70.0)*(t_n0+t_n1+t_n2);
 	return t_;
 }
@@ -15778,32 +16584,32 @@ Float c_SimplexNoise::p_makeOctavedNoise(int t_octaves,Float t_roughness,Float t
 	DBG_LOCAL(t_x,"x")
 	DBG_LOCAL(t_y,"y")
 	DBG_LOCAL(t_offset,"offset")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<210>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<215>");
 	Float t_noiseSum=FLOAT(0.0);
 	DBG_LOCAL(t_noiseSum,"noiseSum")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<211>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<216>");
 	Float t_layerFrequency=t_scale;
 	DBG_LOCAL(t_layerFrequency,"layerFrequency")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<212>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<217>");
 	Float t_layerWeight=FLOAT(1.0);
 	DBG_LOCAL(t_layerWeight,"layerWeight")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<213>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<218>");
 	Float t_weightSum=FLOAT(0.0);
 	DBG_LOCAL(t_weightSum,"weightSum")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<217>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<222>");
 	for(int t_i=0;t_i<t_octaves;t_i=t_i+1){
 		DBG_BLOCK();
 		DBG_LOCAL(t_i,"i")
-		DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<218>");
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<223>");
 		t_noiseSum+=p_makeNoise(Float(t_x+t_offset)*t_layerFrequency,Float(t_y+t_offset)*t_layerFrequency)*t_layerWeight;
-		DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<219>");
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<224>");
 		t_layerFrequency=t_layerFrequency*FLOAT(2.0);
-		DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<220>");
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<225>");
 		t_weightSum+=t_layerWeight;
-		DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<221>");
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<226>");
 		t_layerWeight*=t_roughness;
 	}
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<223>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<228>");
 	Float t_=t_noiseSum/t_weightSum;
 	return t_;
 }
@@ -15814,47 +16620,47 @@ Array<Array<Float > > c_SimplexNoise::p_makeIsland(Array<Array<Float > > t_noise
 	DBG_LOCAL(t_noiseMap,"noiseMap")
 	DBG_LOCAL(t_width,"width")
 	DBG_LOCAL(t_height,"height")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<185>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<186>");
 	Array<Array<Float > > t_island=p_setArray(t_width,t_height);
 	DBG_LOCAL(t_island,"island")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<187>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<188>");
 	int t_centerX=t_width/2;
 	DBG_LOCAL(t_centerX,"centerX")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<188>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<189>");
 	int t_centerY=t_height/2;
 	DBG_LOCAL(t_centerY,"centerY")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<191>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<192>");
 	bbPrint(String(L"Island CenterX = ",17)+String(t_centerX));
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<192>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<193>");
 	bbPrint(String(L"Island CenterY = ",17)+String(t_centerY));
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<193>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<194>");
 	Float t_xDist=FLOAT(0.0);
 	DBG_LOCAL(t_xDist,"xDist")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<194>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<195>");
 	Float t_yDist=FLOAT(0.0);
 	DBG_LOCAL(t_yDist,"yDist")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<195>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<196>");
 	Float t_totalDist=FLOAT(0.0);
 	DBG_LOCAL(t_totalDist,"totalDist")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<197>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<198>");
 	for(int t_i=0;t_i<t_width;t_i=t_i+1){
 		DBG_BLOCK();
 		DBG_LOCAL(t_i,"i")
-		DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<198>");
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<199>");
 		for(int t_j=0;t_j<t_height;t_j=t_j+1){
 			DBG_BLOCK();
 			DBG_LOCAL(t_j,"j")
-			DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<199>");
+			DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<200>");
 			t_xDist=Float((t_centerX-t_i)*(t_centerX-t_i));
-			DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<200>");
+			DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<201>");
 			t_yDist=Float((t_centerY-t_j)*(t_centerY-t_j));
-			DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<202>");
+			DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<203>");
 			t_totalDist=(Float)sqrt(t_xDist+t_yDist)/Float(t_width);
-			DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<203>");
+			DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<204>");
 			t_noiseMap.At(t_i).At(t_j)-=t_totalDist;
 		}
 	}
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<206>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<207>");
 	return t_noiseMap;
 }
 Array<Array<Float > > c_SimplexNoise::p_generateOctavedNoiseMap(int t_width,int t_height,int t_octaves,Float t_roughness,Float t_scale){
@@ -15866,42 +16672,42 @@ Array<Array<Float > > c_SimplexNoise::p_generateOctavedNoiseMap(int t_width,int 
 	DBG_LOCAL(t_octaves,"octaves")
 	DBG_LOCAL(t_roughness,"roughness")
 	DBG_LOCAL(t_scale,"scale")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<154>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<151>");
 	Array<Array<Float > > t_result=p_setArray(t_width,t_height);
 	DBG_LOCAL(t_result,"result")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<155>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<152>");
 	bb_random_Seed=bb_app_Millisecs();
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<156>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<153>");
 	int t_offset=int(bb_random_Rnd2(FLOAT(0.0),FLOAT(1000000.0)));
 	DBG_LOCAL(t_offset,"offset")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<158>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<155>");
 	Float t_layerFrequency=t_scale;
 	DBG_LOCAL(t_layerFrequency,"layerFrequency")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<159>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<156>");
 	Float t_layerWeight=FLOAT(1.0);
 	DBG_LOCAL(t_layerWeight,"layerWeight")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<160>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<157>");
 	Float t_weightSum=FLOAT(0.0);
 	DBG_LOCAL(t_weightSum,"weightSum")
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<164>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<161>");
 	for(int t_i=0;t_i<t_width;t_i=t_i+1){
 		DBG_BLOCK();
 		DBG_LOCAL(t_i,"i")
-		DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<165>");
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<162>");
 		for(int t_j=0;t_j<t_height;t_j=t_j+1){
 			DBG_BLOCK();
 			DBG_LOCAL(t_j,"j")
-			DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<166>");
+			DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<163>");
 			t_result.At(t_i).At(t_j)=p_makeOctavedNoise(5,FLOAT(0.5),FLOAT(0.01),t_i,t_j,t_offset);
 		}
 	}
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<177>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<174>");
 	bbPrint(String(L"Islandizing noise...",20));
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<178>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<175>");
 	t_result=p_makeIsland(t_result,t_width,t_height);
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<179>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<176>");
 	bbPrint(String(L"Returning Noise Map",19));
-	DBG_INFO("/Applications/MonkeyXPro80c+IgnitionX2.04/MonkeyTest/simplexnoise.monkey<182>");
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/simplexnoise.monkey<179>");
 	return t_result;
 }
 void c_SimplexNoise::mark(){
@@ -15916,6 +16722,48 @@ String c_SimplexNoise::debug(){
 	t+=dbg_decl("p",&m_p);
 	t+=dbg_decl("perm",&m_perm);
 	return t;
+}
+int bb_noisetestscene_randomlyAssignCells(Array<Array<int > > t_cells,int t_threshold){
+	DBG_ENTER("randomlyAssignCells")
+	DBG_LOCAL(t_cells,"cells")
+	DBG_LOCAL(t_threshold,"threshold")
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<599>");
+	bb_random_Seed=bb_app_Millisecs();
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<600>");
+	int t_rand=0;
+	DBG_LOCAL(t_rand,"rand")
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<601>");
+	int t_thresh=t_threshold % 100;
+	DBG_LOCAL(t_thresh,"thresh")
+	DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<603>");
+	for(int t_i=0;t_i<t_cells.Length();t_i=t_i+1){
+		DBG_BLOCK();
+		DBG_LOCAL(t_i,"i")
+		DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<604>");
+		for(int t_j=0;t_j<t_cells.At(0).Length();t_j=t_j+1){
+			DBG_BLOCK();
+			DBG_LOCAL(t_j,"j")
+			DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<605>");
+			t_rand=int(bb_random_Rnd2(FLOAT(0.0),FLOAT(100.0)));
+			DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<606>");
+			if(t_rand<t_thresh){
+				DBG_BLOCK();
+				DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<607>");
+				t_cells.At(t_i).At(t_j)=1;
+			}else{
+				DBG_BLOCK();
+				DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<609>");
+				t_cells.At(t_i).At(t_j)=-1;
+			}
+			DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<611>");
+			if(t_i==0 || t_j==0 || t_i==t_cells.Length()-1 || t_j==t_cells.At(0).Length()-1 || t_cells.At(t_i).At(t_j)==9){
+				DBG_BLOCK();
+				DBG_INFO("/Users/BlenderChild/ProceduralContentGeneration/PCGGame/noisetestscene.monkey<612>");
+				t_cells.At(t_i).At(t_j)=-1;
+			}
+		}
+	}
+	return 0;
 }
 c_iConfig::c_iConfig(){
 }
@@ -16005,10 +16853,6 @@ int bbInit(){
 	DBG_GLOBAL("iNextScene",&bb_app2_iNextScene);
 	bb_random_Seed=1234;
 	DBG_GLOBAL("Seed",&bb_random_Seed);
-	bb_main_gfxMonkey=0;
-	DBG_GLOBAL("gfxMonkey",&bb_main_gfxMonkey);
-	bb_main_textures=0;
-	DBG_GLOBAL("textures",&bb_main_textures);
 	bb_main_menu=0;
 	DBG_GLOBAL("menu",&bb_main_menu);
 	bb_main_gameplay=0;
@@ -16037,6 +16881,12 @@ int bbInit(){
 	DBG_GLOBAL("destroyList",&c_iEngineObject::m_destroyList);
 	bb_contentmanager_iContent=(new c_iContentManager)->m_new();
 	DBG_GLOBAL("iContent",&bb_contentmanager_iContent);
+	bb_level_caveTextures=0;
+	DBG_GLOBAL("caveTextures",&bb_level_caveTextures);
+	bb_noisetestscene_textures=0;
+	DBG_GLOBAL("textures",&bb_noisetestscene_textures);
+	bb_noisetestscene_enemies=0;
+	DBG_GLOBAL("enemies",&bb_noisetestscene_enemies);
 	return 0;
 }
 void gc_mark(){
@@ -16052,8 +16902,6 @@ void gc_mark(){
 	gc_mark_q(bb_app2_iCurrentScene);
 	gc_mark_q(bb_app2_iDT);
 	gc_mark_q(bb_app2_iNextScene);
-	gc_mark_q(bb_main_gfxMonkey);
-	gc_mark_q(bb_main_textures);
 	gc_mark_q(bb_main_menu);
 	gc_mark_q(bb_main_gameplay);
 	gc_mark_q(bb_main_noiseTest);
@@ -16064,6 +16912,9 @@ void gc_mark(){
 	gc_mark_q(c_iGuiObject::m__topObject);
 	gc_mark_q(c_iEngineObject::m_destroyList);
 	gc_mark_q(bb_contentmanager_iContent);
+	gc_mark_q(bb_level_caveTextures);
+	gc_mark_q(bb_noisetestscene_textures);
+	gc_mark_q(bb_noisetestscene_enemies);
 }
 //${TRANSCODE_END}
 

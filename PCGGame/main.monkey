@@ -6,6 +6,7 @@ Import camera
 Import level
 Import simplexnoise
 Import noisetestscene
+Import point
 
 
 
@@ -109,7 +110,7 @@ Class GameplayScene Extends iEngine
         Self.playfield.AttachLast()
         Self.playfield.AutoCls(0,0,0)
         Self.playfield.Width=600
-        Self.playfield.Height=445
+        Self.playfield.Height=440
         Self.playfield.Position(16,16)
         Self.playfield.ZoomPointX(200)
         Self.playfield.ZoomPointY(128)
@@ -156,14 +157,14 @@ Class GameplayScene Extends iEngine
     
     'Overloads OnRender Method from iEngine
     Method OnRender ()
-        room.Draw()
+        room.Draw(Self.playfield.CameraX, Self.playfield.CameraY)
     End Method
 
     
     'Overloads OnStart Method from iEngine
     Method OnStart ()
         Print "Starting Gameplay"
-        room = New Level(0, 0, 150, 100, "Cellular")
+        room = New Level(0, 0, 160, 120, "Cellular")
         #Rem
         PlayMusic("tetris.mp3", 1)
         #End
@@ -176,10 +177,8 @@ Class GameplayScene Extends iEngine
     End Method
 
 
-    'Overloads OnUpdate Method from iEngine
     Method OnUpdate ()
-    	#Rem Use this code for zooming/alpha fading
-    	If KeyDown(KEY_CONTROL)
+		If KeyDown(KEY_CONTROL)
         
             If KeyDown(KEY_A)
                 Self.playfield.AlphaFade=Self.playfield.AlphaFade-0.01
@@ -204,30 +203,47 @@ Class GameplayScene Extends iEngine
             End If
         
         End If
-        #End
-    
-        If KeyDown(KEY_LEFT)
-            Self.playfield.CameraX=Self.playfield.CameraX-4
+			If KeyDown(KEY_LEFT)
+            Self.playfield.CameraX=Self.playfield.CameraX-1
         End If
     
         If KeyDown(KEY_RIGHT)
-            Self.playfield.CameraX=Self.playfield.CameraX+4
+            Self.playfield.CameraX=Self.playfield.CameraX+1
         End If
     
         If KeyDown(KEY_UP)
-            Self.playfield.CameraY=Self.playfield.CameraY-4
+            Self.playfield.CameraY=Self.playfield.CameraY-1
         End If
     
         If KeyDown(KEY_DOWN)
-            Self.playfield.CameraY=Self.playfield.CameraY+4
+            Self.playfield.CameraY=Self.playfield.CameraY+1
         End If
-    	
-        sprite1.AnimationLoop(1, 60)
-        Self.sprite1.Show("LOOPING ANIMATION:")
-        Self.sprite1.Show("FramePointer="+Self.sprite1.Frame)
-        
-		p1.Update()
-    End Method
+        checkCameraBounds()
+		End
+'
+'Method for checking the boundaries of the game camera. Ensures camera
+'stops at the edges of the map
+'
+		Method checkCameraBounds()
+		
+        If Self.playfield.CameraX < 0
+          Self.playfield.CameraX = 0
+        End
+        If Self.playfield.CameraY < 0
+          Self.playfield.CameraY = 0
+        End
+'         Print "Playfield CameraX: " + Self.playfield.CameraX
+'         Print "Camera End: " + (mapWidth - 30)
+'         If Self.playfield.CameraX + (mapWidth/20) > mapWidth
+'           Self.playfield.CameraX = mapWidth - (mapWidth/20)
+'         End
+        If Self.playfield.CameraX + (Self.playfield.Width/40) > Self.playfield.Width
+          Self.playfield.CameraX = Self.playfield.Width - (Self.playfield.Width/40)
+        End
+        If Self.playfield.CameraY + (Self.playfield.Height/40) > Self.playfield.Height
+          Self.playfield.CameraY = Self.playfield.Height - (Self.playfield.Height/40)
+        End
+		End
 End Class
 
 
