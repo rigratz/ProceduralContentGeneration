@@ -50,16 +50,16 @@ Class Player
 	'
 	Method HandleControls()
 		If KeyDown(KEY_LEFT)
-			x = x - 4
+			x = x - 10
 		End If
 		If KeyDown(KEY_RIGHT)
-			x = x + 4
+			x = x + 10
 		End If
 		If KeyDown(KEY_DOWN)
-			y = y + 4
+			y = y + 10
 		End If
 		If KeyDown(KEY_UP)
-			y = y - 4
+			y = y - 10
 		End If
 	End Method
 End Class

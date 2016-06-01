@@ -138,7 +138,7 @@ Class SimplexNoise
                 'result[i][j] = makeNoise(i*frequency, j*frequency)
             End
         End
-        Print "Returning Moisture Map"
+        'Print "Returning Moisture Map"
         Return result
     End Method
    
@@ -171,9 +171,9 @@ Class SimplexNoise
         'layerWeight *= roughness;
         
         'End
-        Print "Islandizing noise..."
+        'Print "Islandizing noise..."
         result = makeIsland(result, width, height)
-        Print "Returning Noise Map"
+        'Print "Returning Noise Map"
       
       
         Return result
@@ -189,8 +189,8 @@ Class SimplexNoise
         Local centerY:Int = height / 2
 '       Local centerX:Int = Rnd(0, width)
 '       Local centerY:Int = Rnd(0, height)
-        Print "Island CenterX = " + centerX
-        Print "Island CenterY = " + centerY
+        'Print "Island CenterX = " + centerX
+        'Print "Island CenterY = " + centerY
         Local xDist:Float = 0
         Local yDist:Float = 0
         Local totalDist:Float = 0

@@ -1,6 +1,10 @@
 Import mojo
 Import playniax.ignitionx.engine
 Import point
+Import pathfinder
+Import monkey.stack
+Import math
+
 
 Global caveTextures:Image
 'Procedurally generated representation of a cave/dungeon.
@@ -14,13 +18,19 @@ Class Level
     Const CAVE_DOWN_LEFT:Int = 3
     Const CAVE_DOWN_RIGHT:Int = 4
     Const CAVE_WALKWAY:Int = 5
-    Const LAVA_NORTH_SOUTH = 6
-    Const LAVA_NORTH_WEST = 7
-    Const LAVA_NORTH_EAST = 8
-    Const LAVA_SOUTH_WEST = 9
-    Const LAVA_SOUTH_EAST = 10
-    Const LAVA_EAST_WEST = 11
-    Const LAVA = 12
+    Const LAVA_NORTH_SOUTH:Int = 6
+    Const LAVA_NORTH_WEST:Int = 7
+    Const LAVA_NORTH_EAST:Int = 8
+    Const LAVA_SOUTH_WEST:Int = 9
+    Const LAVA_SOUTH_EAST:Int = 10
+    Const LAVA_EAST_WEST:Int = 11
+    Const LAVA:Int = 12
+    Const TRAPDOOR_CLOSED:Int = 13
+    Const TRAPDOOR_OPEN:Int = 14
+    Const SPIKES:Int = 15
+    Const ENTRANCE:Int = 16
+    Const TREASURE:Int = 17
+    Const FOUND_PATH:Int = 18
     
     'Temporary value. texture not drawn yet
     Const CAVE_BORDER:Int = CAVE_CENTER
@@ -38,6 +48,17 @@ Class Level
 	Field xCoord:Int
 	Field yCoord:Int
 	
+	Field treasureX:Int
+	Field treasureY:Int
+	
+	Field treasure2X:Int
+	Field treasure2Y:Int
+	
+	Field treasures:Stack<Point>
+	Field entranceX:Int
+	Field entranceY:Int
+	
+	
 	'Constructor for Level
 	'
 	'Takes in x/y coordinate pair for overworld location, width/height of cave, and a 
@@ -51,7 +72,7 @@ Class Level
 		Self.height = h
 		Self.layout = setArray(Self.width, Self.height)
 		
-		caveTextures = iLoadSprite("cave_texture40.png", 40, 40, 13)
+		caveTextures = iLoadSprite("cave_texture40.png", 40, 40, 19)
 		
 		If type = "Cellular"
 			randomlyAssignCells(Self.layout)
@@ -69,13 +90,225 @@ Class Level
 		countWalkways()
 		lava = New Point[1000]
 		makeLavaRivers()
+		
+		addSpikesAndTraps()
+		
+		makeStartingPoint()
+		
+		Self.treasureX = 0
+		Self.treasureY = 0
+		
+		treasures = New Stack<Point>()
+		setTreasure(10)
+		
+		'Local isReachable:Bool = False
+		'While Not isReachable
+            'setTreasure()
+         '   isReachable = validatePath()
+        'End While
+		'Print "Treasure X: " + treasureX
+        'Print "Treasure Y: " + treasureY
+		
 		Self.generated = true
+	End Method
+	
+	Method setTreasure:Bool(total:Int)
+        Local successCount:Int = 0;
+        Local failCount:Int = 0;
+        Local searcher:AStarSearch = New AStarSearch(Self.layout, 300, False)
+        Local currentPath:Path
+        
+        While successCount < 10 And failCount < 10
+            Print "Fails: " + failCount + ", Success: " + successCount
+            setTreasure()
+            Local closestIndex:Int = -1
+            Print "Last treas: " + treasures.Get(treasures.Length-1).getX() + ", " + treasures.Get(treasures.Length-1).getY()
+            Local closestDist:Float = getDist(entranceX, entranceY, treasures.Get(treasures.Length-1).getX(), treasures.Get(treasures.Length-1).getY())
+            For Local t:Int = 0 Until treasures.Length - 1
+                Local localDist:Float = getDist(treasures.Get(treasures.Length-1).getX(), treasures.Get(treasures.Length-1).getY(), treasures.Get(t).getX(), treasures.Get(t).getY())
+                If localDist < closestDist
+                    closestDist = localDist
+                    closestIndex = t
+                End If
+            End For
+            If closestIndex = -1
+                currentPath = searcher.findPath(entranceX, entranceY, treasures.Get(treasures.Length-1).getX(), treasures.Get(treasures.Length-1).getY())
+            Else
+                currentPath = searcher.findPath(treasures.Get(closestIndex).getX(), treasures.Get(closestIndex).getY(), treasures.Get(treasures.Length-1).getX(), treasures.Get(treasures.Length-1).getY())
+            End If
+            
+            If currentPath = Null
+                Print "FAIL"
+                failCount += 1
+                treasures.Pop()
+            Else
+                successCount += 1
+            End If
+        End While
+        
+	End Method
+    Method debugPath(p:Path)
+        For Local i:= Eachin p.steps
+            If Self.layout[i.getX()][i.getY()] = CAVE_WALKWAY
+                Self.layout[i.getX()][i.getY()] = FOUND_PATH
+            End If
+        End For
+    End Method
+	Method addSpikesAndTraps()
+        Local spikeCount:Int = walkways.Length / 30
+        Local counter:Int = 0
+        Local randTile:Int = Rnd(0, walkways.Length)
+        
+        Local x:Int = 0
+        Local y:Int = 0
+        While counter < spikeCount
+            x = walkways[randTile].getX()
+            y = walkways[randTile].getY()
+            If layout[x][y] = CAVE_WALKWAY
+                layout[x][y] = SPIKES
+                counter += 1
+            End If
+            randTile = Rnd(0, walkways.Length)
+        End While
+        
+        Local trapCount:Int = walkways.Length / 50
+        counter = 0
+        randTile = Rnd(0, walkways.Length)
+        
+        x = 0
+        y = 0
+        While counter < trapCount
+            x = walkways[randTile].getX()
+            y = walkways[randTile].getY()
+            If layout[x][y] = CAVE_WALKWAY
+                layout[x][y] = TRAPDOOR_CLOSED
+                counter += 1
+            End If
+            randTile = Rnd(0, walkways.Length)
+        End While
+        
+	End Method
+	
+	Method makeStartingPoint()
+        Local rng = Rnd(0, walkways.Length)
+        Local isSet = False
+        
+        Local x:Int
+        Local y:Int
+        
+        'Local tries:Int = 0
+        
+        While Not isSet
+            'tries += 1
+            x = walkways[rng].getX()
+            y = walkways[rng].getY()
+            
+            If layout[x][y] = CAVE_WALKWAY
+                isSet = True
+            Else
+                rng = Rnd(0, walkways.Length)
+            End If
+            
+        End While
+        'Print "Tries for start pos: " + tries
+        layout[x][y] = ENTRANCE
+        entranceX = x
+        entranceY = y
+        
+        'Print "X: " + x
+        'Print "Y: " + y
+	End Method
+	
+	Method setTreasure()
+        Local rng = Rnd(0, walkways.Length)
+        Local isSet = False
+        
+        Local x:Int
+        Local y:Int
+        While Not isSet
+            x = walkways[rng].getX()
+            y = walkways[rng].getY()
+            
+            If layout[x][y] = CAVE_WALKWAY
+                isSet = True
+            Else
+                rng = Rnd(0, walkways.Length)
+            End If
+        End While
+        
+        layout[x][y] = TREASURE
+        Self.treasureX = x
+        Self.treasureY = y
+        treasures.Push(New Point(x, y))
+'              layout[Self.entranceX+40][Self.entranceY+40] = TREASURE
+'           Self.treasureX = Self.entranceX + 40
+'           Self.treasureY = Self.entranceY + 40
+        
+	End Method
+	
+	Method setTreasure2()
+        Local rng = Rnd(0, walkways.Length)
+        Local isSet = False
+        
+        Local x:Int
+        Local y:Int
+        While Not isSet
+            x = walkways[rng].getX()
+            y = walkways[rng].getY()
+            
+            If layout[x][y] = CAVE_WALKWAY
+                isSet = True
+            Else
+                rng = Rnd(0, walkways.Length)
+            End If
+        End While
+        
+        layout[x][y] = TREASURE
+        Self.treasure2X = x
+        Self.treasure2Y = y
+'              layout[Self.entranceX+40][Self.entranceY+40] = TREASURE
+'           Self.treasureX = Self.entranceX + 40
+'           Self.treasureY = Self.entranceY + 40
+        
+	End Method
+	
+	Method validatePath:Bool()
+        Local walkable:Int[][] = setArray(layout.Length, layout[0].Length)
+        For Local i:Int = 0 Until walkable.Length
+            For Local j:Int = 0 Until walkable[0].Length
+                If layout[i][j] = CAVE_WALKWAY
+                    walkable[i][j] = 1
+                Else
+                    walkable[i][j] = 0
+                End
+            End For
+        End For
+        
+        Local x:Int = Self.entranceX
+        Local y:Int = Self.entranceY
+        
+        Local isHope:Bool = True
+        walkable[x][y] = 2
+        
+        While isHope
+            walkable[x-1][y] = 2
+            
+        End While
+        Return true
+	End Method
+	
+	Method checkWalkable:Bool(x:Int, y:Int, path:Int[][])
+        
+        If path[x][y] = 1
+            
+        Else
+        End If
 	End Method
 	
 	Method makeLavaRivers()
         Self.counter = 0
         Local total:Int = walkways.Length / 200
-        Print "Total rivers to make: " + total
+        'Print "Total rivers to make: " + total
         
         Local randX:Int
         Local randY:Int
@@ -89,7 +322,7 @@ Class Level
             If randTile = CAVE_WALKWAY 
                 If layout[randX-1][randY] = CAVE_CENTER Or layout[randX+1][randY] = CAVE_CENTER Or layout[randX][randY-1] = CAVE_CENTER Or layout[randX][randY+1] = CAVE_CENTER
                     makeLavaRiver(randX, randY)
-                    Print "Lava River starting at: " + randX + ", " + randY
+                    'Print "Lava River starting at: " + randX + ", " + randY
                     index += 1
                 End If
             End If
@@ -134,44 +367,14 @@ Class Level
         End If
 
         If layout[nextX][nextY] = CAVE_CENTER
-            riverEnd = True
+            Local rng:Int = Rnd(0, 100)
+            If rng < 10
+                riverEnd = True
+            Else
+                nextX = currentX
+                nextY = currentY
+            End If
         End If
-'           Else 'If layout[nextX][nextY] = CAVE_WALKWAY
-'           
-'             If direction = up
-'               If previousDirection = left
-'                   riverType = LAVA_NORTH_EAST
-'               Else If previousDirection = right
-'                   riverType = LAVA_NORTH_WEST
-'               Else
-'                   riverType = LAVA_NORTH_SOUTH
-'               End If
-'             Else If direction = down
-'               If previousDirection = left
-'                   riverType = LAVA_SOUTH_EAST
-'               Else If previousDirection = right
-'                   riverType = LAVA_SOUTH_WEST
-'               Else
-'                   riverType = LAVA_NORTH_SOUTH
-'               End If
-'             Else If direction = left
-'               If previousDirection = up
-'                   riverType = LAVA_SOUTH_WEST
-'               Else If previousDirection = down
-'                   riverType = LAVA_NORTH_WEST
-'               Else
-'                   riverType = LAVA_EAST_WEST
-'               End If
-'             Else If direction = right
-'               If previousDirection = up
-'                   riverType = LAVA_SOUTH_EAST
-'               Else If previousDirection = down
-'                   riverType = LAVA_NORTH_EAST
-'               Else
-'                   riverType = LAVA_EAST_WEST
-'               End If
-'             End If
-'           End If
           layout[currentX][currentY] = LAVA
           lava[Self.counter] = New Point(currentX, currentY)
           Self.counter += 1
@@ -196,7 +399,7 @@ Class Level
 	'
 	Method countWalkways()
         Self.walkways = New Point[1]
-        Print "Initial size: " + Self.walkways.Length
+        'Print "Initial size: " + Self.walkways.Length
         Local index:Int = 0;
         For Local i:Int = 0 Until layout.Length
             For Local j:Int = 0 Until layout[0].Length
@@ -209,8 +412,8 @@ Class Level
             End
         End
         Self.walkways = Self.walkways.Resize(Self.walkways.Length-1)
-        Print "New length: " + Self.walkways.Length
-        Print "Final point: " + Self.walkways[Self.walkways.Length - 1].getX()
+        'Print "New length: " + Self.walkways.Length
+        'Print "Final point: " + Self.walkways[Self.walkways.Length - 1].getX()
 	End Method
 	
 	'
@@ -452,22 +655,41 @@ Class Level
 '   				DrawRect(i * 40, j * 40, 40, 40)
 '   			End
 '   		End
-      Local xOffset:Int = xOffsetG
-      Local yOffset:Int = yOffsetG
-      Local xTarget:Int = xOffset + 16
-      Local yTarget:Int = yOffset + 13
-'       Local localTexture:Int = 0
-'       Local counter:Int = 0
-
-      For Local i:Int = xOffset Until xTarget
-        For Local j:Int = yOffset Until yTarget
-            If i > 0 And i < width - 1 And j > 0 And j < height - 1
-                If Not (layout[i][j] = CAVE_CENTER Or layout[i][j] = CAVE_WALKWAY)
-                    DrawImage(caveTextures, (i-xOffset)*40+xOffset,(j-yOffset)*40+yOffset, CAVE_WALKWAY)
+'         Local xOffset:Int = xOffsetG
+'         Local yOffset:Int = yOffsetG
+'         Local xTarget:Int = xOffset + 16
+'         Local yTarget:Int = yOffset + 13
+'   '       Local localTexture:Int = 0
+'   '       Local counter:Int = 0
+'   
+'         For Local i:Int = xOffset Until xTarget
+'           For Local j:Int = yOffset Until yTarget
+'               If i > 0 And i < width - 1 And j > 0 And j < height - 1
+'                   If Not (layout[i][j] = CAVE_CENTER Or layout[i][j] = CAVE_WALKWAY)
+'                       DrawImage(caveTextures, (i-xOffset)*40+xOffset,(j-yOffset)*40+yOffset, CAVE_WALKWAY)
+'                   End If
+'                   DrawImage(caveTextures, (i-xOffset)*40+xOffset,(j-yOffset)*40+yOffset, layout[i][j])
+'               End If
+'           End
+'         End
+        Local xTile:Int = xOffsetG / 40 - 1
+        Local yTile:Int = yOffsetG / 40 - 1
+        Local xOffset:Int = xOffsetG Mod 40
+        Local yOffset:Int = yOffsetG Mod 40
+        
+        For Local i:Int = xTile Until xTile + 18
+            For Local j:Int = yTile Until yTile + 14
+                If i > -1 And i < layout.Length And j > -1 And j < layout[i].Length
+                    DrawImage(caveTextures, i * 40 , j * 40, layout[i][j])
                 End If
-                DrawImage(caveTextures, (i-xOffset)*40+xOffset,(j-yOffset)*40+yOffset, layout[i][j])
-            End If
-        End
-      End
+            End For
+        End For
 	End Method
 End Class
+
+Function getDist:Float(sX:Int, sY:Int, tX:Int, tY:Int)
+    Local dx = tX - sX
+    Local dy = tY - sY
+    
+    Return math.Sqrt(dx * dx + dy * dy) 
+End Function
