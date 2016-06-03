@@ -179,6 +179,7 @@ Class NoiseTestScene Extends iEngine
         'Print "Make Caves"
         makeCaves(1)
         placeEnemies(mapWidth, mapHeight)
+        Print "Enemy array: " + enemyPlacement.Length + ", " + enemyPlacement[0].Length
         
         Local overworldSearch:AStarSearch = New AStarSearch(biomes, 300, false)
         Local pathToCave:Path = overworldSearch.findPathOverworld(biomes, Self.startX, Self.startY, Self.caveX, Self.caveY)
@@ -318,7 +319,9 @@ Class NoiseTestScene Extends iEngine
 
             If localMinX = currentX And localMinY = currentY
                 Local decision:Int = Rnd(0, 100)
-                If decision < 15
+                If Not (currentX -3 > - 1 And currentY - 3 > -1 And currentX + 3 < noiseMap.Length And currentY + 3 < noiseMap[0].Length)
+                    riverEnd = true
+                Else If decision < 15
                     makeLake(currentX, currentY)
                     riverEnd = true
                 Else
