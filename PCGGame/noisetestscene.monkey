@@ -699,8 +699,10 @@ Class NoiseTestScene Extends iEngine
 
         For Local i:Int = xTile Until xTile + 18
             For Local j:Int = yTile Until yTile + 14
-                If Not (enemyPlacement[i][j] = -1)
-                    DrawImage(enemies, i * 40, j * 40, enemyPlacement[i][j])
+                If i > -1 And i < enemyPlacement.Length And j > -1 And j < enemyPlacement[i].Length 
+                    If Not (enemyPlacement[i][j] = -1)
+                        DrawImage(enemies, i * 40, j * 40, enemyPlacement[i][j])
+                    End If
                 End If
             End For
         End For
