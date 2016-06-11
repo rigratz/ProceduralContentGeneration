@@ -12,10 +12,16 @@ Class Point
         Self.y = y
     End Method
     
+    '
+    'Getter method for Point's X coordinate
+    '
     Method getX()
         Return Self.x
     End Method
     
+    '
+    'Getter method for Point's Y coordinate
+    '
     Method getY()
         Return Self.y
     End Method

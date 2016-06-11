@@ -112,12 +112,7 @@ Class NoiseTestScene Extends iEngine
         
         textures = iLoadSprite("textures40.png", 40, 40, TOTAL_TEXTURES)
         enemies = iLoadSprite("enemies40.png", 40, 40, 9)
-'         Self.backLayer = New iLayer()
-'         Self.backLayer.AttachLast(Self.playFieldN)
-'         
-'         Self.playerLayer = New iLayer()
-'         Self.player = New Hero()
-'         Self.playerLayer.AttachLast(Self.player)
+
         mapWidth = 600
         mapHeight = 460
         
@@ -130,7 +125,6 @@ Class NoiseTestScene Extends iEngine
         Self.sprite1.ImagePointer(img)
         Self.sprite1.Position(300,275)
         
-        'chunks = setArray(30, 23)
         Self.deepWaterTiles = New Point[1000]
         Self.shallowWaterTiles = New Point[1000]
         Self.beachTiles = New Point[1000]
@@ -154,17 +148,11 @@ Class NoiseTestScene Extends iEngine
     	  'Debugging Text
     	DrawText("CameraX: " + Self.playfieldN.CameraX, Self.playfieldN.CameraX+10, Self.playfieldN.CameraY+10)
     	DrawText("CameraY: " + Self.playfieldN.CameraY, Self.playfieldN.CameraX+10, Self.playfieldN.CameraY+20)
-    	'DrawText("MapX: " + Self.playfieldN.CameraX , Self.playfieldN.CameraX+10, Self.playfieldN.CameraY+40)
-    	'DrawText("MapY: " + Self.playfieldN.CameraY, Self.playfieldN.CameraX+10, Self.playfieldN.CameraY+50)
-        'DrawText("MapXEnd: " + (Self.playfieldN.CameraX + 120), Self.playfieldN.CameraX+10, Self.playfieldN.CameraY+70)
-    	'DrawText("MapYEnd: " + (Self.playfieldN.CameraY + 89), Self.playfieldN.CameraX+10, Self.playfieldN.CameraY+80)
-    	'DrawRect(Self.bBox.x, Self.bBox.y, Self.bBox.width, Self.bBox.height)
     End Method
  '
  'Overloads OnStart Method from iEngine
  '   
     Method OnStart ()
-        'Print "Starting Noise Test"
         Local n:SimplexNoise = New SimplexNoise()
         noiseMap = n.generateOctavedNoiseMap(mapWidth, mapHeight, 5, 0.5, 1)
         moisture = n.generateOctavedNoiseMap(mapWidth, mapHeight, 5, 0.5, 1)
@@ -172,11 +160,8 @@ Class NoiseTestScene Extends iEngine
         determineBiomes(noiseMap, moisture, mapWidth, mapHeight)
         processBiomes()
         detailBiomes()
-        'Print "Make rivers"
         makeRivers(40)
-        'Print "Select Start"
         selectRandomStartPoint()
-        'Print "Make Caves"
         makeCaves(1)
         placeEnemies(mapWidth, mapHeight)
         Print "Enemy array: " + enemyPlacement.Length + ", " + enemyPlacement[0].Length
@@ -422,7 +407,6 @@ Class NoiseTestScene Extends iEngine
         
         Local lakeWidth:Int = Rnd(1,5)
         Local lakeHeight:Int = Rnd(1,5)
-        'Print "Make a lake at " + centerX + ", " + centerY + ", Size: " + lakeWidth + "x" + lakeHeight
         Local tempX:Int = centerX - lakeWidth
         Local tempY:Int = centerY - lakeHeight
         
@@ -528,7 +512,6 @@ Class NoiseTestScene Extends iEngine
                 
                 Self.startX = x
                 Self.startY = y
-                'Print "Starting at: " + x + ", " + y
                 startPointSet = true
             End If
         End While
@@ -572,22 +555,7 @@ Class NoiseTestScene Extends iEngine
             End If
         
         End If
-		
-'   		If KeyDown(KEY_LEFT)
-'               Self.playfieldN.CameraX=Self.playfieldN.CameraX-10
-'           End If
-'       
-'           If KeyDown(KEY_RIGHT)
-'               Self.playfieldN.CameraX=Self.playfieldN.CameraX+10
-'           End If
-'       
-'           If KeyDown(KEY_UP)
-'               Self.playfieldN.CameraY=Self.playfieldN.CameraY-10
-'           End If
-'       
-'           If KeyDown(KEY_DOWN)
-'               Self.playfieldN.CameraY=Self.playfieldN.CameraY+10
-'           End If
+
         If KeyDown(KEY_LEFT)
             If isWalkable(biomes[(bBox.x-5)/40][bBox.y/40]) And isWalkable(biomes[(bBox.x-5)/40][(bBox.y+bBox.height)/40])
                 If sprite1.PositionX - Self.playfieldN.CameraX < 200
@@ -644,10 +612,10 @@ Class NoiseTestScene Extends iEngine
         End If
         
         If Self.playfieldN.CameraX + (Self.playfieldN.Width) > Self.playfieldN.Width * 40
-            Self.playfieldN.CameraX = Self.playfieldN.Width *39' - (Self.playfieldN.Width/40)
+            Self.playfieldN.CameraX = Self.playfieldN.Width *39
         End If
         If Self.playfieldN.CameraY + (Self.playfieldN.Height) > Self.playfieldN.Height * 40
-            Self.playfieldN.CameraY = Self.playfieldN.Height *39' - (Self.playfieldN.Height/40)
+            Self.playfieldN.CameraY = Self.playfieldN.Height *39
         End If
 	End Method
 		
@@ -655,19 +623,6 @@ Class NoiseTestScene Extends iEngine
 'Method to draw the textures drawn from simplex noise map
 '
     Method drawNoiseMap(w:Int, h:Int)
-'           Local xOffset:Int = Self.playfieldN.CameraX 
-'           Local yOffset:Int = Self.playfieldN.CameraY
-'           Local xTarget:Int = xOffset + 15
-'           Local yTarget:Int = yOffset + 12
-'   '       Local localTexture:Int = 0
-'   '       Local counter:Int = 0
-'   
-'           For Local i:Int = xOffset Until xTarget
-'               For Local j:Int = yOffset Until yTarget
-'                   DrawImage(textures, (i-xOffset)*40+xOffset,(j-yOffset)*40+yOffset, biomes[i][j])
-'               End For
-'           End For
-      
         Local xTile:Int = Self.playfieldN.CameraX / 40 - 1
         Local yTile:Int = Self.playfieldN.CameraY / 40 - 1
         Local xOffset:Int = Self.playfieldN.CameraX Mod 40
@@ -681,11 +636,6 @@ Class NoiseTestScene Extends iEngine
             End For
         End For
         
-      'Print "Counter: " + counter
-'       DrawText("xOffset: " + xOffset, Self.playfieldN.CameraX+10, Self.playfieldN.CameraY+100)
-'     	DrawText("yOffset: " + yOffset, Self.playfieldN.CameraX+10, Self.playfieldN.CameraY+110)
-'     	DrawText("xTarget: " + xTarget, Self.playfieldN.CameraX+10, Self.playfieldN.CameraY+120)
-'     	DrawText("yTarget: " + yTarget, Self.playfieldN.CameraX+10, Self.playfieldN.CameraY+130)
 	End Method
 		
 '
@@ -844,7 +794,7 @@ Class NoiseTestScene Extends iEngine
         forestTiles = forestTiles.Resize(forestIndex)
         desertTiles = desertTiles.Resize(desertIndex)
         mountainTiles = mountainTiles.Resize(mountainIndex)
-        'Print "End processing"
+
     End Method
 '
 'Method to determine which kind of enemy to create based on the terrain
@@ -890,6 +840,9 @@ Class NoiseTestScene Extends iEngine
     End Method
 End Class
 
+'
+'Function to randomly allocate values to cells on a grid
+'
 Function randomlyAssignCells(cells:Int[][], threshold:Int)
 	Seed = Millisecs()
 	Local rand:Int = 0
@@ -911,6 +864,9 @@ Function randomlyAssignCells(cells:Int[][], threshold:Int)
 	End For	
 End Function
 
+'
+'Helper function to create a 2D array of a given dimension (Height/Width)
+'
 Function setArray:Int[][](i:Int, j:Int)
 	Local result:Int[][] = New Int[i][]
 		

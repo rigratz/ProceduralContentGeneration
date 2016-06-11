@@ -1,5 +1,3 @@
-'battleScene.monkey
-
 Import mojo
 Import playniax.ignitionx.engine
 Import player
@@ -12,6 +10,10 @@ Import point
 Import pathfinder
 Import math
 
+'
+'Gameplay scene to handle battles between the player and enemy characters. Currently
+'only a very basic shell for what will ultimately be much more complicated.
+'
 Class BattleScene Extends iEngine
     Field enemyTimer:Int
     Field enemyTimer2:Int

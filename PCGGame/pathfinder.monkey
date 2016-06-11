@@ -1,5 +1,3 @@
-'PathFinding
-
 Import mojo
 Import playniax.ignitionx.engine
 Import monkey.list
@@ -7,8 +5,10 @@ Import math
 Import point
 Import monkey.stack
 
-
-
+'
+'A* search implementation for MonkeyX for use in intelligent procedural
+'content generation.
+'
 Class AStarSearch
     Field visited:Stack<AStarNode>
     Field unvisited:Stack<AStarNode>
@@ -40,6 +40,9 @@ Class AStarSearch
         End For
     End Method
 
+    '
+    'Helper method to remove an element from a stack if it exists in the stack.
+    '
     Method remIfStackHasElement:Bool(s:Stack<AStarNode>, n:AStarNode)
         'Print "Trying to rem..."
         For Local i:Int = 0 Until s.Length
@@ -56,9 +59,12 @@ Class AStarSearch
     End Method
 
 
+    '
+    'Helper method that returns the node from a stack that has the lowest cost of movement,
+    'given a stack to draw from.
+    '
     Method getLowestCostNode:AStarNode(n:Stack<AStarNode>)
         Local index:Int = 0
-        'Local lowNode:AStarNode = Self.unvisited.Get(0)
         Local lowestCost:Float = n.Get(0).totalCost
         
         For Local i:Int = 1 Until n.Length
@@ -71,10 +77,12 @@ Class AStarSearch
         Return n.Get(index)
     End Method
     
-    
+    '
+    'Helper method that returns the node from a stack that has the lowest cost of movement,
+    'with no parameters passed to it.
+    '
     Method getLowestCostNode:AStarNode()
         Local index:Int = 0
-        'Local lowNode:AStarNode = Self.unvisited.Get(0)
         Local lowestCost:Float = Self.unvisited.Get(0).totalCost
         
         For Local i:Int = 1 Until Self.unvisited.Length
@@ -87,6 +95,9 @@ Class AStarSearch
         Return Self.unvisited.Get(index)
     End Method
     
+    '
+    'Method to find a path between two points, if one exists. Used for cave generation.
+    '
     Method findPath:Path(sx:Int, sy:Int, tx:Int, ty:Int)
         
         If Not isWalkableTile(Self.gameMap, tx, ty)
@@ -120,32 +131,11 @@ Class AStarSearch
             iterations += 1
             Local currentNode:AStarNode = getLowestCostNode()
             
-'               If currentNode.x = sx-1 And currentNode.y = sy
-'                   Print "Starting left neighbor visited!: Iteration " + iterations
-'               End If
-'               If currentNode.x = sx+1 And currentNode.y = sy
-'                               Print "Starting right neighbor visited!: Iteration " + iterations
-'   
-'               End If
-'               If currentNode.x = sx And currentNode.y = sy-1
-'                               Print "Starting up neighbor visited!: Iteration " + iterations
-'   
-'               End If
-'               If currentNode.x = sx And currentNode.y = sy+1
-'                               Print "Starting down neighbor visited!: Iteration " + iterations
-'   
-'               End If
-            
              If endNode.id = currentNode.id
                 Exit
              End If
 
              remIfStackHasElement(Self.unvisited, currentNode)
-
-'                If stackHasElement(Self.unvisited, currentNode)
-'   
-'                   Print "Did not remove at start"
-'                End If
 
              Self.visited.Push(currentNode)
              
@@ -178,9 +168,7 @@ Class AStarSearch
                         
                         If (Not stackHasElement(Self.unvisited, neighbor)) And (Not stackHasElement(Self.visited, neighbor))
                             neighbor.cost = nextStepCost
-                            'neighbor.heuristic = getCost(xpos, ypos, tx, ty)
                             neighbor.totalCost = nextStepCost + neighbor.heuristic
-                            'neighbor.totalCost = nextStepCost
                             depth = math.Max(depth, neighbor.setParent(currentNode))
                             Self.unvisited.Push(neighbor)
                         End If
@@ -215,6 +203,11 @@ Class AStarSearch
         
     End Method
     
+    '
+    'Method to determine if a given tile on the overworld map is one which the player
+    'is alble to walk on. Lots of hard coded values that should probably be changed to
+    'public, static Ints
+    '
     Method isWalkableTileOverworld:Bool(m:Int[][], x:Int, y:Int)
         Local i:Int = m[x][y]
         
@@ -225,6 +218,9 @@ Class AStarSearch
         End If
     End Method
     
+    '
+    'Method to find the path between two points on the overworld map, if one exists.
+    '
     Method findPathOverworld:Path(overworld:Int[][], sx:Int, sy:Int, tx:Int, ty:Int)
         
         If Not isWalkableTileOverworld(Self.gameMap, tx, ty)
@@ -256,34 +252,13 @@ Class AStarSearch
         
         While depth < 300 And unvisited.Length > 0
             iterations += 1
-            Local currentNode:AStarNode = getLowestCostNode()
-            
-'               If currentNode.x = sx-1 And currentNode.y = sy
-'                   Print "Starting left neighbor visited!: Iteration " + iterations
-'               End If
-'               If currentNode.x = sx+1 And currentNode.y = sy
-'                               Print "Starting right neighbor visited!: Iteration " + iterations
-'   
-'               End If
-'               If currentNode.x = sx And currentNode.y = sy-1
-'                               Print "Starting up neighbor visited!: Iteration " + iterations
-'   
-'               End If
-'               If currentNode.x = sx And currentNode.y = sy+1
-'                               Print "Starting down neighbor visited!: Iteration " + iterations
-'   
-'               End If
+            Local currentNode:AStarNode = getLowestCostNode()  
             
              If endNode.id = currentNode.id
                 Exit
              End If
 
              remIfStackHasElement(Self.unvisited, currentNode)
-
-'                If stackHasElement(Self.unvisited, currentNode)
-'   
-'                   Print "Did not remove at start"
-'                End If
 
              Self.visited.Push(currentNode)
              
@@ -316,9 +291,7 @@ Class AStarSearch
                         
                         If (Not stackHasElement(Self.unvisited, neighbor)) And (Not stackHasElement(Self.visited, neighbor))
                             neighbor.cost = nextStepCost
-                            'neighbor.heuristic = getCost(xpos, ypos, tx, ty)
                             neighbor.totalCost = nextStepCost + neighbor.heuristic
-                            'neighbor.totalCost = nextStepCost
                             depth = math.Max(depth, neighbor.setParent(currentNode))
                             Self.unvisited.Push(neighbor)
                         End If
@@ -353,6 +326,9 @@ Class AStarSearch
         
     End Method
     
+    '
+    'Method to calculate the cost of movement over a walkable tile on the overworld map.
+    '
     Method getTileCostOverworld:Int(m:Int[][], x:Int, y:Int)
         Local i:Int = m[x][y]
         If (i > 22 And i < 30) Or (i > 11 And i < 18)
@@ -362,12 +338,18 @@ Class AStarSearch
         End If
     End Method
     
-    
+    '
+    'Method to determine if a tile in a cave is one which the player character can
+    'walk on.
+    '
     Method isWalkableTile(gameMap:Int[][], x:Int, y:Int)
         Return gameMap[x][y] = 5 Or gameMap[x][y] = 17
     End Method
 End Class
 
+'
+'Custom nodes used for the A* search algorithm.
+'
 Class AStarNode
     Field x:Int
     Field y:Int
@@ -389,6 +371,9 @@ Class AStarNode
         Self.totalCost = cost
     End Method
     
+    '
+    'Method to assign a node being passed in as the current node's parent.
+    '
     Method setParent:Int(mamaNode:AStarNode)
         Self.depth = mamaNode.depth + 1
         Self.parent = mamaNode
@@ -396,12 +381,19 @@ Class AStarNode
         Return Self.depth
     End Method
     
+    '
+    'Method to set the heuristic cost of traveling through the current node.
+    '
     Method setCost(x:Int, y:Int, tx:Int, ty:Int)
         'Self.cost = 1
         Self.heuristic = getCost(x, y, tx, ty) * 2
         Self.totalCost = Self.cost + Self.heuristic
     End Method
     
+    '
+    'Method to compare current node's cost of movement to another node's cost
+    'of movement.
+    '
     Method compareCosts(other:AStarNode)
         Local thisCost:Float = Self.heuristic
         Local thatCost:Float = other.heuristic
@@ -416,6 +408,9 @@ Class AStarNode
     End Method
 End Class
 
+'
+'Class to keep track of a path between one point and another in the A* search algorithm
+'
 Class Path
     Field steps:List<PathStep>
     
@@ -425,22 +420,37 @@ Class Path
 '           Print "Cost: " + c
     End Method
     
+    '
+    'Method to return the length of the current Path.
+    '
     Method pathLength:Int()
         Return steps.Count()
     End Method
     
+    '
+    'Method to add a step to the end of the current Path.
+    '
     Method appendStep(xCoord:Int, yCoord:Int)
         steps.AddLast(New PathStep(xCoord, yCoord))
     End Method
     
+    '
+    'Method to add a step to the start of the current Path.
+    '
     Method prependStep(xCoord:Int, yCoord:Int)
         steps.AddFirst(New PathStep(xCoord, yCoord))
     End Method
     
+    '
+    'Method to check if a coordinate already exists in the current Path.
+    '
     Method contains:Bool(xCoord:Int, yCoord:Int)
         Return Self.steps.Contains(New PathStep(xCoord, yCoord))
     End Method
     
+    '
+    'Method to print the current path to the console. Used for debugging.
+    '
     Method printPath()
         For Local i:= Eachin Self.steps
             'Print "Path Step: " + i.getX() + ", " + i.getY()
@@ -449,6 +459,9 @@ Class Path
     End Method
 End Class
 
+'
+'Class that represents one step within a path for A* search.
+'
 Class PathStep
     Field x:Int
     Field y:Int
@@ -458,16 +471,25 @@ Class PathStep
         Self.y = theY
     End Method
     
+    '
+    'Getter method for step's X coordinate
+    '
     Method getX()
         Return Self.x
     End Method
     
+    '
+    'Getter method for step's Y coordinate.
+    '
     Method getY()
         Return Self.y
     End Method
 
 End Class
 
+'
+'Function to return the Euclidian distance between two points.
+'
 Function getCost:Float(sX:Int, sY:Int, tX:Int, tY:Int)
     Local dx = tX - sX
     Local dy = tY - sY
@@ -475,7 +497,9 @@ Function getCost:Float(sX:Int, sY:Int, tX:Int, tY:Int)
     Return math.Sqrt(dx * dx + dy * dy) 
 End Function
 
-
+'
+'Function to determine if a stack contains a certain element
+'
 Function stackHasElement:Bool(s:Stack<AStarNode>, n:AStarNode)
     
         For Local i:Int = 0 Until s.Length
@@ -488,12 +512,12 @@ Function stackHasElement:Bool(s:Stack<AStarNode>, n:AStarNode)
         Return false
 End Function
 
+'
+'Function to remove an element from a stack
+'
 Function removeFromStack:Stack<AStarNode>(s:Stack<AStarNode>, n:AStarNode)
     For Local i:Int = 0 Until s.Length
-        'Print "s.get(i) = " + s.Get(i).id
-        'Print "n.id = " + n.id
         If s.Get(i).id = n.id
-            'Print "Removeing : " + n.id
             s.Remove(i)
             Exit
         End If

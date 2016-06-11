@@ -7,8 +7,9 @@ Import math
 
 
 Global caveTextures:Image
-'Procedurally generated representation of a cave/dungeon.
+
 '
+'Procedurally generated representation of a cave/dungeon.
 '
 Class Level
 
@@ -101,17 +102,14 @@ Class Level
 		treasures = New Stack<Point>()
 		setTreasure(10)
 		
-		'Local isReachable:Bool = False
-		'While Not isReachable
-            'setTreasure()
-         '   isReachable = validatePath()
-        'End While
-		'Print "Treasure X: " + treasureX
-        'Print "Treasure Y: " + treasureY
 		
 		Self.generated = true
 	End Method
-	
+	'
+	'Method to populate cave with /total/ # of treasure chests. Will only place
+	'chests that are reachable by player character without moving over a trap of
+	'any kind.
+	'
 	Method setTreasure:Bool(total:Int)
         Local successCount:Int = 0;
         Local failCount:Int = 0;
@@ -147,6 +145,9 @@ Class Level
         End While
         
 	End Method
+	'
+	'Method that draws a path leading to a treasure chest. For debug purposes only.
+	'
     Method debugPath(p:Path)
         For Local i:= Eachin p.steps
             If Self.layout[i.getX()][i.getY()] = CAVE_WALKWAY
@@ -154,6 +155,9 @@ Class Level
             End If
         End For
     End Method
+    '
+    'Method to populate the cave with spikes and other traps.
+    '
 	Method addSpikesAndTraps()
         Local spikeCount:Int = walkways.Length / 30
         Local counter:Int = 0
@@ -189,6 +193,9 @@ Class Level
         
 	End Method
 	
+	'
+	'Method to randomly determine the player character's starting coordinates.
+	'
 	Method makeStartingPoint()
         Local rng = Rnd(0, walkways.Length)
         Local isSet = False
@@ -196,10 +203,7 @@ Class Level
         Local x:Int
         Local y:Int
         
-        'Local tries:Int = 0
-        
         While Not isSet
-            'tries += 1
             x = walkways[rng].getX()
             y = walkways[rng].getY()
             
@@ -210,15 +214,14 @@ Class Level
             End If
             
         End While
-        'Print "Tries for start pos: " + tries
         layout[x][y] = ENTRANCE
         entranceX = x
         entranceY = y
-        
-        'Print "X: " + x
-        'Print "Y: " + y
 	End Method
 	
+	'
+	'Method used to set one treasure chest in the cave.
+	'
 	Method setTreasure()
         Local rng = Rnd(0, walkways.Length)
         Local isSet = False
@@ -240,63 +243,70 @@ Class Level
         Self.treasureX = x
         Self.treasureY = y
         treasures.Push(New Point(x, y))
-'              layout[Self.entranceX+40][Self.entranceY+40] = TREASURE
-'           Self.treasureX = Self.entranceX + 40
-'           Self.treasureY = Self.entranceY + 40
         
 	End Method
 	
-	Method setTreasure2()
-        Local rng = Rnd(0, walkways.Length)
-        Local isSet = False
-        
-        Local x:Int
-        Local y:Int
-        While Not isSet
-            x = walkways[rng].getX()
-            y = walkways[rng].getY()
-            
-            If layout[x][y] = CAVE_WALKWAY
-                isSet = True
-            Else
-                rng = Rnd(0, walkways.Length)
-            End If
-        End While
-        
-        layout[x][y] = TREASURE
-        Self.treasure2X = x
-        Self.treasure2Y = y
-'              layout[Self.entranceX+40][Self.entranceY+40] = TREASURE
-'           Self.treasureX = Self.entranceX + 40
-'           Self.treasureY = Self.entranceY + 40
-        
-	End Method
+	'
+	'Method that I think I don't use anymore
+	'
+'   	Method setTreasure2()
+'           Local rng = Rnd(0, walkways.Length)
+'           Local isSet = False
+'           
+'           Local x:Int
+'           Local y:Int
+'           While Not isSet
+'               x = walkways[rng].getX()
+'               y = walkways[rng].getY()
+'               
+'               If layout[x][y] = CAVE_WALKWAY
+'                   isSet = True
+'               Else
+'                   rng = Rnd(0, walkways.Length)
+'               End If
+'           End While
+'           
+'           layout[x][y] = TREASURE
+'           Self.treasure2X = x
+'           Self.treasure2Y = y
+'   '              layout[Self.entranceX+40][Self.entranceY+40] = TREASURE
+'   '           Self.treasureX = Self.entranceX + 40
+'   '           Self.treasureY = Self.entranceY + 40
+'           
+'   	End Method
+
+	'
+	'Method that I think is useless now.
+	'
+'   	Method validatePath:Bool()
+'           Local walkable:Int[][] = setArray(layout.Length, layout[0].Length)
+'           For Local i:Int = 0 Until walkable.Length
+'               For Local j:Int = 0 Until walkable[0].Length
+'                   If layout[i][j] = CAVE_WALKWAY
+'                       walkable[i][j] = 1
+'                   Else
+'                       walkable[i][j] = 0
+'                   End
+'               End For
+'           End For
+'           
+'           Local x:Int = Self.entranceX
+'           Local y:Int = Self.entranceY
+'           
+'           Local isHope:Bool = True
+'           walkable[x][y] = 2
+'           
+'           While isHope
+'               walkable[x-1][y] = 2
+'               
+'           End While
+'           Return true
+'   	End Method
 	
-	Method validatePath:Bool()
-        Local walkable:Int[][] = setArray(layout.Length, layout[0].Length)
-        For Local i:Int = 0 Until walkable.Length
-            For Local j:Int = 0 Until walkable[0].Length
-                If layout[i][j] = CAVE_WALKWAY
-                    walkable[i][j] = 1
-                Else
-                    walkable[i][j] = 0
-                End
-            End For
-        End For
-        
-        Local x:Int = Self.entranceX
-        Local y:Int = Self.entranceY
-        
-        Local isHope:Bool = True
-        walkable[x][y] = 2
-        
-        While isHope
-            walkable[x-1][y] = 2
-            
-        End While
-        Return true
-	End Method
-	
+	'
+	'Method to check if a tile is able to be walked on by the player character.
+	'I don't think it is used because it does nothing?
+	'
 	Method checkWalkable:Bool(x:Int, y:Int, path:Int[][])
         
         If path[x][y] = 1
@@ -305,10 +315,12 @@ Class Level
         End If
 	End Method
 	
+	'
+	'Method used to populate cave with rivers of lava.
+	'
 	Method makeLavaRivers()
         Self.counter = 0
         Local total:Int = walkways.Length / 200
-        'Print "Total rivers to make: " + total
         
         Local randX:Int
         Local randY:Int
@@ -322,7 +334,6 @@ Class Level
             If randTile = CAVE_WALKWAY 
                 If layout[randX-1][randY] = CAVE_CENTER Or layout[randX+1][randY] = CAVE_CENTER Or layout[randX][randY-1] = CAVE_CENTER Or layout[randX][randY+1] = CAVE_CENTER
                     makeLavaRiver(randX, randY)
-                    'Print "Lava River starting at: " + randX + ", " + randY
                     index += 1
                 End If
             End If
@@ -330,14 +341,14 @@ Class Level
         lava = lava.Resize(counter)
 	End Method
 	
+	'
+	'Method used to place one river of lava in the cave.
+	'
 	Method makeLavaRiver(startX:Int, startY:Int)
       Local currentX:Int = startX
       Local currentY:Int = startY
       Local nextX:Int = startX
       Local nextY:Int = startY
-'         Local localMinX:Int = startX
-'         Local localMinY:Int = startY
-'         Local lowestElevation:Float = noiseMap[currentX][currentY]
 
       Local randDirection:Int
       Local riverEnd:Bool = False
@@ -382,11 +393,6 @@ Class Level
           If Self.counter = lava.Length
             lava = lava.Resize(lava.Length + 1000)
           End If
-          'riverTiles[Self.tileCounter] = New Point(currentX, currentY)
-          'Self.tileCounter += 1
-          'If Self.tileCounter = riverTiles.Length
-          '  riverTiles = riverTiles.Resize(riverTiles.Length + 1000)
-          'End If
           currentX = nextX
           currentY = nextY
           riverLength += 1
@@ -394,12 +400,13 @@ Class Level
         
       End While
 	End Method
+	
 	'
-	'
+	'Method used to fill up the array of points that are walkways. Is this used anymore?
+	'Because resizing the array after each individual entry is not very efficient.
 	'
 	Method countWalkways()
         Self.walkways = New Point[1]
-        'Print "Initial size: " + Self.walkways.Length
         Local index:Int = 0;
         For Local i:Int = 0 Until layout.Length
             For Local j:Int = 0 Until layout[0].Length
@@ -412,12 +419,11 @@ Class Level
             End
         End
         Self.walkways = Self.walkways.Resize(Self.walkways.Length-1)
-        'Print "New length: " + Self.walkways.Length
-        'Print "Final point: " + Self.walkways[Self.walkways.Length - 1].getX()
 	End Method
 	
 	'
-	'
+	'Method used to smooth out the edges of caves with diagonal's, to avoid
+	'caves that look overly "blocky"
 	'
     Method smoothEdges()
         Local cave:Int[][] = Self.layout
@@ -544,8 +550,10 @@ Class Level
 		Return result
 	End Method
 	
-	#Rem
-	#End
+	'
+	'Method used to check neighboring walls for purposes of applying the rules of
+	'cellular automata generation algorithm.
+	'
 	Method checkWalls:Int(design:Int[][], i:Int, j:Int)
 		Local total:Int = 0
 		If i > 0 And design[i-1][j] = CAVE_CENTER
@@ -575,8 +583,11 @@ Class Level
 
 		Return total 
 	End Method
-	#Rem
-	#End
+	
+	'
+	'Method to print the level design to the console. For debugging purposes in the
+	'beginning of the project, is now mostly useless.
+	'
 	Method printLevel(design:Int[][])
 
 		Local line:String
@@ -591,8 +602,11 @@ Class Level
 			Print line
 		End
 	End Method
-	#Rem
-	#End
+	
+	'
+	'Method used to fill all cells of the cave grid with walls. Was used for the drunken
+	'sailor generation method that was ultimately determined to be not viable.
+	'
 	Method fillCells(design:Int[][])
 		For Local i:Int = 0 Until design.Length
 			For Local j:Int = 0 Until design[0].Length
@@ -600,8 +614,11 @@ Class Level
 			End
 		End
 	End Method
-	#Rem
-	#End
+	
+	'
+	'Method utilizing a drunken sailor walk as a way of generating caves. Was ultimately
+	'determined to be a less viable generation method than cellular automata.
+	'
 	Method drunkWalk(design:Int[][])
 		Local target:Float = (design.Length * design[0].Length) * 0.35
 		Local cleared:Int = 1
@@ -638,40 +655,12 @@ Class Level
 		End
 	End Method
 	
-	#Rem
-	#End
+	'
+	'Method to draw the cave on the screen around the player character
+	'using offsets based on character's current position.
+	'
 	Method Draw(xOffsetG:Int, yOffsetG:Int)
-'           Local currentTexture:Int
-'           
-'   		For Local i:Int = 0 Until Self.layout.Length
-'   			For Local j:Int = 0 Until Self.layout[0].Length
-'   				If Self.layout[i][j] = CAVE_CENTER
-'   					SetColor(0,0,0)
-'   				Else If Self.layout[i][j] = CAVE_WALKWAY
-'   					SetColor(255,255,255)
-'                   Else
-'                       SetColor(125,0,0)
-'   				End If
-'   				DrawRect(i * 40, j * 40, 40, 40)
-'   			End
-'   		End
-'         Local xOffset:Int = xOffsetG
-'         Local yOffset:Int = yOffsetG
-'         Local xTarget:Int = xOffset + 16
-'         Local yTarget:Int = yOffset + 13
-'   '       Local localTexture:Int = 0
-'   '       Local counter:Int = 0
-'   
-'         For Local i:Int = xOffset Until xTarget
-'           For Local j:Int = yOffset Until yTarget
-'               If i > 0 And i < width - 1 And j > 0 And j < height - 1
-'                   If Not (layout[i][j] = CAVE_CENTER Or layout[i][j] = CAVE_WALKWAY)
-'                       DrawImage(caveTextures, (i-xOffset)*40+xOffset,(j-yOffset)*40+yOffset, CAVE_WALKWAY)
-'                   End If
-'                   DrawImage(caveTextures, (i-xOffset)*40+xOffset,(j-yOffset)*40+yOffset, layout[i][j])
-'               End If
-'           End
-'         End
+
         Local xTile:Int = xOffsetG / 40 - 1
         Local yTile:Int = yOffsetG / 40 - 1
         Local xOffset:Int = xOffsetG Mod 40
@@ -687,6 +676,9 @@ Class Level
 	End Method
 End Class
 
+'
+'Function to return the Euclidian distance between two points.
+'
 Function getDist:Float(sX:Int, sY:Int, tX:Int, tY:Int)
     Local dx = tX - sX
     Local dy = tY - sY

@@ -39,18 +39,6 @@ Class GameplayScene Extends iEngine
         Self.playfield.Position(16,16)
         Self.playfield.ZoomPointX(200)
         Self.playfield.ZoomPointY(128)
-        #Rem
-        Self.playfield2=New iPlayfield
-        Self.playfield2.AttachLast()
-        Self.playfield2.AutoCls(48,48,80)
-        Self.playfield2.width=400
-        Self.playfield2.height=256
-        Self.playfield2.Position(160,160)
-        Self.playfield2.ZoomPointX(200)
-        Self.playfield2.ZoomPointY(128)
-        Self.playfield2.ZoomX(0.25)
-        Self.playfield2.ZoomY(0.25)
-        #End
     
         Self.layer=New iLayer
     
@@ -58,19 +46,11 @@ Class GameplayScene Extends iEngine
     
     	Local img:Image = iLoadSprite("char_walk_down.png",69,102,4)
         Self.layer.AttachLast(Self.playfield)
-        #Rem
-        Self.layer.AttachLast(Self.playfield2)
-    	#End
+
         Self.sprite1=New iLayerSprite
         Self.sprite1.AttachLast(Self.layer)
         Self.sprite1.ImagePointer(img)
         Self.sprite1.Position(300,275)
-    	#Rem
-        Self.sprite2=New iLayerSprite
-        Self.sprite2.AttachLast(Self.layer)
-        Self.sprite2.ImagePointer(gfxMonkey)
-        Self.sprite2.Position(0,0)
-        #End
         
 		Self.p1 = New Player(img, 100, 100)
 		
@@ -83,6 +63,8 @@ Class GameplayScene Extends iEngine
     'Overloads OnRender Method from iEngine
     Method OnRender ()
         room.Draw(Self.playfield.CameraX, Self.playfield.CameraY)
+        
+        'Uncomment below to draw player's bounding box
         'DrawRect(Self.bBox.x, Self.bBox.y, Self.bBox.width, Self.bBox.height)
     End Method
 
@@ -91,44 +73,6 @@ Class GameplayScene Extends iEngine
     Method OnStart ()
         'Print "Starting Gameplay"
         room = New Level(0, 0, 160, 120, "Cellular")
-'           Local aStar:AStarSearch = New AStarSearch(room.layout, 20000, false)
-'           'Print "Find Path..."
-'           Local treasurePath:Path = aStar.findPath(room.entranceX, room.entranceY, room.treasureX, room.treasureY)
-'           
-'           If Not (treasurePath = Null)
-'               room.setTreasure2()
-'               Local x1:Int = room.entranceX
-'               Local x2:Int = room.treasureX
-'               Local y1:Int = room.entranceY 
-'               Local y2:Int = room.treasureY
-'               
-'               Local tx:Int = room.treasure2X
-'               Local ty:Int = room.treasure2Y
-'               
-'               Local distFS:Int = math.Abs(x1-tx) + math.Abs(y1-tx)
-'               Local distFT:Int = math.Abs(x2-tx) + math.Abs(y2-tx)
-'               Local closestX:Int
-'               Local closestY:Int
-'               
-'               If distFS < distFT
-'                   closestX = x1
-'                   closestY = y1 
-'               Else
-'                   closestX = x2
-'                   closestY = y2
-'               End If
-'               Local tp2:Path = aStar.findPath(closestX, closestY, room.treasure2X, room.treasure2Y)
-'               'treasurePath.printPath()
-'               If Not (tp2 = Null)
-'               
-'                   room.debugPath(treasurePath)
-'                   room.debugPath(tp2)
-'               Else
-'                   Print "Failed on second treasure"
-'               End If
-'           Else
-'               Print "No path was found, bad room!"
-'           End
         
         Self.sprite1.Position(room.entranceX*40, room.entranceY*40 - 80)
         
@@ -136,17 +80,21 @@ Class GameplayScene Extends iEngine
         Self.playfield.CameraX = room.entranceX*40 - 300
         Self.playfield.CameraY = room.entranceY*40 - 200
         #Rem
+        Uncomment line below to play music during gameplay.
         PlayMusic("tetris.mp3", 1)
         #End
     End Method
 
-    
+    '
     'Overloads OnStop Method from iEngine
+    '
     Method OnStop ()
-        'Print "Stopping Gameplay"
+        Print "Stopping Gameplay"
     End Method
 
-
+    '
+    'Overloads OnUpdate Method from iEngine
+    '
     Method OnUpdate ()
 		If KeyDown(KEY_CONTROL)
         
@@ -243,6 +191,10 @@ Class GameplayScene Extends iEngine
 	End Method
 End Class
 
+'
+'A rectangle that rules the bounds in which a player character can move and/or
+'collide with elements in the game world.
+'
 Class BoundingRect
     Field x:Int
     Field y:Int

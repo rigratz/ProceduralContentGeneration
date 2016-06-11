@@ -129,13 +129,9 @@ Class SimplexNoise
         Seed = Millisecs()
         Local offset:Int = Rnd(0, 1000)
         Local frequency:Float = 5.0 / width
-        'Local frequency:Float = 5.0 / width
         For Local i:Int = 0 Until width 
             For Local j:Int = 0 Until height
                 result[i][j] = makeNoise((i+offset)*frequency, (j+offset)*frequency)
-                'result[i][j] = (result[i][j]+1) / 2
-                'result[i][j] += makeOctavedNoise(1,2,1,i,j)
-                'result[i][j] = makeNoise(i*frequency, j*frequency)
             End
         End
         'Print "Returning Moisture Map"
@@ -151,31 +147,20 @@ Class SimplexNoise
         Local result:Float[][] = setArray(width, height)
         Seed = Millisecs()
         Local offset:Int = Rnd(0, 1000000)
-        'Local frequency:Float = 5.0 / width
         Local layerFrequency:Float = scale
         Local layerWeight:Float = 1
         Local weightSum:Float = 0
 
-        'For Local i:Int = 0 Until octaves
       
         For Local i:Int = 0 Until width 
             For Local j:Int = 0 Until height
                 result[i][j] = makeOctavedNoise(5, 0.5, 0.01, i, j, offset)
-                'result[i][j] = (result[i][j]+1) / 2
-                'result[i][j] += makeOctavedNoise(1,2,1,i,j)
+
             End
         End
         
-        'layerFrequency *= 2;
-        'weightSum += layerWeight;
-        'layerWeight *= roughness;
-        
-        'End
-        'Print "Islandizing noise..."
         result = makeIsland(result, width, height)
         'Print "Returning Noise Map"
-      
-      
         Return result
     End Method
    
@@ -187,10 +172,7 @@ Class SimplexNoise
       
         Local centerX:Int = width / 2
         Local centerY:Int = height / 2
-'       Local centerX:Int = Rnd(0, width)
-'       Local centerY:Int = Rnd(0, height)
-        'Print "Island CenterX = " + centerX
-        'Print "Island CenterY = " + centerY
+
         Local xDist:Float = 0
         Local yDist:Float = 0
         Local totalDist:Float = 0
@@ -217,8 +199,6 @@ Class SimplexNoise
         Local layerWeight:Float = 1
         Local weightSum:Float = 0
       
-        'Seed = Millisecs()
-        'Local offset:Int = Rnd(0, 1000000)
         For Local i:Int = 0 Until octaves
             noiseSum += makeNoise((x+offset) * layerFrequency, (y+offset) * layerFrequency) * layerWeight
             layerFrequency *= 2
